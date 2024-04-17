@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import { Lato as FontSans } from "next/font/google";
+
+import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
+
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import { site } from "@/constants";
 import Header from "@/components/shared/header";
+import LoadingScreen from "@/components/shared/loading-screen";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -25,15 +30,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased flex flex-col",
-          fontSans.variable
-        )}>
-        <Header />
-        <main className="flex-1">{children}</main>
-      </body>
-    </html>
+    <ClerkProvider appearance={{ baseTheme: dark }}>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={cn(
+            "min-h-screen bg-background font-sans antialiased flex flex-col",
+            fontSans.variable
+          )}>
+          <ClerkLoading>
+            <LoadingScreen />
+          </ClerkLoading>
+          <ClerkLoaded>
+            <Header />
+            <main className="flex-1">{children}</main>
+          </ClerkLoaded>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

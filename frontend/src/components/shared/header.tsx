@@ -2,34 +2,12 @@
 
 import Link from "next/link";
 import MaxWrapper from "./wrapper";
-import { site } from "@/constants";
+import { links, site } from "@/constants";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
 import { AlignJustify, WalletIcon } from "lucide-react";
-
-const links = [
-  {
-    name: "Trading",
-    href: "/trading",
-  },
-  {
-    name: "Tokenization",
-    href: "/tokenization",
-  },
-  {
-    name: "Indices",
-    href: "/indices",
-  },
-  {
-    name: "Account",
-    href: "/city-indices",
-  },
-  {
-    name: "Compliance",
-    href: "/compliance",
-  },
-];
+import { SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 export default function Header() {
   const pathname = usePathname();
@@ -37,7 +15,7 @@ export default function Header() {
   return (
     <div className="w-full sticky top-0 inset-x-0 z-10 bg-background/60 backdrop-blur-lg">
       <MaxWrapper className="flex items-center justify-between gap-4 py-6">
-        <Link href="/" className="font-semibold text-lg tracking-wider">
+        <Link href="/" className="font-bold text-lg md:text-xl tracking-wider">
           {site.name}
         </Link>
 
@@ -47,30 +25,37 @@ export default function Header() {
               <AlignJustify className="w-5 h-5" />
             </Button>
             <div className="hidden md:flex items-center gap-4">
-              {links.map((link) => (
+              {links.map(({ href, name }: { href: string; name: string }) => (
                 <Link
-                  key={link.href}
-                  href={link.href}
+                  key={href}
+                  href={href}
                   className={cn(
-                    "text-sm uppercase font-semibold tracking-widest text-muted-foreground hover:text-primary transition",
+                    "text-sm uppercase font-semibold tracking-widest text-muted-foreground hover:text-foreground transition",
                     {
-                      "text-primary": link.href === pathname,
+                      "text-primary hover:text-primary": href === pathname,
                     }
                   )}>
-                  {link.name}
+                  {name}
                 </Link>
               ))}
             </div>
           </div>
           <>
-            <Button
-              className="text-base rounded-full font-semibold hidden lg:flex"
-              variant="secondary">
-              Connect Wallet <WalletIcon className="w-4 h-4 ml-2" />
-            </Button>
-            <Button className="flex lg:hidden" size="icon" variant="secondary">
-              <WalletIcon className="w-5 h-5" />
-            </Button>
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+            <SignedOut>
+              <SignUpButton mode="modal">
+                <Button className="text-foreground text-base rounded-full font-semibold hidden lg:flex">
+                  Connect Wallet <WalletIcon className="w-4 h-4 ml-2" />
+                </Button>
+              </SignUpButton>
+              <SignUpButton mode="modal">
+                <Button className="text-foreground flex lg:hidden" size="icon">
+                  <WalletIcon className="w-5 h-5" />
+                </Button>
+              </SignUpButton>
+            </SignedOut>
           </>
         </div>
       </MaxWrapper>

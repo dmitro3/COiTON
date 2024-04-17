@@ -4,3 +4,26 @@ export const site: SiteConfigProps = {
   description:
     "UrbanXchange is a cutting-edge platform at the forefront of the real estate industry's digital transformation. By harnessing the power of blockchain technology, UrbanXchange introduces a decentralized approach to real estate trading, making it accessible to anyone, anywhere.",
 };
+
+export const links = [
+  {
+    name: "Trading",
+    href: "/trading",
+  },
+  {
+    name: "Tokenization",
+    href: "/tokenization",
+  },
+  {
+    name: "News",
+    href: "/news",
+  },
+  {
+    name: "Account",
+    href: "/city-indices",
+  },
+  {
+    name: "Compliance",
+    href: "/compliance",
+  },
+];
