@@ -14,7 +14,9 @@ export default function HomePage() {
             <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-primary text-center">
               Explore the world of real estate
             </h1>
-            <p className="text-base md:text-lg font-medium">{site.title}</p>
+            <p className="text-sm md:text-base lg:text-lg font-medium">
+              {site.title}
+            </p>
           </div>
         </MaxWrapper2>
       </div>
