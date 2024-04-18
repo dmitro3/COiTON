@@ -1,86 +1,55 @@
-import React from "react";
-import { Badge } from "../ui/badge";
-import { Bath, BedDouble, Expand, MapPinnedIcon } from "lucide-react";
-import { Button } from "../ui/button";
+"use client";
+
+import MaxWrapper from "../shared/wrapper";
+import { Flame } from "lucide-react";
+import Slider from "react-slick";
 import Image from "next/image";
+import Heading from "../shared/heading";
+import { sliderSettings } from "@/constants";
 
 export default function FeaturedPropertySection() {
+  const settings = sliderSettings({ sts1: 3, sts2: 2 });
+
   return (
-    <div className="mt-20">
-      <div className="flex flex-col items-center justify-center text-center">
-        <h1 className="text-xl md:text-3xl font-semibold">
-          Featured Property For Sale
-        </h1>
-        <p className="text-lg font-regular max-w-screen-md">
-          At vero eos et accusamus et iusto odio dignissimos ducimus qui
-          blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
-        </p>
-      </div>
+    <div className="flex-1 py-20">
+      <MaxWrapper className="flex flex-col gap-6 md:gap-12">
+        <Heading subtitle="Our Recommendations" title="Featured Property" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        {Array.from({ length: 6 }).map((_, index) => (
-          <div
-            className="flex-1 bg-card flex flex-col md:flex-row rounded-2xl overflow-hidden border group"
-            key={index}>
-            <div className="w-full md:w-[256px] aspect-[1.5] md:aspect-[1.2] bg-secondary/50 overflow-hidden">
-              <Image
-                src="/banner.avif"
-                alt="title"
-                width={2970}
-                height={1980}
-                priority
-                quality={100}
-                className="w-full h-full object-cover group-hover:scale-110 transition-all"
-              />
-            </div>
-            <div className="flex flex-col flex-1">
-              <div className="flex flex-col px-4 py-3">
-                <h1 className="font-semibold truncate">
-                  The Ridge Of St. Joseph Apartments
-                </h1>
-                <div className="flex items-end justify-between">
-                  <Badge className="w-max mt-1" variant="secondary">
-                    Rent
-                  </Badge>
-                  <h1 className="text-xl font-bold">$30,000</h1>
+        <Slider {...settings} className="flex gap-5">
+          {Array.from({ length: 10 }).map((_, _key) => (
+            <div key={_key} className="flex flex-col pr-0 sm:pr-5">
+              <div className="rounded-[30px] bg-secondary w-full aspect-square overflow-hidden relative">
+                <Image
+                  src="/banner.avif"
+                  alt=""
+                  priority
+                  quality={100}
+                  width={2970}
+                  height={1980}
+                  className="w-full h-full rounded-[30px] object-cover"
+                />
+
+                <div className="absolute bottom-3 left-3 rounded-full bg-red-200 py-1.5 px-4 flex items-center gap-2">
+                  <Flame className="w-5 h-5" />
+                  Popular
                 </div>
               </div>
+              <h1 className="text-base md:text-xl font-bold mt-2">
+                Property Name
+              </h1>
+              <p className="mb-4 text-base md:text-lg font-bold">$30,000</p>
 
-              <div className="flex items-center justify-between gap-3 px-4 py-1">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 flex items-center justify-center bg-secondary rounded-full">
-                    <BedDouble className="w-4 h-4" />
-                  </div>
-                  <p className="text-sm font-medium truncate">4 Beds</p>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-secondary"></div>
+                <div className="flex flex-col">
+                  <h2 className="text-base font-semibold -mb-1">John Doe</h2>
+                  <p className="text-sm">Manchester, Kentucky</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 flex items-center justify-center bg-secondary rounded-full">
-                    <Bath className="w-4 h-4" />
-                  </div>
-                  <p className="text-sm font-medium truncate">2 Baths</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 flex items-center justify-center bg-secondary rounded-full">
-                    <Expand className="w-4 h-4" />
-                  </div>
-                  <p className="text-sm font-medium truncate">1200 sqft</p>
-                </div>
-              </div>
-
-              <div className="border-t px-4 py-2 mt-auto flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <MapPinnedIcon className="w-4 h-4" />
-                  <p className="text-sm font-medium">3599 Huntz Lane</p>
-                </div>
-
-                <Button className="rounded-full text-foreground font-bold">
-                  View
-                </Button>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </Slider>
+      </MaxWrapper>
     </div>
   );
 }

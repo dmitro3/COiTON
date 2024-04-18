@@ -13,8 +13,8 @@ export default function Header() {
   const pathname = usePathname();
 
   return (
-    <div className="w-full sticky top-0 inset-x-0 z-10 bg-background/60 backdrop-blur-lg">
-      <MaxWrapper className="flex items-center justify-between gap-4 py-6">
+    <div className="w-full sticky top-0 inset-x-0 z-20 bg-background/60 md:bg-background backdrop-blur-lg md:backdrop-blur-0">
+      <MaxWrapper className="flex items-center justify-between gap-4 py-4 md:py-6">
         <Link href="/" className="font-bold text-lg md:text-xl tracking-wider">
           {site.name}
         </Link>
@@ -46,12 +46,12 @@ export default function Header() {
             </SignedIn>
             <SignedOut>
               <SignUpButton mode="modal">
-                <Button className="text-foreground text-base rounded-full font-semibold hidden lg:flex">
+                <Button className="text-base rounded-full font-semibold hidden lg:flex">
                   Connect Wallet <WalletIcon className="w-4 h-4 ml-2" />
                 </Button>
               </SignUpButton>
               <SignUpButton mode="modal">
-                <Button className="text-foreground flex lg:hidden" size="icon">
+                <Button className="flex lg:hidden" size="icon">
                   <WalletIcon className="w-5 h-5" />
                 </Button>
               </SignUpButton>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Lato as FontSans } from "next/font/google";
+import { Archivo as FontSans } from "next/font/google";
 
 import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
@@ -11,10 +11,12 @@ import Header from "@/components/shared/header";
 import LoadingScreen from "@/components/shared/loading-screen";
 import Footer from "@/components/shared/footer";
 
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["100", "300", "400", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -31,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider appearance={{ baseTheme: dark }}>
+    <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body
           className={cn(
@@ -42,9 +44,7 @@ export default function RootLayout({
             <LoadingScreen />
           </ClerkLoading>
           <ClerkLoaded>
-            <Header />
             <main className="flex-1">{children}</main>
-            <Footer />
           </ClerkLoaded>
         </body>
       </html>

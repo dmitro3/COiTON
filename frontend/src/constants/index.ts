@@ -7,12 +7,8 @@ export const site: SiteConfigProps = {
 
 export const links = [
   {
-    name: "Transactions",
-    href: "/transactions",
-  },
-  {
-    name: "Tokenization",
-    href: "/tokenization",
+    name: "Tradings",
+    href: "/tradings",
   },
   {
     name: "News",
@@ -23,7 +19,45 @@ export const links = [
     href: "/city-indices",
   },
   {
-    name: "Compliance",
-    href: "/compliance",
+    name: "Dashboard",
+    href: "/dashboard",
   },
 ];
+
+export const sliderSettings = ({
+  sts1,
+  sts2,
+}: {
+  sts1: number;
+  sts2: number;
+}) => {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: sts1,
+    slidesToScroll: 1,
+    initialSlide: 1,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: sts2,
+          slidesToScroll: 1,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 2,
+        },
+      },
+    ],
+  };
+
+  return settings;
+};

@@ -45,7 +45,7 @@ export const useFetchNews = () => {
     };
 
     fetchData();
-  }, []); // Empty dependency array means this effect will only run once after initial render
+  }, [data]);
 
   return data;
 };
