@@ -7,8 +7,8 @@ export const site: SiteConfigProps = {
 
 export const links = [
   {
-    name: "Trading",
-    href: "/trading",
+    name: "Transactions",
+    href: "/transactions",
   },
   {
     name: "Tokenization",

@@ -1,5 +1,6 @@
 "use client";
 
+import FeaturedPropertySection from "@/components/sections/FeaturedPropertySection";
 import MaxWrapper from "@/components/shared/wrapper";
 import { site } from "@/constants";
 import Image from "next/image";
@@ -30,6 +31,8 @@ export default function RootPage() {
             </p>
           </div>
         </div>
+
+        <FeaturedPropertySection />
       </MaxWrapper>
     </div>
   );
