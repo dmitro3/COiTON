@@ -1,9 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+import "./Errors.sol";
 
 library LibAppStorage {
-    modifier OnlyOwner() {}
+    struct PurchaseAgreement {
+        uint id;
+        address initiator;
+        address buyer;
+        uint estateId;
+        uint signersCount;
+        bool executed;
+        address[] validSigners;
+    }
+    struct Proposal {
+        address from;
+        uint estateId;
+        uint price;
+    }
     struct Listing {
+        uint id;
         address owner;
         string country;
         string state;
@@ -12,7 +27,8 @@ library LibAppStorage {
         uint24 postalCode;
         string description;
         uint256 price;
-        string[] images;
+        string images;
+        uint tokenId;
         uint256 createdAt;
     }
 
@@ -47,12 +63,25 @@ library LibAppStorage {
     }
 
     struct Layout {
+        address owner;
         address erc20Token;
         address erc1155Token;
         Market[] market;
         Listing[] listings;
+        mapping(uint => Listing) listing;
+        Proposal[] proposals;
         TransactionHistory[] transactionHistory;
+        uint purchaseAgreementCount;
+        mapping(uint => mapping(address => bool)) isValidSigner;
+        mapping(uint => PurchaseAgreement) purchaseAgreement;
+        mapping(uint => mapping(address => bool)) hasSignedPurchaseAgreement;
         mapping(address => Stake) stake;
         mapping(address => Holdings) holdings;
+    }
+
+    function layoutStorage() internal pure returns (Layout storage l) {
+        assembly {
+            l.slot := 0
+        }
     }
 }
