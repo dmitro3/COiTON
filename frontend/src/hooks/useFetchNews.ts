@@ -17,8 +17,13 @@ export const useFetchNews = () => {
         const responseData = await response.json();
 
         if (response.ok) {
+          // Filter out articles with the specified URL
+          const filteredNews = responseData.articles.filter(
+            (article: any) => article.url !== "https://removed.com"
+          );
+
           setData({
-            allNews: responseData.articles,
+            allNews: filteredNews,
             isLoading: false,
             isError: "",
           });

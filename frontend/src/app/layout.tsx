@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { site } from "@/constants";
 import Header from "@/components/shared/header";
 import LoadingScreen from "@/components/shared/loading-screen";
+import Footer from "@/components/shared/footer";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -43,6 +44,7 @@ export default function RootLayout({
           <ClerkLoaded>
             <Header />
             <main className="flex-1">{children}</main>
+            <Footer />
           </ClerkLoaded>
         </body>
       </html>
