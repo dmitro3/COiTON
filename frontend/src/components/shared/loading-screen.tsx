@@ -4,7 +4,7 @@ import logo from "../../../public/logo.svg";
 
 export default function LoadingScreen() {
   return (
-    <div className="flex-1 w-full h-screen flex items-center justify-center bg-primary">
+    <div className="flex-1 w-full h-svh flex items-center justify-center bg-primary">
       <Image
         src={logo}
         alt="logo"

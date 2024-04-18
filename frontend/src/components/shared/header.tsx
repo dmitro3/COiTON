@@ -13,7 +13,7 @@ export default function Header() {
   const pathname = usePathname();
 
   return (
-    <div className="w-full sticky top-0 inset-x-0 z-20 bg-background/60 md:bg-background backdrop-blur-lg md:backdrop-blur-0">
+    <div className="w-full sticky top-0 inset-x-0 z-20 bg-background border-b">
       <MaxWrapper className="flex items-center justify-between gap-4 py-4 md:py-6">
         <Link href="/" className="font-bold text-lg md:text-xl tracking-wider">
           {site.name}
