@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+
+/// @title Real estate App storage structure .
+/// @author Includes all the essential state variables, structs, and enums required for the real estate contract.
 library LibAppStorage {
     struct PurchaseAgreement {
         uint id;

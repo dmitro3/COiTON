@@ -5,7 +5,13 @@ import "../libraries/Events.sol";
 import "../libraries/Errors.sol";
 
 contract RealEstate {
+    //Instantiating a new Layout from the LibAppStorage.
     LibAppStorage.Layout internal l;
+
+    //The modifier restrict the execution of certain function to the owner .
+    // This condition checks if the address calling the function
+    //is not the same as the owner's address stored in the state variable l.owner.
+    //revert
     modifier OnlyOwner() {
         if (msg.sender != l.owner) {
             revert ERRORS.UNAUTHORIZED();
@@ -19,14 +25,25 @@ contract RealEstate {
     //     l.owner = msg.sender;
     // }
 
+    //The function enables the updating of the ERC20 token's address.
     function updateERC20Token(address _address) external OnlyOwner {
         l.erc20Token = _address;
     }
 
+    //The function enables the updating of the ERC1155 token's address.
     function updateERC1155Token(address _address) external OnlyOwner {
         l.erc1155Token = _address;
     }
 
+    // This function is use to create new listings
+    //@param address owner the owner address in this case the agent or house owner address
+    //@param country : The country where the real estate is located
+    //@param State: The state where the real estate is located
+    //@param City: The City where the real estate is located
+    //@param estateAddress: The estate address where it is located in the city
+    //@param postalCode: The indicate the specific geographical area of the estate
+    // The function will store the listing data gotten from the external server.
+    // After storing the listing data an NFT will be minted to the agent or the house owner.
     function createListing(
         address owner,
         string memory country,
@@ -58,6 +75,7 @@ contract RealEstate {
         );
 
         /// mint erc1155 token here
+        /// testing git commit
 
         l.listings.push(_newListing);
 
