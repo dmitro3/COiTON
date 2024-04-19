@@ -9,6 +9,7 @@ import "forge-std/Test.sol";
 import "../contracts/Diamond.sol";
 import "../contracts/facets/RealEstate.sol";
 import "../contracts/libraries/LibAppStorage.sol";
+import "../contracts/libraries/Errors.sol";
 
  contract DiamondDeployer is Test, IDiamondCut {
 
@@ -80,13 +81,14 @@ import "../contracts/libraries/LibAppStorage.sol";
 
 
     }
-    //    function testCreateListing() public {
-    //       switchSigner(B);
-    //      vm.expectRevert("UNAUTHORIZED");
+       function testCreateListing() public {       
+            vm.expectRevert(
+            abi.encodeWithSelector(ERRORS.UNAUTHORIZED.selector)
+        );
 
-    //      boundEstate.createListing(address(0), "nigeria" ,"lagos", "ikorodu", "Ikorodu street", 0, "description", 10, "");
+         boundEstate.createListing(address(0), "nigeria" ,"lagos", "ikorodu", "Ikorodu street", 0, "description", 10, "");
         
-    // }
+    }
 
        function testProposeBuy() public {
         switchSigner(A);
@@ -96,15 +98,15 @@ import "../contracts/libraries/LibAppStorage.sol";
 
 
      }
-        function testPropose() public {
+        function testProposePrice() public {
         switchSigner(B);
         boundEstate.proposeBuy(1, 2);
         LibAppStorage.Proposal memory new_listing = boundEstate.getProposal(0);
         assertEq(new_listing.price, 2);
 
-
-
     }
+
+
     function testCreatedListState() public {
         switchSigner(A);
         boundEstate.createListing(A, "nigeria" ,"lagos", "ikorodu", "estateAddress",0, "description", 10, "");
@@ -117,6 +119,10 @@ import "../contracts/libraries/LibAppStorage.sol";
       
 
     }
+    // function testInitiatePurchase() public {
+    //     switchSigner(A);
+    //     boundEstate.initiatePurchaseAgreement(1, A, [C,D]);
+    // }
 
 
     function generateSelectors(
