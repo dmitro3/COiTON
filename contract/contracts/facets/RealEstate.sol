@@ -38,6 +38,7 @@ contract RealEstate {
         uint256 price,
         string memory images
     ) external {
+        require(msg.sender != address(0), "INVALID_CONTRACT_ADDRESS");
         LibAppStorage.Listing memory _newListing = LibAppStorage.Listing(
             l.listings.length + 1,
             owner,
@@ -70,6 +71,16 @@ contract RealEstate {
         l.proposals.push(_newProposal);
 
         emit EVENTS.NewProposal(msg.sender, estateId, price);
+    }
+       function getListing(
+        uint Id
+    ) external view returns (LibAppStorage.Listing memory) {
+        return l.listing[Id];
+    }
+           function getProposal(
+        uint Id
+    ) external view returns (LibAppStorage.Proposal memory) {
+        return l.proposals[Id];
     }
 
     function initiatePurchaseAgreement(
