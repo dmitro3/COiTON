@@ -19,4 +19,6 @@ library EVENTS {
         address indexed initiator,
         address[] indexed signers
     );
+
+    event Stake(address indexed user, uint indexed amount);
 }
