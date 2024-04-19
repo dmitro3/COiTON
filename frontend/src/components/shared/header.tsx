@@ -42,7 +42,11 @@ export default function Header() {
           </div>
           <>
             <SignedIn>
-              <UserButton afterSignOutUrl="/" />
+              <UserButton
+                afterSignOutUrl="/"
+                signInUrl="/dashboard"
+                afterSwitchSessionUrl="/dashboard"
+              />
             </SignedIn>
             <SignedOut>
               <SignUpButton mode="modal">
