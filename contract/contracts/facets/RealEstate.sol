@@ -13,11 +13,11 @@ contract RealEstate {
         _;
     }
 
-    constructor(address erc20Token, address erc1155Token) {
-        l.erc20Token = erc20Token;
-        l.erc1155Token = erc1155Token;
-        l.owner = msg.sender;
-    }
+    // constructor(address erc20Token, address erc1155Token) {
+    //     l.erc20Token = erc20Token;
+    //     l.erc1155Token = erc1155Token;
+    //     l.owner = msg.sender;
+    // }
 
     function updateERC20Token(address _address) external OnlyOwner {
         l.erc20Token = _address;
@@ -38,6 +38,10 @@ contract RealEstate {
         uint256 price,
         string memory images
     ) external {
+        // require(msg.sender != address(0), "INVALID_CONTRACT_ADDRESS");
+          if (owner == address(0)) {
+            revert ERRORS.UNAUTHORIZED();
+        }
         LibAppStorage.Listing memory _newListing = LibAppStorage.Listing(
             l.listings.length + 1,
             owner,
@@ -70,6 +74,16 @@ contract RealEstate {
         l.proposals.push(_newProposal);
 
         emit EVENTS.NewProposal(msg.sender, estateId, price);
+    }
+       function getListing(
+        uint Id
+    ) external view returns (LibAppStorage.Listing memory) {
+        return l.listings[Id];
+    }
+           function getProposal(
+        uint Id
+    ) external view returns (LibAppStorage.Proposal memory) {
+        return l.proposals[Id];
     }
 
     function initiatePurchaseAgreement(
