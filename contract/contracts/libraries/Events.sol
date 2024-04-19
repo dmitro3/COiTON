@@ -19,4 +19,17 @@ library EVENTS {
         address indexed initiator,
         address[] indexed signers
     );
+
+    event Stake(address indexed user, uint indexed amount);
+
+    event BuyShares(
+        address indexed user,
+        uint indexed amount,
+        uint8 indexed shares
+    );
+    event SellShares(
+        address indexed user,
+        uint indexed amount,
+        uint8 indexed shares
+    );
 }
