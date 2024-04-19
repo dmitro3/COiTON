@@ -62,6 +62,6 @@ This project aims to develop a Decentralized Real Estate Trading Platform that e
  ### Frontend
 
 ## Team
- * [Web3Bridge](https://twitter.com/Web3Bridge)
+ * X: [Web3Bridge](https://twitter.com/Web3Bridge) Cohort X Team 6
 
 
