@@ -8,4 +8,7 @@ library ERRORS {
     error INVALID_ENTITIES();
     error ALREADY_SIGNED();
     error ALREADY_EXECUTED();
+    error EXHAUSTED_TOKEN_SHARES();
+    error INSUFFICIENT_BALANCE();
+    error INSUFFICIENT_SHARES();
 }
