@@ -75,7 +75,7 @@ contract RealEstate {
         );
 
         /// mint erc1155 token here
-        /// testing git commit
+       
 
         l.listings.push(_newListing);
 
