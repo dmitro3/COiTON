@@ -104,6 +104,11 @@ contract RealEstate {
         return l.proposals[Id];
     }
 
+ function isValidSigner(uint agreementId, address signer) external view returns (bool) {
+    return l.isValidSigner[agreementId][signer];
+}
+
+
     function initiatePurchaseAgreement(
         uint estateId,
         address buyer,
