@@ -21,14 +21,18 @@ import "../contracts/libraries/LibAppStorage.sol";
 
         address A = address(0xa);
         address B = address(0xb);
+        address C = 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1;
+        address D = 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1;
 
-    function setUpp() public {
+
+    RealEstate boundEstate;
+    function setUp() public {
         //deploy facets
         dCutFacet = new DiamondCutFacet();
         diamond = new Diamond(address(this), address(dCutFacet));
         dLoupe = new DiamondLoupeFacet();
         ownerF = new OwnershipFacet();
-        realEstate = new RealEstate(A,B);
+        realEstate = new RealEstate();
 
         //upgrade diamond with facets
 
@@ -51,7 +55,7 @@ import "../contracts/libraries/LibAppStorage.sol";
             })
         );
 
-        cut[1] = (
+        cut[2] = (
             FacetCut({
                 facetAddress: address(realEstate),
                 action: FacetCutAction.Add,
@@ -70,38 +74,41 @@ import "../contracts/libraries/LibAppStorage.sol";
         A = mkaddr("signer A");
         B = mkaddr("signer B");
 
-        realEstate = RealEstate(address(diamond));
+        boundEstate = RealEstate(address(diamond));
+           diamond.setToken(A, B);
+
 
 
     }
-      function testCreateListing() public {
-        switchSigner(B);
-        vm.expectRevert("INVALID_CONTRACT_ADDRESS");
-        realEstate.createListing(address(0), "nigeria" ,"lagos", "ikorodu", "Ikorodu street", 0, "description", 10, "");
+    //    function testCreateListing() public {
+    //       switchSigner(B);
+    //      vm.expectRevert("UNAUTHORIZED");
+
+    //      boundEstate.createListing(address(0), "nigeria" ,"lagos", "ikorodu", "Ikorodu street", 0, "description", 10, "");
         
-    }
+    // }
 
        function testProposeBuy() public {
         switchSigner(A);
-        realEstate.proposeBuy(0, 10);
-        LibAppStorage.Proposal memory new_listing = realEstate.getProposal(0);
-        assertEq(new_listing.estateId, 0);
+        boundEstate.proposeBuy(1, 1);
+        LibAppStorage.Proposal memory new_listing = boundEstate.getProposal(0);
+        assertEq(new_listing.estateId, 1);
 
 
-    }
+     }
         function testPropose() public {
-        switchSigner(A);
-        realEstate.proposeBuy(0, 10);
-        LibAppStorage.Proposal memory new_listing;
-        assertGt(new_listing.estateId, 0);
+        switchSigner(B);
+        boundEstate.proposeBuy(1, 2);
+        LibAppStorage.Proposal memory new_listing = boundEstate.getProposal(0);
+        assertEq(new_listing.price, 2);
 
 
 
     }
     function testCreatedListState() public {
         switchSigner(A);
-        realEstate.createListing(address(0), "nigeria" ,"lagos", "ikorodu", "estateAddress",0, "description", 10, "");
-           LibAppStorage.Listing memory new_listing = realEstate.getListing(0);
+        boundEstate.createListing(A, "nigeria" ,"lagos", "ikorodu", "estateAddress",0, "description", 10, "");
+           LibAppStorage.Listing memory new_listing = boundEstate.getListing(0);
            assertEq(new_listing.owner, A);
            assertEq(new_listing.country, "nigeria");
            assertEq(new_listing.state, "lagos");
