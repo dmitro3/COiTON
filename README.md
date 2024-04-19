@@ -51,17 +51,52 @@ This project aims to develop a Decentralized Real Estate Trading Platform that e
    * Typescript
 
  ### Tools/Frameworks
-  * Foundry
-  * Ethers.js
-  * React.js
-  * Tailwind CSS
-  * Next.js
+##### Foundry
+Installation (CLI)
+
+         `curl -L https://foundry.paradigm.xyz | bash`
+           
+To start a new project with Foundry, use
+
+           `forge init`
+To build the project run
+
+            `forge build`
+And run the tests with 
+
+             `forge test`
+             
+  ##### Ethers.js
+  To Install: `npm install --save ethers`
+  To Import: `import { ethers } from "ethers";`
+  
+  ##### React.js
+  ##### Tailwind CSS
+  ##### Next.js
 
 ## Repository Structure
- ### Contracts
+ ### Contract
+   Contracts
+   A Foundry + Hardhat Diamond Contract
+   consisting:
+   * Facets
+   * Interfaces
+   * Libraries
+   * UpgradeInitializers
+   * Diamond contract
  ### Frontend
+   src
+   User Interface Logic
+   * app
+   * components
+   * constants
+   * hooks
+   * lib
+   * styles
+   * types
+   
 
 ## Team
- * X: [Web3Bridge](https://twitter.com/Web3Bridge) Cohort X Team 6
+ * X: [Web3Bridge](https://twitter.com/Web3Bridge) Cohort X Team XI
 
 
