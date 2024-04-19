@@ -2,11 +2,11 @@
 # DECENTRALIZED REAL ESTATE AND INDEX ([DREXiNDEX](https://urban-xchange.vercel.app/))
 
 
-         DDDDDDD      RRRRRRRR     EEEEEEEE     X        X     o      N       N     DDDDDDD      EEEEEEE     X         X
-         D      D     R       R    E              X    X       ii     N N     N     D      D     E              X    X
-         D      D     RRRRRRRR     EEEEEEEE         X          ii     N   N   N     D      D     EEEEEEE           X
-         D      D     R    R       E             X     X       ii     N     N N     D      D     E               X    X
-         DDDDDDD      R      R     EEEEEEEE    X         X     ii     N       N     DDDDDDD      EEEEEEE      X          X
+         DDDDDDD      RRRRRRRR     EEEEEEEE     X       X      o      N       N     DDDDDDD      EEEEEEE     X        X
+         D      D     R       R    E              X   X        ii     N N     N     D      D     E             X    X
+         D      D     RRRRRRRR     EEEEEEEE         X          ii     N   N   N     D      D     EEEEEEE          X
+         D      D     R    R       E             X     X       ii     N     N N     D      D     E              X   X
+         DDDDDDD      R      R     EEEEEEEE    X         X     ii     N       N     DDDDDDD      EEEEEEE      X        X
 
                                                /////////////////////////////////////////////\
                                              /////////////////////////////////////////////|||\
