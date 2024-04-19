@@ -21,4 +21,15 @@ library EVENTS {
     );
 
     event Stake(address indexed user, uint indexed amount);
+
+    event BuyShares(
+        address indexed user,
+        uint indexed amount,
+        uint8 indexed shares
+    );
+    event SellShares(
+        address indexed user,
+        uint indexed amount,
+        uint8 indexed shares
+    );
 }
