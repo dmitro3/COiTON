@@ -76,7 +76,6 @@
   );
 }
 
-/* .slick-track {
-  display: flex !important;
-  gap: 20px !important;
-} */
+*::-webkit-scrollbar {
+  display: none;
+}

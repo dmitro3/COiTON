@@ -1,3 +1,5 @@
+import { CandlestickChart, LayoutDashboard } from "lucide-react";
+
 export const site: SiteConfigProps = {
   title: "UrbanXchange: Revolutionizing Real Estate Trading in Cities",
   name: "UrbanXchange",
@@ -21,6 +23,19 @@ export const links = [
   {
     name: "Dashboard",
     href: "/dashboard",
+  },
+];
+
+export const side_links = [
+  {
+    name: "Dashboard",
+    path: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    name: "Trades",
+    path: "/dashboard/tradings",
+    icon: CandlestickChart,
   },
 ];
 
