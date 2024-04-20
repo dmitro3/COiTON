@@ -16,7 +16,11 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false,
       },
-
+      approve: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+      },
       testimony: {
         type: DataTypes.TEXT,
         allowNull: false,
