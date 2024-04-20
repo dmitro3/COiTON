@@ -216,6 +216,21 @@ import "../contracts/facets/Trade.sol";
 
        
     }
+
+        function testSignPurchaseAgreementStateChangeTrue() public {
+                 switchSigner(B);
+        boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
+        switchSigner(address(0xC));
+         boundEstate.signPurchaseAgreement(1);
+         
+         switchSigner(address(0xD));
+             boundEstate.signPurchaseAgreement(1);
+    
+         LibAppStorage.PurchaseAgreement memory new_listing = boundEstate.getPurchaseAgreement(1);
+          assertEq(new_listing.executed, true);
+           
+            
+    }
     // function testInitiatePurchase() public {
     //     switchSigner(A);
     //     boundEstate.initiatePurchaseAgreement(1, A, [C,D]);
