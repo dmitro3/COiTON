@@ -10,6 +10,7 @@ import "../contracts/Diamond.sol";
 import "../contracts/facets/RealEstate.sol";
 import "../contracts/libraries/LibAppStorage.sol";
 import "../contracts/libraries/Errors.sol";
+import "../contracts/facets/Trade.sol";
 
  contract DiamondDeployer is Test, IDiamondCut {
 
@@ -19,6 +20,7 @@ import "../contracts/libraries/Errors.sol";
     DiamondLoupeFacet dLoupe;
     OwnershipFacet ownerF;
     RealEstate realEstate;
+    Trade trade;
 
         address A = address(0xa);
         address B = address(0xb);
@@ -27,18 +29,20 @@ import "../contracts/libraries/Errors.sol";
 
 
     RealEstate boundEstate;
+    Trade      boundTrade;
     function setUp() public {
         //deploy facets
-        dCutFacet = new DiamondCutFacet();
+       dCutFacet = new DiamondCutFacet();
         diamond = new Diamond(address(this), address(dCutFacet));
         dLoupe = new DiamondLoupeFacet();
         ownerF = new OwnershipFacet();
         realEstate = new RealEstate();
+        trade = new Trade();
 
         //upgrade diamond with facets
 
         //build cut struct
-        FacetCut[] memory cut = new FacetCut[](3);
+        FacetCut[] memory cut = new FacetCut[](4);
 
         cut[0] = (
             FacetCut({
@@ -64,6 +68,14 @@ import "../contracts/libraries/Errors.sol";
             })
         );
 
+        cut[3] = (
+            FacetCut({
+                facetAddress: address(trade),
+                action: FacetCutAction.Add,
+                functionSelectors: generateSelectors("Trade")
+            })
+        );
+
         
 
         //upgrade diamond
@@ -76,6 +88,7 @@ import "../contracts/libraries/Errors.sol";
         B = mkaddr("signer B");
 
         boundEstate = RealEstate(address(diamond));
+        boundTrade = Trade(address(diamond));
            diamond.setToken(A, B);
 
 
@@ -121,8 +134,54 @@ import "../contracts/libraries/Errors.sol";
     }
     // function testInitiatePurchase() public {
     //     switchSigner(A);
-    //     boundEstate.initiatePurchaseAgreement(1, A, [C,D]);
+    //     boundEstate.initiatePurchaseAgreement(1, A,[C,D]);
+        
     // }
+
+/// Testing the Trade.sol
+   function testEXHAUSTED_TOKEN_SHARE() public {
+    uint tokenId = 100;  
+    uint8 sharesToExceed = 101; 
+    vm.expectRevert(
+        abi.encodeWithSelector(ERRORS.EXHAUSTED_TOKEN_SHARES.selector)
+    );
+    boundTrade.buyNFTTokenShares(tokenId, sharesToExceed);
+}
+
+
+// function testINSUFFICIENT_BALANCE() public {
+//     switchSigner(A);
+//     vm.expectRevert(
+//         abi.encodeWithSelector(ERRORS.INSUFFICIENT_BALANCE.selector)
+//     );
+//     boundTrade.buyNFTTokenShares(1, 1);
+// }
+
+
+    function testbuyNFTTokenShares() public {
+        switchSigner(A);
+        boundTrade.buyNFTTokenShares(1, 1);
+
+    }
+
+
+    function testINSUFFICIENT_SHARES() public {
+        switchSigner(A);
+        vm.expectRevert(
+        abi.encodeWithSelector(ERRORS.INSUFFICIENT_SHARES.selector)
+    );
+
+        boundTrade.sellNFTTokenShares(1,1);
+    }
+
+    function testsellNFTTokenShares() public {
+        switchSigner(A);
+        boundTrade.buyNFTTokenShares(2,10);
+        uint8 userShare = 2;
+        boundTrade.sellNFTTokenShares(2,userShare);
+    }
+
+   
 
 
     function generateSelectors(
