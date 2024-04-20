@@ -9,6 +9,10 @@ export const site: SiteConfigProps = {
 
 export const links = [
   {
+    name: "Home",
+    href: "/",
+  },
+  {
     name: "Tradings",
     href: "/tradings",
   },
@@ -17,12 +21,8 @@ export const links = [
     href: "/news",
   },
   {
-    name: "Account",
-    href: "/city-indices",
-  },
-  {
-    name: "Dashboard",
-    href: "/dashboard",
+    name: "Terms & Conditions",
+    href: "/terms-and-conditions",
   },
 ];
 
