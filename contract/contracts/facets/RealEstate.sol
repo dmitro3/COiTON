@@ -29,6 +29,22 @@ contract RealEstate {
         l.erc1155Token = _address;
     }
 
+    function approveListing(
+        string memory id,
+        bytes32 hash,
+        address owner
+    ) external {
+        LibAppStorage.ListingApproval storage _newListingApproval = l
+            .listingApproval[id];
+
+        if (_newListingApproval.approved) {
+            revert ERRORS.LISTING_ALREADY_APPROVED();
+        }
+        _newListingApproval.approved = true;
+        _newListingApproval.hash = hash;
+        _newListingApproval.owner = owner;
+    }
+
     // This function is use to create new listings
     //@param address owner the owner address in this case the agent or house owner address
     //@param country : The country where the real estate is located
@@ -39,6 +55,7 @@ contract RealEstate {
     // The function will store the listing data gotten from the external server.
     // After storing the listing data an NFT will be minted to the agent or the house owner.
     function createListing(
+        string memory id,
         address owner,
         string memory country,
         string memory state,
@@ -49,12 +66,45 @@ contract RealEstate {
         uint256 price,
         string memory images
     ) external {
-        // require(msg.sender != address(0), "INVALID_CONTRACT_ADDRESS");
         if (owner == address(0)) {
             revert ERRORS.UNAUTHORIZED();
         }
+
+        LibAppStorage.ListingApproval storage _listingApproval = l
+            .listingApproval[id];
+
+        if (!_listingApproval.approved) {
+            revert ERRORS.LISTING_NOT_APPROVED();
+        }
+
+        if (msg.sender != _listingApproval.owner) {
+            revert ERRORS.UNAUTHORIZED();
+        }
+
+        if (_listingApproval.created) {
+            revert ERRORS.LISTING_ALREADY_CREATED();
+        }
+
+        bytes32 hash = keccak256(
+            abi.encodePacked(
+                owner,
+                country,
+                state,
+                city,
+                estateAddress,
+                postalCode,
+                description,
+                price,
+                images
+            )
+        );
+
+        if (_listingApproval.hash != hash) {
+            revert ERRORS.INVALID_LISTING_HASH();
+        }
+        uint listingId = l.listings.length + 1;
         LibAppStorage.Listing memory _newListing = LibAppStorage.Listing(
-            l.listings.length + 1,
+            listingId,
             owner,
             country,
             state,
@@ -69,6 +119,8 @@ contract RealEstate {
         );
 
         /// mint erc1155 token here
+        _listingApproval.created = true;
+        l.listing[listingId] = _newListing;
 
         l.listings.push(_newListing);
 

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-
 /// @title Real estate App storage structure .
 /// @author Includes all the essential state variables, structs, and enums required for the real estate contract.
 library LibAppStorage {
@@ -76,6 +75,13 @@ library LibAppStorage {
         StakeHolder[] stakeHolders;
     }
 
+    struct ListingApproval {
+        bytes32 hash;
+        address owner;
+        bool approved;
+        bool created;
+    }
+
     struct Layout {
         address owner;
         address erc20Token;
@@ -84,6 +90,7 @@ library LibAppStorage {
         mapping(address => mapping(uint => uint8)) userMarketShare;
         Listing[] listings;
         mapping(uint => Listing) listing;
+        mapping(string => ListingApproval) listingApproval;
         Proposal[] proposals;
         TransactionHistory[] transactionHistory;
         uint purchaseAgreementCount;
