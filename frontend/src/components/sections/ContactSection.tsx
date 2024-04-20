@@ -18,7 +18,7 @@ export default function ContactSection() {
       />
 
       <MaxWrapper className="py-16 relative flex justify-end">
-        <div className="w-full max-w-lg h-full bg-secondary-foreground p-8 pb-9 rounded-lg text-secondary">
+        <div className="w-full max-w-lg h-full bg-secondary p-5 md:p-8 pb-7 md:pb-9 rounded-lg">
           <h1 className="text-2xl md:text-3xl font-bold">Get In Touch</h1>
           <p className="text-sm md:text-base font-medium mb-4 md:mb-6">
             We will get back to you within 24 hours.
@@ -27,19 +27,19 @@ export default function ContactSection() {
           <div className="flex flex-col gap-3 mt-4">
             <Input
               placeholder="Full Name"
-              className="h-12 border-muted text-secondary"
+              className="h-12 border-muted-foreground/30"
             />
             <Input
               placeholder="Email"
-              className="h-12 border-muted text-secondary"
+              className="h-12 border-muted-foreground/30"
             />
             <Input
               placeholder="Phone Number"
-              className="h-12 border-muted text-secondary"
+              className="h-12 border-muted-foreground/30"
             />
             <Textarea
               placeholder="Message"
-              className="h-11 border-muted text-secondary"
+              className="h-11 border-muted-foreground/30"
             />
 
             <Button className="h-14">Send Message</Button>
