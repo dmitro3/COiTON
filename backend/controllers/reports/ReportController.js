@@ -20,7 +20,7 @@ exports.getReports = async (req, res) => {
             distinct: true,
             limit: size ?? 50,
             offset: (page ?? 0) * (size ?? 50),
-            order: [["createdAt", "DESC"]],
+            order: [["createdAt", "ASC"]],
         })
         return ResponseMessage(res, true, 200, "Reports fetched", reports);
     } catch (error) {
