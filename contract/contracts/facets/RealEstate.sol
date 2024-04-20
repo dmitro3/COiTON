@@ -175,6 +175,10 @@ contract RealEstate {
         );
     }
 
+    function getPurchaseAgreement(uint agreementId) external view returns (LibAppStorage.PurchaseAgreement memory) {
+    return l.purchaseAgreement[agreementId];
+}
+
 
 // This function is designed to allow an authorized party to sign a purchase agreement for a specified real estate property on the platform.
 //@Param estateId: Identify the specific purchase agreement related to a real estate property.
@@ -193,6 +197,7 @@ contract RealEstate {
         }
 
         _purchaseAgreement.signersCount += 1;
+        l.hasSignedPurchaseAgreement[estateId][msg.sender] = true;
 
         if (
             _purchaseAgreement.signersCount ==

@@ -135,6 +135,87 @@ import "../contracts/facets/Trade.sol";
       
 
     }
+
+        function testEmptySignerPurchase() public {
+      
+        switchSigner(A);
+        vm.expectRevert(
+            abi.encodeWithSelector(ERRORS.INVALID_SIGNERS_COUNT.selector)
+        );
+        boundEstate.initiatePurchaseAgreement(1, A, emptySigners);
+
+    }
+
+    function testIsSignerValid() public {
+           switchSigner(B);
+        vm.expectRevert(
+            abi.encodeWithSelector(ERRORS.INVALID_ENTITIES.selector)
+        );
+        boundEstate.initiatePurchaseAgreement(1, A, mockSigners);
+
+    }
+
+
+    function testIsValidSigner() public {
+            switchSigner(B);
+        boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
+         bool isValid = boundEstate.isValidSigner(1, address(0xC));
+        
+         assertEq(isValid, true);
+
+    }
+
+    function testInitiateSignerStateChange() public {
+                 switchSigner(B);
+        boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
+           LibAppStorage.PurchaseAgreement memory new_listing = boundEstate.getPurchaseAgreement(1);
+           assertEq(new_listing.id, 1);
+          assertEq(new_listing.buyer, B);
+         assertEq(new_listing.estateId, 1);
+         assertEq(new_listing.initiator, B);
+
+    }
+
+    function testSignPurchaseAgreementvalid() public {
+        switchSigner(B);
+         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
+             vm.expectRevert(
+            abi.encodeWithSelector(ERRORS.NOT_A_VALID_SIGNER.selector)
+        );
+        boundEstate.signPurchaseAgreement(2);
+
+    }
+
+    function testSignPurchaseAgreementFunction() public {
+         switchSigner(B);
+         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
+       switchSigner(address(0xC));
+          
+         boundEstate.signPurchaseAgreement(1);
+       
+    }
+
+        function testSignPurchaseAgreementAlreadySigned() public {
+         switchSigner(B);
+         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
+       switchSigner(address(0xC));
+         boundEstate.signPurchaseAgreement(1);
+         vm.stopPrank();
+        
+          switchSigner(address(0xD));
+
+           boundEstate.signPurchaseAgreement(1);
+
+             switchSigner(address(0xD));
+             vm.expectRevert(
+            abi.encodeWithSelector(ERRORS.ALREADY_SIGNED.selector)
+        );
+          
+           boundEstate.signPurchaseAgreement(1);
+
+
+       
+    }
     // function testInitiatePurchase() public {
     //     switchSigner(A);
     //     boundEstate.initiatePurchaseAgreement(1, A, [C,D]);
