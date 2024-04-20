@@ -44,6 +44,16 @@ This project aims to develop a Decentralized Real Estate Trading Platform that e
 ## Screenshot
 ![Screenshot from 2024-04-18 21-51-06](https://github.com/WebSculptor/decentralized-real-estate-trading-platform/assets/137540755/ac087875-54b4-4c41-959c-41cdf80b5265)
 
+#### The structure for the decentralized real estate trading platform:
+![Screenshot from 2024-04-20 15-37-06](https://github.com/WebSculptor/decentralized-real-estate-trading-platform/assets/137540755/ba5823d1-2702-4895-9868-c7ca415e7d13)
+
+#### Business Model
+![Screenshot from 2024-04-20 15-40-25](https://github.com/WebSculptor/decentralized-real-estate-trading-platform/assets/137540755/68fe9a28-a93c-4391-be80-b16aa96c3d61)
+
+Refer [HERE](https://miro.com/app/board/uXjVKSLpxGc=/?share_link_id=836656075422) for clear image
+
+
+
 ## Made With
   ### Languages
    * Solidity
