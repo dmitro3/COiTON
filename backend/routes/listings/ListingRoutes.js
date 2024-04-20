@@ -3,7 +3,7 @@ const { ListingController } = require("../../controllers")
 
 router.get("/", ListingController.getListings);
 router.post("/", ListingController.createListing);
-router.delete("/", ListingController.deleteListing);
+router.delete("/:id", ListingController.deleteListing);
 
 
 module.exports = router;

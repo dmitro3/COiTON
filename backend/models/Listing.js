@@ -25,10 +25,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false,
       get() {
-        return this.getDataValue('details')?.split(';')
+        // Custom getter for parsing JSON when retrieved from the database
+        const jsonString = this.getDataValue("details");
+        return jsonString ? JSON.parse(jsonString) : null;
       },
-      set(val) {
-        this.setDataValue('details', val?.join(';'));
+      set(value) {
+        // Custom setter for stringifying JSON when stored in the database
+        this.setDataValue("details", value ? JSON.stringify(value) : null);
       },
     },
 

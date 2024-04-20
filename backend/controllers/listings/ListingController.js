@@ -4,11 +4,11 @@ const { Listing } = require("../../models");
 exports.createListing = async (req, res) => {
     try {
         const data = req.body;
-        const newListing = await Listing.create(data);
+        const newListing = await Listing.create({ details: data });
         return ResponseMessage(res, true, 200, "Listing created successfully", newListing);
     } catch (error) {
-        console.log(error)
-        ResponseMessage(res, false, 500, "Internal server error", {});
+        console.log(error.message)
+        ResponseMessage(res, false, 500, error.message ?? "Internal server error", {});
     }
 }
 
@@ -37,9 +37,9 @@ exports.deleteListing = async (req, res) => {
         if (listing) {
             await listing.destroy();
         }
-        return ResponseMessage(res, true, 200, "Listing fetched", listing);
+        return ResponseMessage(res, true, 200, "Listing deleted", listing);
     } catch (error) {
         console.log(error)
-        ResponseMessage(res, false, 500, "Internal server error", {});
+        ResponseMessage(res, false, 500, error.message ?? "Internal server error", {});
     }
 }
