@@ -236,11 +236,6 @@ contract DiamondDeployer is Test, IDiamondCut {
         assertEq(new_listing.executed, false);
     }
 
-    // function testInitiatePurchase() public {
-    //     switchSigner(A);
-    //     boundEstate.initiatePurchaseAgreement(1, A, [C,D]);
-    // }
-
     /// Testing the Trade.sol
     function testEXHAUSTED_TOKEN_SHARE() public {
         uint tokenId = 100;
