@@ -1,5 +1,12 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { Account, Client } from "appwrite";
+
+const client = new Client()
+  .setEndpoint("https://cloud.appwrite.io/v1")
+  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID as string);
+
+export const account = new Account(client);
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

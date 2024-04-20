@@ -11,7 +11,7 @@ export default function Sidebar() {
 
   return (
     <aside className="flex-1 max-w-96 w-full py-3 px-4 bg-primary text-secondary sticky top-0 left-0 hidden lg:flex">
-      <div className="flex flex-col h-full gap-4">
+      <div className="flex flex-col h-full gap-4 w-full">
         <Link href="/" className="w-max">
           <Image
             src="/logo.svg"
