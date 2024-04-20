@@ -1,6 +1,5 @@
-### Decentralized Real Estate Trading Platform
-# DECENTRALIZED REAL ESTATE AND INDEX ([DREXiNDEX](https://urban-xchange.vercel.app/))
-
+# COLLABORATIVE ONCHAIN INVESTMENT AND TRADING OF NEIGBORHOODS ([COiTON](https://urban-xchange.vercel.app/))
+### A Decentralized Real Estate and Indices Trading Platform
 
          DDDDDDD      RRRRRRRR     EEEEEEEE     X       X      o      N       N     DDDDDDD      EEEEEEE     X        X
          D      D     R       R    E              X   X        ii     N N     N     D      D     E             X    X
@@ -13,13 +12,13 @@
                                            /////////////////////////////////////////////||||||\
                                         /////////////////////////////////////////////||||||||||\
                                      ///////////////////////////////////////////________________\
-                                  /////////////////////////////////////////////| DECENTRALIZED  |\
-                               /////////////////////////////////////////////|  | REAL ESTATE.   | \
-                            /////////////////////////////////////////////|     | INDICES | NFT'S|  \
-                         /////////////////////////////////////////////|        | ASSETS.        |   \
+                                  /////////////////////////////////////////////|   REAL ESTATE! |\
+                               /////////////////////////////////////////////|  |     INDICES!!  | \
+                            /////////////////////////////////////////////|     |      NFT'S!!!  |  \
+                         /////////////////////////////////////////////|        |                |   \
                        ///////////////////////////////////////////////////////////////////////////////\
-                            [                                                                       ]
-                            [[[[[[[[]]]]]]] DECENTRALIZED REAL ESTATE AND INDEX [DREXINDEX]         ]
+                            [      COLLABORATIVE ONCHAIN INVESTMENT AND TRADING OF NEIGBORHOODS     ]
+                            [[[[[[[[]]]]]]]                   (COiTON)                               ]
                             [             ]       BUY AND SELL REAL ESTATE ASSETS                   ]
                             [             ]       TRADE REAL ESTATE INDICES       [[[[[[[[]]]]]]]]  ]
                             [_____________]       TRADE NFT's                     [              ]  ]
@@ -52,6 +51,8 @@ This project aims to develop a Decentralized Real Estate Trading Platform that e
 
 Refer [HERE](https://miro.com/app/board/uXjVKSLpxGc=/?share_link_id=836656075422) for clear image
 
+#### Refer :point_down:
+  [Here](https://docs.google.com/document/d/16zT6QBD0OLYLt4DStwxQAO-kORfeXYmqucrKSnFvW3k/edit) for project documentation
 
 
 ## Made With
