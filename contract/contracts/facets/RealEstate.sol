@@ -75,13 +75,16 @@ contract RealEstate {
         );
 
         /// mint erc1155 token here
-        /// testing git commit
+       
 
         l.listings.push(_newListing);
 
         emit EVENTS.CreatedListing(owner, 1, price);
     }
 
+   // This function allows external caller to submit a proposal to purchase a real estate property
+   //@param estateId : Identifying the estate that the user went to propose to buy 
+   //@param price: User estimated price.
     function proposeBuy(uint estateId, uint price) external {
         LibAppStorage.Proposal memory _newProposal = LibAppStorage.Proposal({
             from: msg.sender,
@@ -93,13 +96,21 @@ contract RealEstate {
 
         emit EVENTS.NewProposal(msg.sender, estateId, price);
     }
+
+    //This function is designed to retrieve all the listings that have been created.
+    //@param Id: The Id use to fetch all the listing created 
+    //@notice returns all the listing created from the array
        function getListing(
-        uint Id
+       uint Id
     ) external view returns (LibAppStorage.Listing memory) {
         return l.listings[Id];
     }
-           function getProposal(
-        uint Id
+
+//This function is designed to retrieve all the proposals to buy that have been submitted
+//@param Id: The Id use to fetch all the Proposals submitted. 
+//@notice returns all the proposals from the array
+     function getProposal(
+     uint Id
     ) external view returns (LibAppStorage.Proposal memory) {
         return l.proposals[Id];
     }
@@ -109,6 +120,14 @@ contract RealEstate {
 }
 
 
+
+//This function is used to start a purchase agreement process for a specific real estate property on the platform
+//@Param estateId: The identifier for the estate being purchased. 
+//@Param buyer: The address of a potenial buyer of the real estate. 
+//Param singners: An addresses authorized to sign the agreement 
+//We tend to implement and check if it is the owner is initiating the transaction and if the buyer is among
+//the lists of signers.
+//Then the storage is updated . 
     function initiatePurchaseAgreement(
         uint estateId,
         address buyer,
@@ -156,6 +175,10 @@ contract RealEstate {
         );
     }
 
+
+// This function is designed to allow an authorized party to sign a purchase agreement for a specified real estate property on the platform.
+//@Param estateId: Identify the specific purchase agreement related to a real estate property.
+//After all the aggrement has been settled the transfer of our token is sent buyer
     function signPurchaseAgreement(uint estateId) external {
         if (!l.isValidSigner[estateId][msg.sender]) {
             revert ERRORS.NOT_A_VALID_SIGNER();

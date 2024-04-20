@@ -5,6 +5,7 @@ import "../libraries/Events.sol";
 import "../libraries/Errors.sol";
 
 contract Trade {
+     //Instantiating a new Layout from the LibAppStorage.
     LibAppStorage.Layout internal l;
 
     function stake(uint amount) external {
@@ -21,6 +22,12 @@ contract Trade {
         }
     }
 
+
+// The function allows users to buy shares of real estate NFT on the trading platform
+//@Param tokenId: Identify the certain NFT purchase 
+//@param shares: The percentage of shares of the NFT that the user wishes to buy.
+//we decided to make it flexible for users to get a fraction of share from the 
+//Tradable NFT.
     function buyNFTTokenShares(uint tokenId, uint8 shares) external {
         uint balance = l.stake[msg.sender];
         LibAppStorage.Market storage tokenMarket = l.market[tokenId];
@@ -59,6 +66,12 @@ contract Trade {
 
         emit EVENTS.BuyShares(msg.sender, tokenValueAtPercentageShare, shares);
     }
+
+
+// The function  is designed to allow a user to sell shares of a  (NFT) they own on a decentralized trading platform.
+//@Param tokenId: Identify the NFT to be sold.
+//@Param  shares: The number of share the user wish to sell 
+//We also made it flexible for users to sell any amount of share they wish too. 
 
     function sellNFTTokenShares(uint tokenId, uint8 shares) external {
         uint userShares = l.userMarketShare[msg.sender][tokenId];
@@ -100,7 +113,9 @@ contract Trade {
         tokenMarket.currentPrice -= calculation;
         emit EVENTS.SellShares(msg.sender, calculation, shares);
     }
-
+// This function is intended to manage the calculations involved in both the buyNFTTokenShares and sellNFTTokenShares functions.
+// @Param shares: The number of shares specified by any user for calculation.
+// @Param currentPrice: The current price of the real estate NFT as provided.
     function calculateTokenValueInShares(
         uint8 shares,
         uint currentPrice
