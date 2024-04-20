@@ -12,9 +12,8 @@ import "../contracts/libraries/LibAppStorage.sol";
 import "../contracts/libraries/Errors.sol";
 import "../contracts/facets/Trade.sol";
 
- contract DiamondDeployer is Test, IDiamondCut {
-
-   // contract types of facets to be deployed
+contract DiamondDeployer is Test, IDiamondCut {
+    // contract types of facets to be deployed
     Diamond diamond;
     DiamondCutFacet dCutFacet;
     DiamondLoupeFacet dLoupe;
@@ -22,20 +21,20 @@ import "../contracts/facets/Trade.sol";
     RealEstate realEstate;
     Trade trade;
 
-        address A = address(0xa);
-        address B = address(0xb);
-        address C = 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1;
-        address D = 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1;
+    address A = address(0xa);
+    address B = address(0xb);
+    address C = 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1;
+    address D = 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1;
 
-        address[] mockSigners = [address(0xC), address(0xD)]; // Mock signer addresses
-        address[] emptySigners = new address[](0);
-
+    address[] mockSigners = [address(0xC), address(0xD)]; // Mock signer addresses
+    address[] emptySigners = new address[](0);
 
     RealEstate boundEstate;
-    Trade      boundTrade;
+    Trade boundTrade;
+
     function setUp() public {
         //deploy facets
-       dCutFacet = new DiamondCutFacet();
+        dCutFacet = new DiamondCutFacet();
         diamond = new Diamond(address(this), address(dCutFacet));
         dLoupe = new DiamondLoupeFacet();
         ownerF = new OwnershipFacet();
@@ -79,8 +78,6 @@ import "../contracts/facets/Trade.sol";
             })
         );
 
-        
-
         //upgrade diamond
         IDiamondCut(address(diamond)).diamondCut(cut, address(0x0), "");
 
@@ -92,195 +89,196 @@ import "../contracts/facets/Trade.sol";
 
         boundEstate = RealEstate(address(diamond));
         boundTrade = Trade(address(diamond));
-           diamond.setToken(A, B);
-
-
-
+        diamond.setToken(A, B);
     }
-       function testCreateListing() public {       
-            vm.expectRevert(
-            abi.encodeWithSelector(ERRORS.UNAUTHORIZED.selector)
+
+    function testCreateListing() public {
+        vm.expectRevert(abi.encodeWithSelector(ERRORS.UNAUTHORIZED.selector));
+
+        boundEstate.createListing(
+            address(0),
+            "nigeria",
+            "lagos",
+            "ikorodu",
+            "Ikorodu street",
+            0,
+            "description",
+            10,
+            ""
         );
-
-         boundEstate.createListing(address(0), "nigeria" ,"lagos", "ikorodu", "Ikorodu street", 0, "description", 10, "");
-        
     }
 
-       function testProposeBuy() public {
+    function testProposeBuy() public {
         switchSigner(A);
         boundEstate.proposeBuy(1, 1);
         LibAppStorage.Proposal memory new_listing = boundEstate.getProposal(0);
         assertEq(new_listing.estateId, 1);
+    }
 
-
-     }
-        function testProposePrice() public {
+    function testProposePrice() public {
         switchSigner(B);
         boundEstate.proposeBuy(1, 2);
         LibAppStorage.Proposal memory new_listing = boundEstate.getProposal(0);
         assertEq(new_listing.price, 2);
-
     }
-
 
     function testCreatedListState() public {
         switchSigner(A);
-        boundEstate.createListing(A, "nigeria" ,"lagos", "ikorodu", "estateAddress",0, "description", 10, "");
-           LibAppStorage.Listing memory new_listing = boundEstate.getListing(0);
-           assertEq(new_listing.owner, A);
-           assertEq(new_listing.country, "nigeria");
-           assertEq(new_listing.state, "lagos");
-           assertEq(new_listing.city, "ikorodu");
-           assertEq(new_listing.tokenId, 1);
-      
-
+        boundEstate.createListing(
+            A,
+            "nigeria",
+            "lagos",
+            "ikorodu",
+            "estateAddress",
+            0,
+            "description",
+            10,
+            ""
+        );
+        LibAppStorage.Listing memory new_listing = boundEstate.getListing(0);
+        assertEq(new_listing.owner, A);
+        assertEq(new_listing.country, "nigeria");
+        assertEq(new_listing.state, "lagos");
+        assertEq(new_listing.city, "ikorodu");
+        assertEq(new_listing.tokenId, 1);
     }
 
-        function testEmptySignerPurchase() public {
-      
+    function testEmptySignerPurchase() public {
         switchSigner(A);
         vm.expectRevert(
             abi.encodeWithSelector(ERRORS.INVALID_SIGNERS_COUNT.selector)
         );
         boundEstate.initiatePurchaseAgreement(1, A, emptySigners);
-
     }
 
     function testIsSignerValid() public {
-           switchSigner(B);
+        switchSigner(B);
         vm.expectRevert(
             abi.encodeWithSelector(ERRORS.INVALID_ENTITIES.selector)
         );
         boundEstate.initiatePurchaseAgreement(1, A, mockSigners);
-
     }
 
-
     function testIsValidSigner() public {
-            switchSigner(B);
+        switchSigner(B);
         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
-         bool isValid = boundEstate.isValidSigner(1, address(0xC));
-        
-         assertEq(isValid, true);
+        bool isValid = boundEstate.isValidSigner(1, address(0xC));
 
+        assertEq(isValid, true);
     }
 
     function testInitiateSignerStateChange() public {
-                 switchSigner(B);
+        switchSigner(B);
         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
-           LibAppStorage.PurchaseAgreement memory new_listing = boundEstate.getPurchaseAgreement(1);
-           assertEq(new_listing.id, 1);
-          assertEq(new_listing.buyer, B);
-         assertEq(new_listing.estateId, 1);
-         assertEq(new_listing.initiator, B);
-
+        LibAppStorage.PurchaseAgreement memory new_listing = boundEstate
+            .getPurchaseAgreement(1);
+        assertEq(new_listing.id, 1);
+        assertEq(new_listing.buyer, B);
+        assertEq(new_listing.estateId, 1);
+        assertEq(new_listing.initiator, B);
     }
 
     function testSignPurchaseAgreementvalid() public {
         switchSigner(B);
-         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
-             vm.expectRevert(
+        boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
+        vm.expectRevert(
             abi.encodeWithSelector(ERRORS.NOT_A_VALID_SIGNER.selector)
         );
         boundEstate.signPurchaseAgreement(2);
-
     }
 
     function testSignPurchaseAgreementFunction() public {
-         switchSigner(B);
-         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
-       switchSigner(address(0xC));
-          
-         boundEstate.signPurchaseAgreement(1);
-       
-    }
-
-        function testSignPurchaseAgreementAlreadySigned() public {
-         switchSigner(B);
-         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
-       switchSigner(address(0xC));
-         boundEstate.signPurchaseAgreement(1);
-         vm.stopPrank();
-        
-          switchSigner(address(0xD));
-
-           boundEstate.signPurchaseAgreement(1);
-
-             switchSigner(address(0xD));
-             vm.expectRevert(
-            abi.encodeWithSelector(ERRORS.ALREADY_SIGNED.selector)
-        );
-          
-           boundEstate.signPurchaseAgreement(1);
-
-
-       
-    }
-
-        function testSignPurchaseAgreementStateChangeTrue() public {
-                 switchSigner(B);
+        switchSigner(B);
         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
         switchSigner(address(0xC));
-         boundEstate.signPurchaseAgreement(1);
-         
-         switchSigner(address(0xD));
-             boundEstate.signPurchaseAgreement(1);
-    
-         LibAppStorage.PurchaseAgreement memory new_listing = boundEstate.getPurchaseAgreement(1);
-          assertEq(new_listing.executed, true);
-           
-            
+
+        boundEstate.signPurchaseAgreement(1);
     }
+
+    function testSignPurchaseAgreementAlreadySigned() public {
+        switchSigner(B);
+        boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
+        switchSigner(address(0xC));
+        boundEstate.signPurchaseAgreement(1);
+        vm.stopPrank();
+
+        switchSigner(address(0xD));
+
+        boundEstate.signPurchaseAgreement(1);
+
+        switchSigner(address(0xD));
+        vm.expectRevert(abi.encodeWithSelector(ERRORS.ALREADY_SIGNED.selector));
+
+        boundEstate.signPurchaseAgreement(1);
+    }
+
+    function testSignPurchaseAgreementStateChangeTrue() public {
+        switchSigner(B);
+        boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
+        switchSigner(address(0xC));
+        boundEstate.signPurchaseAgreement(1);
+
+        switchSigner(address(0xD));
+        boundEstate.signPurchaseAgreement(1);
+
+        LibAppStorage.PurchaseAgreement memory new_listing = boundEstate
+            .getPurchaseAgreement(1);
+        assertEq(new_listing.executed, true);
+    }
+
+    function testlengthOfSigners() public {
+        switchSigner(B);
+        boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
+        switchSigner(address(0xC));
+        boundEstate.signPurchaseAgreement(1);
+        LibAppStorage.PurchaseAgreement memory new_listing = boundEstate
+            .getPurchaseAgreement(1);
+        assertEq(new_listing.executed, false);
+    }
+
     // function testInitiatePurchase() public {
     //     switchSigner(A);
     //     boundEstate.initiatePurchaseAgreement(1, A, [C,D]);
     // }
 
-/// Testing the Trade.sol
-   function testEXHAUSTED_TOKEN_SHARE() public {
-    uint tokenId = 100;  
-    uint8 sharesToExceed = 101; 
-    vm.expectRevert(
-        abi.encodeWithSelector(ERRORS.EXHAUSTED_TOKEN_SHARES.selector)
-    );
-    boundTrade.buyNFTTokenShares(tokenId, sharesToExceed);
-}
+    /// Testing the Trade.sol
+    function testEXHAUSTED_TOKEN_SHARE() public {
+        uint tokenId = 100;
+        uint8 sharesToExceed = 101;
+        vm.expectRevert(
+            abi.encodeWithSelector(ERRORS.EXHAUSTED_TOKEN_SHARES.selector)
+        );
+        boundTrade.buyNFTTokenShares(tokenId, sharesToExceed);
+    }
 
-
-// function testINSUFFICIENT_BALANCE() public {
-//     switchSigner(A);
-//     vm.expectRevert(
-//         abi.encodeWithSelector(ERRORS.INSUFFICIENT_BALANCE.selector)
-//     );
-//     boundTrade.buyNFTTokenShares(1, 1);
-// }
-
+    // function testINSUFFICIENT_BALANCE() public {
+    //     switchSigner(A);
+    //     vm.expectRevert(
+    //         abi.encodeWithSelector(ERRORS.INSUFFICIENT_BALANCE.selector)
+    //     );
+    //     boundTrade.buyNFTTokenShares(1, 1);
+    // }
 
     function testbuyNFTTokenShares() public {
         switchSigner(A);
         boundTrade.buyNFTTokenShares(1, 1);
-
     }
-
 
     function testINSUFFICIENT_SHARES() public {
         switchSigner(A);
         vm.expectRevert(
-        abi.encodeWithSelector(ERRORS.INSUFFICIENT_SHARES.selector)
-    );
+            abi.encodeWithSelector(ERRORS.INSUFFICIENT_SHARES.selector)
+        );
 
-        boundTrade.sellNFTTokenShares(1,1);
+        boundTrade.sellNFTTokenShares(1, 1);
     }
 
     function testsellNFTTokenShares() public {
         switchSigner(A);
-        boundTrade.buyNFTTokenShares(2,10);
+        boundTrade.buyNFTTokenShares(2, 10);
         uint8 userShare = 2;
-        boundTrade.sellNFTTokenShares(2,userShare);
+        boundTrade.sellNFTTokenShares(2, userShare);
     }
-
-   
-
 
     function generateSelectors(
         string memory _facetName
@@ -292,7 +290,6 @@ import "../contracts/facets/Trade.sol";
         bytes memory res = vm.ffi(cmd);
         selectors = abi.decode(res, (bytes4[]));
     }
-
 
     function mkaddr(string memory name) public returns (address) {
         address addr = address(
