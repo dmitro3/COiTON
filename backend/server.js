@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(morgan("common"));
 const server = app;
 const PORT = 5000 || process.env.PORT
-server.listen(5000, async () => {
+server.listen(PORT, async () => {
     sequelize.authenticate();
     console.log("server running on port ", PORT);
 
