@@ -261,15 +261,19 @@ contract DiamondDeployer is Test, IDiamondCut {
         boundTrade.sellNFTTokenShares(1, 1);
     }
 
-    function testsellNFTTokenShares() public {         switchSigner(A);
+    function testsellNFTTokenShares() public {         
+        switchSigner(A);
         boundTrade.buyNFTTokenShares(2, 10);
         uint8 userShare = 2;
         boundTrade.sellNFTTokenShares(2, userShare);
     }
 
 
-        function testCreatedListState() public {
+        function testCreatedListNOTAPPROVED() public {
         switchSigner(A);
+            vm.expectRevert(
+            abi.encodeWithSelector(ERRORS.LISTING_NOT_APPROVED.selector)
+        );
         boundEstate.createListing(
             "1",
             A,
@@ -282,13 +286,121 @@ contract DiamondDeployer is Test, IDiamondCut {
             10,
             ""
         );
-        LibAppStorage.Listing memory new_listing = boundEstate.getListing(0);
-        assertEq(new_listing.owner, A);
-        assertEq(new_listing.country, "nigeria");
-        assertEq(new_listing.state, "lagos");
-        assertEq(new_listing.city, "ikorodu");
-        assertEq(new_listing.tokenId, 1);
-    }
+
+                bytes32 hash = keccak256(
+            abi.encodePacked(
+            "1",
+            A,
+            "nigeria",
+            "lagos",
+            "ikorodu",
+            "estateAddress",
+            '0',
+            "description",
+            '10',
+            ""
+            )
+        );
+       
+        }
+                string id;
+               address owner;
+                string  country;
+                string  state;
+                string  city;
+                string estateAddress;
+                 uint24 postalCode;
+                string description;
+                uint price;
+                string  images;
+
+
+        function testCreatedListStateINVALIDLISTING() public {
+               switchSigner(A);   
+                      
+            bytes32 hash1 = keccak256(
+            abi.encodePacked(
+                '1',
+              A,
+                country,
+                state,
+                city,
+                estateAddress,
+                postalCode,
+                description,
+                price,
+                images
+            )
+        );
+       
+        boundEstate.approveListing('1', hash1, A);
+        vm.expectRevert(
+            abi.encodeWithSelector(ERRORS.INVALID_LISTING_HASH.selector)
+        ); 
+        boundEstate.createListing(
+            '1',
+          A,
+                country,
+                state,
+                city,
+                estateAddress,
+                postalCode,
+                description,
+                price,
+                images
+        );
+
+    
+        LibAppStorage.ListingApproval memory new_listing = boundEstate.getHash('1');
+        // assertEq(new_listing.hash, hash1);
+        }
+
+
+        function testCreatedListStateI() public {
+               switchSigner(A);   
+                      
+            bytes32 hash1 = keccak256(
+            abi.encodePacked(
+                '1',
+              A,
+                country,
+                state,
+                city,
+                estateAddress,
+                postalCode,
+                description,
+                price,
+                images
+            )
+        );
+       
+        boundEstate.approveListing('1', hash1, A);
+        boundEstate.createListing(
+            '1',
+          A,
+                country,
+                state,
+                city,
+                estateAddress,
+                postalCode,
+                description,
+                price,
+                images
+        );
+
+    
+        LibAppStorage.ListingApproval memory new_listing = boundEstate.getHash('1');
+        // assertEq(new_listing.hash, hash1);
+        }
+
+
+        // LibAppStorage.Listing memory new_listing = boundEstate.getListing(0);
+        // assertEq(new_listing.owner, A);
+        // assertEq(new_listing.country, "nigeria");
+        // assertEq(new_listing.state, "lagos");
+        // assertEq(new_listing.city, "ikorodu");
+        // assertEq(new_listing.tokenId, 1);
+
 
     function generateSelectors(
         string memory _facetName

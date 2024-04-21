@@ -160,6 +160,12 @@ contract RealEstate {
         return l.proposals[Id];
     }
 
+        function getHash(
+        string  memory Id
+    ) external view returns (LibAppStorage.ListingApproval memory) {
+        return l.listingApproval[Id];
+    }
+
     function isValidSigner(
         uint agreementId,
         address signer
