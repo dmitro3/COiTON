@@ -12,6 +12,11 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(morgan("common"));
 
+
+app.get("/", (req, res) => {
+    res.status(200).send("server running successfully");
+})
+
 app.use("/api/v1", AppRoutes)
 const server = app;
 const PORT = 5000 || process.env.PORT
