@@ -119,7 +119,7 @@ contract Trade {
     function calculateTokenValueInShares(
         uint8 shares,
         uint currentPrice
-    ) internal pure returns (uint) {
+    ) public pure returns (uint) {
         uint value = (currentPrice * shares) / 100;
         return value;
     }

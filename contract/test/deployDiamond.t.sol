@@ -14,6 +14,7 @@ import "../contracts/facets/Trade.sol";
 
 contract DiamondDeployer is Test, IDiamondCut {
     // contract types of facets to be deployed
+    LibAppStorage.Layout internal l;
     Diamond diamond;
     DiamondCutFacet dCutFacet;
     DiamondLoupeFacet dLoupe;
@@ -93,9 +94,11 @@ contract DiamondDeployer is Test, IDiamondCut {
     }
 
     function testCreateListing() public {
+        switchSigner(A);
         vm.expectRevert(abi.encodeWithSelector(ERRORS.UNAUTHORIZED.selector));
 
         boundEstate.createListing(
+            "1",
             address(0),
             "nigeria",
             "lagos",
@@ -122,26 +125,9 @@ contract DiamondDeployer is Test, IDiamondCut {
         assertEq(new_listing.price, 2);
     }
 
-    function testCreatedListState() public {
-        switchSigner(A);
-        boundEstate.createListing(
-            A,
-            "nigeria",
-            "lagos",
-            "ikorodu",
-            "estateAddress",
-            0,
-            "description",
-            10,
-            ""
-        );
-        LibAppStorage.Listing memory new_listing = boundEstate.getListing(0);
-        assertEq(new_listing.owner, A);
-        assertEq(new_listing.country, "nigeria");
-        assertEq(new_listing.state, "lagos");
-        assertEq(new_listing.city, "ikorodu");
-        assertEq(new_listing.tokenId, 1);
-    }
+
+
+
 
     function testEmptySignerPurchase() public {
         switchSigner(A);
@@ -248,10 +234,17 @@ contract DiamondDeployer is Test, IDiamondCut {
 
     // function testINSUFFICIENT_BALANCE() public {
     //     switchSigner(A);
-    //     vm.expectRevert(
-    //         abi.encodeWithSelector(ERRORS.INSUFFICIENT_BALANCE.selector)
-    //     );
-    //     boundTrade.buyNFTTokenShares(1, 1);
+    //     uint id = 10;
+    //     uint8 shares = 2;
+    //        uint bal =  l.stake[A]; 
+    //      LibAppStorage.Market storage tokenMarket = l.market[id];
+    //    uint tokenValue = boundTrade.calculateTokenValueInShares(shares, tokenMarket.currentPrice);
+    //     // vm.expectRevert(
+    //     //     abi.encodeWithSelector(ERRORS.INSUFFICIENT_BALANCE.selector)
+    //     // );
+
+    //     boundTrade.buyNFTTokenShares(id, shares);
+    //     assertGt(tokenValue, bal);
     // }
 
     function testbuyNFTTokenShares() public {
@@ -268,11 +261,33 @@ contract DiamondDeployer is Test, IDiamondCut {
         boundTrade.sellNFTTokenShares(1, 1);
     }
 
-    function testsellNFTTokenShares() public {
-        switchSigner(A);
+    function testsellNFTTokenShares() public {         switchSigner(A);
         boundTrade.buyNFTTokenShares(2, 10);
         uint8 userShare = 2;
         boundTrade.sellNFTTokenShares(2, userShare);
+    }
+
+
+        function testCreatedListState() public {
+        switchSigner(A);
+        boundEstate.createListing(
+            "1",
+            A,
+            "nigeria",
+            "lagos",
+            "ikorodu",
+            "estateAddress",
+            0,
+            "description",
+            10,
+            ""
+        );
+        LibAppStorage.Listing memory new_listing = boundEstate.getListing(0);
+        assertEq(new_listing.owner, A);
+        assertEq(new_listing.country, "nigeria");
+        assertEq(new_listing.state, "lagos");
+        assertEq(new_listing.city, "ikorodu");
+        assertEq(new_listing.tokenId, 1);
     }
 
     function generateSelectors(

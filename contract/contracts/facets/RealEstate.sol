@@ -19,12 +19,6 @@ contract RealEstate {
         _;
     }
 
-    // constructor(address erc20Token, address erc1155Token) {
-    //     l.erc20Token = erc20Token;
-    //     l.erc1155Token = erc1155Token;
-    //     l.owner = msg.sender;
-    // }
-
     //The function enables the updating of the ERC20 token's address.
     function updateERC20Token(address _address) external OnlyOwner {
         l.erc20Token = _address;
@@ -33,6 +27,22 @@ contract RealEstate {
     //The function enables the updating of the ERC1155 token's address.
     function updateERC1155Token(address _address) external OnlyOwner {
         l.erc1155Token = _address;
+    }
+
+    function approveListing(
+        string memory id,
+        bytes32 hash,
+        address owner
+    ) external {
+        LibAppStorage.ListingApproval storage _newListingApproval = l
+            .listingApproval[id];
+
+        if (_newListingApproval.approved) {
+            revert ERRORS.LISTING_ALREADY_APPROVED();
+        }
+        _newListingApproval.approved = true;
+        _newListingApproval.hash = hash;
+        _newListingApproval.owner = owner;
     }
 
     // This function is use to create new listings
@@ -45,6 +55,7 @@ contract RealEstate {
     // The function will store the listing data gotten from the external server.
     // After storing the listing data an NFT will be minted to the agent or the house owner.
     function createListing(
+        string memory id,
         address owner,
         string memory country,
         string memory state,
@@ -55,12 +66,45 @@ contract RealEstate {
         uint256 price,
         string memory images
     ) external {
-        // require(msg.sender != address(0), "INVALID_CONTRACT_ADDRESS");
-          if (owner == address(0)) {
+        if (owner == address(0)) {
             revert ERRORS.UNAUTHORIZED();
         }
+
+        LibAppStorage.ListingApproval storage _listingApproval = l
+            .listingApproval[id];
+
+        if (!_listingApproval.approved) {
+            revert ERRORS.LISTING_NOT_APPROVED();
+        }
+
+        if (msg.sender != _listingApproval.owner) {
+            revert ERRORS.UNAUTHORIZED();
+        }
+
+        if (_listingApproval.created) {
+            revert ERRORS.LISTING_ALREADY_CREATED();
+        }
+
+        bytes32 hash = keccak256(
+            abi.encodePacked(
+                owner,
+                country,
+                state,
+                city,
+                estateAddress,
+                postalCode,
+                description,
+                price,
+                images
+            )
+        );
+
+        if (_listingApproval.hash != hash) {
+            revert ERRORS.INVALID_LISTING_HASH();
+        }
+        uint listingId = l.listings.length + 1;
         LibAppStorage.Listing memory _newListing = LibAppStorage.Listing(
-            l.listings.length + 1,
+            listingId,
             owner,
             country,
             state,
@@ -75,16 +119,17 @@ contract RealEstate {
         );
 
         /// mint erc1155 token here
-       
+        _listingApproval.created = true;
+        l.listing[listingId] = _newListing;
 
         l.listings.push(_newListing);
 
         emit EVENTS.CreatedListing(owner, 1, price);
     }
 
-   // This function allows external caller to submit a proposal to purchase a real estate property
-   //@param estateId : Identifying the estate that the user went to propose to buy 
-   //@param price: User estimated price.
+    // This function allows external caller to submit a proposal to purchase a real estate property
+    //@param estateId : Identifying the estate that the user went to propose to buy
+    //@param price: User estimated price.
     function proposeBuy(uint estateId, uint price) external {
         LibAppStorage.Proposal memory _newProposal = LibAppStorage.Proposal({
             from: msg.sender,
@@ -98,36 +143,37 @@ contract RealEstate {
     }
 
     //This function is designed to retrieve all the listings that have been created.
-    //@param Id: The Id use to fetch all the listing created 
+    //@param Id: The Id use to fetch all the listing created
     //@notice returns all the listing created from the array
-       function getListing(
-       uint Id
+    function getListing(
+        uint Id
     ) external view returns (LibAppStorage.Listing memory) {
         return l.listings[Id];
     }
 
-//This function is designed to retrieve all the proposals to buy that have been submitted
-//@param Id: The Id use to fetch all the Proposals submitted. 
-//@notice returns all the proposals from the array
-     function getProposal(
-     uint Id
+    //This function is designed to retrieve all the proposals to buy that have been submitted
+    //@param Id: The Id use to fetch all the Proposals submitted.
+    //@notice returns all the proposals from the array
+    function getProposal(
+        uint Id
     ) external view returns (LibAppStorage.Proposal memory) {
         return l.proposals[Id];
     }
 
- function isValidSigner(uint agreementId, address signer) external view returns (bool) {
-    return l.isValidSigner[agreementId][signer];
-}
+    function isValidSigner(
+        uint agreementId,
+        address signer
+    ) external view returns (bool) {
+        return l.isValidSigner[agreementId][signer];
+    }
 
-
-
-//This function is used to start a purchase agreement process for a specific real estate property on the platform
-//@Param estateId: The identifier for the estate being purchased. 
-//@Param buyer: The address of a potenial buyer of the real estate. 
-//Param singners: An addresses authorized to sign the agreement 
-//We tend to implement and check if it is the owner is initiating the transaction and if the buyer is among
-//the lists of signers.
-//Then the storage is updated . 
+    //This function is used to start a purchase agreement process for a specific real estate property on the platform
+    //@Param estateId: The identifier for the estate being purchased.
+    //@Param buyer: The address of a potenial buyer of the real estate.
+    //Param singners: An addresses authorized to sign the agreement
+    //We tend to implement and check if it is the owner is initiating the transaction and if the buyer is among
+    //the lists of signers.
+    //Then the storage is updated .
     function initiatePurchaseAgreement(
         uint estateId,
         address buyer,
@@ -175,14 +221,15 @@ contract RealEstate {
         );
     }
 
-    function getPurchaseAgreement(uint agreementId) external view returns (LibAppStorage.PurchaseAgreement memory) {
-    return l.purchaseAgreement[agreementId];
-}
+    function getPurchaseAgreement(
+        uint agreementId
+    ) external view returns (LibAppStorage.PurchaseAgreement memory) {
+        return l.purchaseAgreement[agreementId];
+    }
 
-
-// This function is designed to allow an authorized party to sign a purchase agreement for a specified real estate property on the platform.
-//@Param estateId: Identify the specific purchase agreement related to a real estate property.
-//After all the aggrement has been settled the transfer of our token is sent buyer
+    // This function is designed to allow an authorized party to sign a purchase agreement for a specified real estate property on the platform.
+    //@Param estateId: Identify the specific purchase agreement related to a real estate property.
+    //After all the aggrement has been settled the transfer of our token is sent buyer
     function signPurchaseAgreement(uint estateId) external {
         if (!l.isValidSigner[estateId][msg.sender]) {
             revert ERRORS.NOT_A_VALID_SIGNER();
