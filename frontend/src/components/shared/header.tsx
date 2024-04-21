@@ -8,9 +8,12 @@ import { usePathname } from "next/navigation";
 import { Button, buttonVariants } from "../ui/button";
 import { AlignJustify, WalletIcon } from "lucide-react";
 import { SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { AuthContext } from "@/context/authentication";
+import { useContext } from "react";
 
 export default function Header() {
   const pathname = usePathname();
+  const { user } = useContext(AuthContext);
 
   return (
     <div className="w-full sticky top-0 inset-x-0 z-20 bg-background/70 backdrop-blur-lg">
@@ -36,25 +39,34 @@ export default function Header() {
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
+          {user ? (
             <Link
-              href="/login"
+              href="/dashboard"
               className={buttonVariants({
                 className: "uppercase",
                 variant: "secondary",
-                size: "sm",
               })}>
-              Login
+              Dashboard
             </Link>
-            <Link
-              href="/register"
-              className={buttonVariants({
-                className: "uppercase",
-                size: "sm",
-              })}>
-              Register
-            </Link>
-          </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link
+                href="/login"
+                className={buttonVariants({
+                  className: "uppercase",
+                  variant: "secondary",
+                })}>
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className={buttonVariants({
+                  className: "uppercase",
+                })}>
+                Register
+              </Link>
+            </div>
+          )}
         </div>
       </MaxWrapper>
     </div>

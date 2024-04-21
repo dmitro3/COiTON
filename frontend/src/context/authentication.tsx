@@ -48,14 +48,16 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
 
     try {
-      const promise = account.create(ID.unique(), email, address);
+      const promise = account.create(ID.unique(), email, address, address);
+      const accountDetails: any = account.get();
+      setUser(accountDetails);
 
       promise.then(
         function (response: any) {
           toast("Registration Successful", {
             description: "Redirecting to dashboard, please wait...",
           });
-          router.push("/dashboard"); // Success
+          router.push("/login"); // Success
           setIsLoading(false);
         },
         function (error: any) {
@@ -87,6 +89,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const promise = account.createEmailPasswordSession(email, address);
+      const accountDetails: any = account.get();
+      setUser(accountDetails);
 
       promise.then(
         function (response: any) {
@@ -117,6 +121,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const logoutUser = async () => {
     try {
       await account.deleteSession("current");
+      router.push("/login");
       setUser(null);
     } catch (error: any) {
       toast("Something went wrong", {
@@ -132,7 +137,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const accountDetails: any = await account.get();
-      console.log("accountDetails", accountDetails);
       setUser(accountDetails);
     } catch (error: any) {
       toast("Something went wrong", {
