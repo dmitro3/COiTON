@@ -18,3 +18,30 @@ interface AuthContextType {
   logoutUser: () => void;
   checkUserStatus: () => void;
 }
+
+interface UserType {
+  avatar: string;
+  name: string;
+  email: string;
+  id: string;
+  registration: string;
+}
+
+interface ListingType {
+  owner?: string;
+  address: string;
+  city: string;
+  country: string;
+  state: string;
+  postalCode: string | number;
+  description: string;
+  price: string | number;
+  images: any[];
+}
+
+interface SingleListingType {
+  details: ListingType;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}

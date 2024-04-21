@@ -7,14 +7,14 @@ import { usePathname } from "next/navigation";
 import { Input } from "../ui/input";
 
 import { RiSearch2Line } from "react-icons/ri";
-import { MdAddHome, MdOutlineAddHome } from "react-icons/md";
+import { MdAddHomeWork, MdOutlineAddHomeWork } from "react-icons/md";
 import { MdOutlineRealEstateAgent, MdRealEstateAgent } from "react-icons/md";
-import {
-  HiOutlineQuestionMarkCircle,
-  HiQuestionMarkCircle,
-} from "react-icons/hi2";
+import { PiSealQuestionLight, PiSealQuestionFill } from "react-icons/pi";
+
 import { IoSettingsOutline, IoSettingsSharp } from "react-icons/io5";
 import { FaRegUserCircle, FaUserCircle } from "react-icons/fa";
+
+import { AiOutlineLogout } from "react-icons/ai";
 
 import { IoPieChartOutline, IoPieChart } from "react-icons/io5";
 import { useContext } from "react";
@@ -96,19 +96,19 @@ export default function Sidebar() {
                   Tradings
                 </Link>
                 <Link
-                  href="/create"
+                  href="/create-listing"
                   className={cn(
                     "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10",
                     {
                       "bg-secondary/30 hover:bg-secondary/40 text-foreground":
-                        pathname === "/create",
+                        pathname === "/create-listing",
                     }
                   )}>
                   <span className="grid mr-4 place-items-center">
-                    {pathname === "/create" ? (
-                      <MdAddHome className="w-5 h-5" />
+                    {pathname === "/create-listing" ? (
+                      <MdAddHomeWork className="w-5 h-5" />
                     ) : (
-                      <MdOutlineAddHome className="w-5 h-5" />
+                      <MdOutlineAddHomeWork className="w-5 h-5" />
                     )}
                   </span>
                   Create Listing
@@ -136,9 +136,9 @@ export default function Sidebar() {
                   )}>
                   <span className="grid mr-4 place-items-center">
                     {pathname === "/support" ? (
-                      <HiQuestionMarkCircle className="w-5 h-5" />
+                      <PiSealQuestionFill className="w-5 h-5" />
                     ) : (
-                      <HiOutlineQuestionMarkCircle className="w-5 h-5" />
+                      <PiSealQuestionLight className="w-5 h-5" />
                     )}
                   </span>
                   Help & Support
@@ -189,7 +189,7 @@ export default function Sidebar() {
           onClick={logoutUser}
           className="mt-auto flex items-center w-full p-3 h-12 leading-tight transition-all rounded-lg text-[#f96565] outline-none text-start hover:bg-destructive/10">
           <span className="grid mr-4 place-items-center">
-            <HiOutlineQuestionMarkCircle className="w-5 h-5" />
+            <AiOutlineLogout className="w-5 h-5" />
           </span>
           Logout
         </div>

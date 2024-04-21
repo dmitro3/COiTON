@@ -13,6 +13,9 @@ import { account } from "@/lib/utils";
 import { ID } from "appwrite";
 import { useRouter } from "next/navigation";
 
+import { createAvatar } from "@dicebear/core";
+import { pixelArt } from "@dicebear/collection";
+
 // Create a default value for the context
 const defaultContextValue: AuthContextType = {
   user: null,
@@ -29,9 +32,9 @@ export const AuthContext = createContext(defaultContextValue);
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
-  const [isFetchingUser, setIsFetchingUser] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState(null);
+  const [isFetchingUser, setIsFetchingUser] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [user, setUser] = useState<UserType | null>();
 
   useEffect(() => {
     checkUserStatus();
@@ -64,6 +67,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
           toast("Something went wrong", {
             description: error.message,
           });
+          router.back();
           console.log(error);
           setIsLoading(false);
         }
@@ -104,6 +108,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
           toast("Something went wrong", {
             description: error.message,
           });
+          router.back(); // Success
           console.log(error);
           setIsLoading(false);
         }
@@ -133,11 +138,23 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   // ! GET USER
   const checkUserStatus = async () => {
-    setIsFetchingUser(true);
-
     try {
       const accountDetails: any = await account.get();
-      setUser(accountDetails);
+
+      const avatar = createAvatar(pixelArt, {
+        seed: accountDetails?.name,
+      }).toString();
+
+      const userObj: UserType = {
+        avatar: `data:image/svg+xml;utf8,${encodeURIComponent(avatar)}`,
+        name: accountDetails.name,
+        email: accountDetails.email,
+        id: accountDetails.$id,
+        registration: accountDetails.registration,
+      };
+
+      console.log("user object", userObj);
+      setUser(userObj);
     } catch (error: any) {
       toast("Something went wrong", {
         description: error,
