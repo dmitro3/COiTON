@@ -128,7 +128,7 @@ export default function RegisterPage() {
                     </p>
                   )}
 
-                  <div
+                  <p
                     className={cn(
                       "flex items-center rounded-md border w-full text-[14px] h-9 px-4 text-muted-foreground",
                       {
@@ -138,7 +138,7 @@ export default function RegisterPage() {
                     {isConnected
                       ? shortenAddress(isAddress)
                       : "Wallet not connected"}
-                  </div>
+                  </p>
                   {!isAddress && isError && (
                     <p className="text-[0.8rem] font-medium text-destructive">
                       {isError}
