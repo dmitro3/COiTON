@@ -1,8 +1,8 @@
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
 const { ethers } = require('hardhat')
 async function deployDiamond() {
-  const accounts = await ethers.getSigners()
-  const contractOwner = accounts[0]
+  // const accounts = await ethers.getSigners()
+  // const contractOwner = accounts[0]
 
   // deploy DiamondCutFacet
   const DiamondCutFacet = await ethers.getContractFactory('DiamondCutFacet')
@@ -13,11 +13,12 @@ async function deployDiamond() {
   // deploy Diamond
   const Diamond = await ethers.getContractFactory('Diamond')
   const diamond = await Diamond.deploy(
-    contractOwner.address,
+    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
     diamondCutFacet.address,
+    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
   )
   await diamond.deployed()
-  console.log('Diamond deployed:', diamond.address)
+
 
   // deploy DiamondInit
   // DiamondInit provides a function that is called when the diamond is upgraded to initialize state variables
@@ -27,10 +28,30 @@ async function deployDiamond() {
   await diamondInit.deployed()
   console.log('DiamondInit deployed:', diamondInit.address)
 
+
+
+  const ERC20Token = await ethers.getContractFactory("CoitonERC20")
+  const erc20Token = await ERC20Token.deploy()
+
+
+  const ERC721Token = await ethers.getContractFactory("CoitonNFT")
+  const erc721Token = await ERC721Token.deploy()
+
+  await erc20Token.deployed();
+  console.log("Deployed erc20 token at", erc20Token.address)
+  await erc721Token.deployed();
+  console.log("Deployed erc721 token at", erc721Token.address)
+
+
+
+
+  await diamond.setToken(erc20Token.address, erc721Token.address);
+
   // deploy facets
   console.log('')
   console.log('Deploying facets')
-  const FacetNames = ['DiamondLoupeFacet', 'OwnershipFacet']
+  const FacetNames = ['DiamondLoupeFacet', 'OwnershipFacet', 'RealEstate', 'Trade']
+
   const cut = []
   for (const FacetName of FacetNames) {
     const Facet = await ethers.getContractFactory(FacetName)
@@ -59,6 +80,9 @@ async function deployDiamond() {
     throw Error(`Diamond upgrade failed: ${tx.hash}`)
   }
   console.log('Completed diamond cut')
+  console.log("\n-------------------------------------\n")
+  console.log('Diamond deployed at:', diamond.address)
+
   return diamond.address
 }
 

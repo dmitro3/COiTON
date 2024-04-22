@@ -11,19 +11,19 @@ contract Trade {
 
     function stake(uint amount) external {
         if (
-            IERC20(l.erc20Token).allowance(msg.sender, address(this)) < amount
+            IIERC20(l.erc20Token).allowance(msg.sender, address(this)) < amount
         ) {
             revert ERRORS.NO_APPROVAL_TO_SPEND_TOKENS();
         }
         /// check if contract has allowance to spend erc20 tokens
         l.stake[msg.sender] += amount;
-        IERC20(l.erc20Token).transferFrom(msg.sender, address(this), amount);
+        IIERC20(l.erc20Token).transferFrom(msg.sender, address(this), amount);
         emit EVENTS.Stake(msg.sender, amount);
     }
 
     function withdrawStake(uint amount) external {
         if (amount > 0 && l.stake[msg.sender] >= amount) {
-            IERC20(l.erc20Token).transfer(msg.sender, amount);
+            IIERC20(l.erc20Token).transfer(msg.sender, amount);
         } else {
             revert ERRORS.INSUFFICIENT_BALANCE();
         }
