@@ -24,13 +24,18 @@ library EVENTS {
         address[] indexed signers
     );
 
-    event Stake(address indexed user, uint indexed amount);
-
+// The Stake event logs the Agent or house owner who stake before listing.
+    event Stake(
+        address indexed user, 
+        uint indexed amount
+        );
+// The BuyShares event logs the transactions of traders who purchase specific amounts of shares from the real estate trading index.
     event BuyShares(
         address indexed user,
         uint indexed amount,
         uint8 indexed shares
     );
+// The SellShares event tracks the sellers who have sold specific amounts of shares from the real estate trading index.
     event SellShares(
         address indexed user,
         uint indexed amount,

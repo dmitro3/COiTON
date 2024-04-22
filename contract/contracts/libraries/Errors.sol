@@ -17,11 +17,18 @@ library ERRORS {
     error ALREADY_SIGNED();
     //This error is thrown when there is an attempt to execute a transaction or operation that has already been completed or finalized.
     error ALREADY_EXECUTED();
+    //This error suggests that there are no more shares available for a particular token.
     error EXHAUSTED_TOKEN_SHARES();
+    //This error is triggered when an account does not have enough Coiton Token to complete a transaction.
     error INSUFFICIENT_BALANCE();
+    //this error occurs when a seller does not have enough shares to complete a transaction they are attempting to make.
     error INSUFFICIENT_SHARES();
+    //This error occurs when there is an attempt to approve a listing that has already been approved.
     error LISTING_ALREADY_APPROVED();
+    //This error indicates that an action cannot be completed because the listing in question has not yet been approved.
     error LISTING_NOT_APPROVED();
+    //This error is triggered when the hash associated with a listing does not match expected values.
     error INVALID_LISTING_HASH();
+    //This error means that there is an attempt to create a duplicate listing that already exists.
     error LISTING_ALREADY_CREATED();
 }
