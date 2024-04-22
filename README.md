@@ -1,5 +1,5 @@
 # COLLABORATIVE ONCHAIN INVESTMENT AND TRADING OF NEIGBORHOODS ([COiTON](coiton.vercel.app/))
-### A Decentralized Real Estate and Indices Trading Platform
+### A Decentralized Real Estate and Indices Trading Platform.
 
                                    CCCCCCC    OOOOOOO      oo   TTTTTTT    OOOOOOO     N       N
                                   C          O       O     ii      T      O       O    N N     N
