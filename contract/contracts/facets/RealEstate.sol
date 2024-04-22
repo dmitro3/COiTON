@@ -4,7 +4,7 @@ import "../libraries/LibAppStorage.sol";
 import "../libraries/Events.sol";
 import "../libraries/Errors.sol";
 import "../interfaces/ICoitonNFT.sol";
-import "openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "../interfaces/IERC20.sol";
 
 contract RealEstate {
@@ -294,7 +294,7 @@ contract RealEstate {
             _purchaseAgreement.executed = true;
 
             LibAppStorage.Listing memory listing = l.listing[estateId];
-            IERC20 erc20Token = IERC20(l.erc20Token);
+            IIERC20 erc20Token = IIERC20(l.erc20Token);
             IERC721 erc721Token = IERC721(l.erc721Token);
             if (
                 erc20Token.allowance(_purchaseAgreement.buyer, address(this)) <

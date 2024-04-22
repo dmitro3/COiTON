@@ -12,6 +12,7 @@ import "../contracts/libraries/LibAppStorage.sol";
 import "../contracts/libraries/Errors.sol";
 import "../contracts/facets/Trade.sol";
 import "../contracts/CoitonNFT.sol";
+import "../contracts/CoitonERC20.sol";
 
 contract DiamondDeployer is Test, IDiamondCut {
     // contract types of facets to be deployed
@@ -23,6 +24,7 @@ contract DiamondDeployer is Test, IDiamondCut {
     RealEstate realEstate;
     Trade trade;
     CoitonNFT coitonNFT = new CoitonNFT();
+    CoitonERC20 coitonERC20 = new CoitonERC20();
 
     address A = address(0xa);
     address B = address(0xb);
@@ -93,7 +95,7 @@ contract DiamondDeployer is Test, IDiamondCut {
 
         boundEstate = RealEstate(address(diamond));
         boundTrade = Trade(address(diamond));
-        diamond.setToken(address(coitonNFT), address(coitonNFT));
+        diamond.setToken(address(coitonERC20), address(coitonNFT));
     }
 
     function testCreateListing() public {
