@@ -57,9 +57,9 @@ export default function CreateListingPage() {
       city: values.city,
       country: values.country,
       state: values.state,
-      postalCode: Number(values.postalCode),
+      postalCode: String(values.postalCode), // Ensure postalCode is always a string
       description: values.description,
-      price: Number(values.price),
+      price: String(values.price), // Ensure price is always a string
       images: files,
     };
 

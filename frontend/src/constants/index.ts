@@ -1,7 +1,8 @@
 import { CandlestickChart, LayoutDashboard } from "lucide-react";
 
 export const site: SiteConfigProps = {
-  title: "COiTON: Revolutionizing Real Estate Trading in Cities",
+  title:
+    "COiTON: Collaborative Onchain Investment and Trading of Neighborhoods",
   name: "COiTON",
   description:
     "COiTON is a cutting-edge platform at the forefront of the real estate industry's digital transformation. By harnessing the power of blockchain technology, COiTON introduces a decentralized approach to real estate trading, making it accessible to anyone, anywhere.",
