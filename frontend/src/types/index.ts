@@ -33,9 +33,9 @@ interface ListingType {
   city: string;
   country: string;
   state: string;
-  postalCode: string | number;
+  postalCode: number;
   description: string;
-  price: string | number;
+  price: number;
   images: any[];
 }
 

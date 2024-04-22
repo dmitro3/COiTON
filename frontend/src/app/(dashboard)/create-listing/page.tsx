@@ -25,28 +25,27 @@ import { useRouter } from "next/navigation";
 
 export default function CreateListingPage() {
   const router = useRouter();
-  const data: ListingType = {
-    owner: "",
-    address: "",
-    city: "",
-    country: "",
-    state: "",
-    postalCode: "",
-    description: "",
-    price: "",
-    images: [],
-  };
 
   const { user, isFetchingUser } = useContext(AuthContext);
 
   const [files, setFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [listingData, setListingData] = useState<ListingType>(data);
+  const [listingData, setListingData] = useState<ListingType>();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof listingSchema>>({
     resolver: zodResolver(listingSchema),
-    defaultValues: data,
+    defaultValues: {
+      owner: "",
+      address: "",
+      city: "",
+      country: "",
+      state: "",
+      postalCode: "",
+      description: "",
+      price: "",
+      images: [],
+    },
   });
 
   // 2. Define a submit handler.
