@@ -30,6 +30,7 @@ library LibAppStorage {
         uint256 price;
         string images;
         uint tokenId;
+        string coverImage;
         uint256 createdAt;
     }
 
@@ -84,8 +85,9 @@ library LibAppStorage {
 
     struct Layout {
         address owner;
+        // address diamondAddress;
         address erc20Token;
-        address erc1155Token;
+        address erc721Token;
         mapping(uint => Market) market;
         mapping(address => mapping(uint => uint8)) userMarketShare;
         Listing[] listings;

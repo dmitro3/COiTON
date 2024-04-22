@@ -14,8 +14,9 @@ exports.SendListingTransaction = async (id, details) => {
             "string",
             "uint256",
             "string",
+            "string",
         ],
-        [details.owner, details.country, details.state, details.city, details.address, details.postalCode, details.description, details.price, details.images.join(";")]
+        [details.owner, details.country, details.state, details.city, details.address, details.postalCode, details.description, details.price, details.images.join(";"), details.coverImage]
     );
 
 

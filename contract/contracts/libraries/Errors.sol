@@ -31,4 +31,5 @@ library ERRORS {
     error INVALID_LISTING_HASH();
     //This error means that there is an attempt to create a duplicate listing that already exists.
     error LISTING_ALREADY_CREATED();
+    error NO_APPROVAL_TO_SPEND_TOKENS();
 }

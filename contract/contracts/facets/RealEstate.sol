@@ -3,6 +3,9 @@ pragma solidity ^0.8.0;
 import "../libraries/LibAppStorage.sol";
 import "../libraries/Events.sol";
 import "../libraries/Errors.sol";
+import "../interfaces/ICoitonNFT.sol";
+import "openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
+import "../interfaces/IERC20.sol";
 
 contract RealEstate {
     //Instantiating a new Layout from the LibAppStorage.
@@ -25,15 +28,15 @@ contract RealEstate {
     }
 
     //The function enables the updating of the ERC1155 token's address.
-    function updateERC1155Token(address _address) external OnlyOwner {
-        l.erc1155Token = _address;
+    function updateERC721Token(address _address) external OnlyOwner {
+        l.erc721Token = _address;
     }
 
     function approveListing(
         string memory id,
         bytes32 hash,
         address owner
-    ) external {
+    ) external OnlyOwner {
         LibAppStorage.ListingApproval storage _newListingApproval = l
             .listingApproval[id];
 
@@ -64,7 +67,8 @@ contract RealEstate {
         uint24 postalCode,
         string memory description,
         uint256 price,
-        string memory images
+        string memory images,
+        string memory coverImage
     ) external {
         if (owner == address(0)) {
             revert ERRORS.UNAUTHORIZED();
@@ -95,7 +99,8 @@ contract RealEstate {
                 postalCode,
                 description,
                 price,
-                images
+                images,
+                coverImage
             )
         );
 
@@ -103,6 +108,7 @@ contract RealEstate {
             revert ERRORS.INVALID_LISTING_HASH();
         }
         uint listingId = l.listings.length + 1;
+        ICoitonNFT(l.erc721Token).mint(msg.sender, listingId, coverImage);
         LibAppStorage.Listing memory _newListing = LibAppStorage.Listing(
             listingId,
             owner,
@@ -114,17 +120,17 @@ contract RealEstate {
             description,
             price,
             images,
-            1,
+            listingId,
+            coverImage,
             block.timestamp
         );
 
-        /// mint erc1155 token here
         _listingApproval.created = true;
         l.listing[listingId] = _newListing;
 
         l.listings.push(_newListing);
 
-        emit EVENTS.CreatedListing(owner, 1, price);
+        emit EVENTS.CreatedListing(owner, listingId, price);
     }
 
     // This function allows external caller to submit a proposal to purchase a real estate property
@@ -160,15 +166,38 @@ contract RealEstate {
         return l.proposals[Id];
     }
 
-        function getHash(
-        string memory Id
-    ) external view returns (bytes32) {
+    function getHash(string memory Id) external view returns (bytes32) {
         return l.listingApproval[Id].hash;
     }
 
-     function computeHash(address owner, string memory country, string memory state, string memory city, string memory estateAddress, uint24 postalCode, string memory description, uint256 price, string memory images) public returns (bytes32) {
-    return keccak256(abi.encodePacked(owner, country, state, city, estateAddress, postalCode, description, price, images));
-}
+    function computeHash(
+        address owner,
+        string memory country,
+        string memory state,
+        string memory city,
+        string memory estateAddress,
+        uint24 postalCode,
+        string memory description,
+        uint256 price,
+        string memory images,
+        string memory coverImage
+    ) public pure returns (bytes32) {
+        return
+            keccak256(
+                abi.encodePacked(
+                    owner,
+                    country,
+                    state,
+                    city,
+                    estateAddress,
+                    postalCode,
+                    description,
+                    price,
+                    images,
+                    coverImage
+                )
+            );
+    }
 
     function isValidSigner(
         uint agreementId,
@@ -261,7 +290,37 @@ contract RealEstate {
             _purchaseAgreement.validSigners.length
         ) {
             _purchaseAgreement.executed = true;
-            /// TRANSFER TOKENS HERE;
+
+            LibAppStorage.Listing memory listing = l.listing[estateId];
+            IERC20 erc20Token = IERC20(l.erc20Token);
+            IERC721 erc721Token = IERC721(l.erc721Token);
+            if (
+                erc20Token.allowance(_purchaseAgreement.buyer, address(this)) <
+                listing.price
+            ) {
+                revert ERRORS.NO_APPROVAL_TO_SPEND_TOKENS();
+            } else {
+                erc20Token.transferFrom(
+                    _purchaseAgreement.buyer,
+                    address(this),
+                    listing.price
+                );
+            }
+
+            if (erc721Token.getApproved(listing.tokenId) != address(this)) {
+                revert ERRORS.NO_APPROVAL_TO_SPEND_TOKENS();
+            }
+
+            erc20Token.transfer(listing.owner, listing.price);
+            erc721Token.safeTransferFrom(
+                listing.owner,
+                _purchaseAgreement.buyer,
+                listing.tokenId
+            );
+
+            assert(
+                erc721Token.ownerOf(listing.tokenId) == _purchaseAgreement.buyer
+            );
         }
     }
 }

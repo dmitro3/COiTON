@@ -11,6 +11,7 @@ import "../contracts/facets/RealEstate.sol";
 import "../contracts/libraries/LibAppStorage.sol";
 import "../contracts/libraries/Errors.sol";
 import "../contracts/facets/Trade.sol";
+import "../contracts/CoitonNFT.sol";
 
 contract DiamondDeployer is Test, IDiamondCut {
     // contract types of facets to be deployed
@@ -21,6 +22,7 @@ contract DiamondDeployer is Test, IDiamondCut {
     OwnershipFacet ownerF;
     RealEstate realEstate;
     Trade trade;
+    CoitonNFT coitonNFT = new CoitonNFT();
 
     address A = address(0xa);
     address B = address(0xb);
@@ -34,13 +36,17 @@ contract DiamondDeployer is Test, IDiamondCut {
     Trade boundTrade;
 
     function setUp() public {
+        A = mkaddr("signer A");
+        B = mkaddr("signer B");
         //deploy facets
         dCutFacet = new DiamondCutFacet();
-        diamond = new Diamond(address(this), address(dCutFacet));
+        diamond = new Diamond(address(this), address(dCutFacet), A);
         dLoupe = new DiamondLoupeFacet();
         ownerF = new OwnershipFacet();
         realEstate = new RealEstate();
         trade = new Trade();
+
+        // l.diamondAddress = address(diamond);
 
         //upgrade diamond with facets
 
@@ -85,12 +91,9 @@ contract DiamondDeployer is Test, IDiamondCut {
         //call a function
         DiamondLoupeFacet(address(diamond)).facetAddresses();
 
-        A = mkaddr("signer A");
-        B = mkaddr("signer B");
-
         boundEstate = RealEstate(address(diamond));
         boundTrade = Trade(address(diamond));
-        diamond.setToken(A, B);
+        diamond.setToken(address(coitonNFT), address(coitonNFT));
     }
 
     function testCreateListing() public {
@@ -107,6 +110,7 @@ contract DiamondDeployer is Test, IDiamondCut {
             0,
             "description",
             10,
+            "",
             ""
         );
     }
@@ -124,10 +128,6 @@ contract DiamondDeployer is Test, IDiamondCut {
         LibAppStorage.Proposal memory new_listing = boundEstate.getProposal(0);
         assertEq(new_listing.price, 2);
     }
-
-
-
-
 
     function testEmptySignerPurchase() public {
         switchSigner(A);
@@ -236,7 +236,7 @@ contract DiamondDeployer is Test, IDiamondCut {
     //     switchSigner(A);
     //     uint id = 10;
     //     uint8 shares = 2;
-    //        uint bal =  l.stake[A]; 
+    //        uint bal =  l.stake[A];
     //      LibAppStorage.Market storage tokenMarket = l.market[id];
     //    uint tokenValue = boundTrade.calculateTokenValueInShares(shares, tokenMarket.currentPrice);
     //     // vm.expectRevert(
@@ -261,17 +261,16 @@ contract DiamondDeployer is Test, IDiamondCut {
         boundTrade.sellNFTTokenShares(1, 1);
     }
 
-    function testsellNFTTokenShares() public {         
+    function testsellNFTTokenShares() public {
         switchSigner(A);
         boundTrade.buyNFTTokenShares(2, 10);
         uint8 userShare = 2;
         boundTrade.sellNFTTokenShares(2, userShare);
     }
 
-
-        function testCreatedListNOTAPPROVED() public {
+    function testCreatedListNOTAPPROVED() public {
         switchSigner(A);
-            vm.expectRevert(
+        vm.expectRevert(
             abi.encodeWithSelector(ERRORS.LISTING_NOT_APPROVED.selector)
         );
         boundEstate.createListing(
@@ -284,44 +283,29 @@ contract DiamondDeployer is Test, IDiamondCut {
             0,
             "description",
             10,
+            "",
             ""
         );
+    }
 
-                bytes32 hash = keccak256(
+    string id = "1";
+    address owner = A;
+    string country = "Nigeria";
+    string state = "Lagos";
+    string city = "Ikorodu";
+    string estateAddress = "A";
+    uint24 postalCode = 10;
+    string description = "createlist";
+    uint price = 1;
+    string images = "";
+
+    function testCreatedListStateINVALIDLISTING() public {
+        switchSigner(A);
+
+        bytes32 hash1 = keccak256(
             abi.encodePacked(
-            "1",
-            A,
-            "nigeria",
-            "lagos",
-            "ikorodu",
-            "estateAddress",
-            '0',
-            "description",
-            '10',
-            ""
-            )
-        );
-       
-        }
-                string id = '1';
-               address owner = A;
-                string  country = "Nigeria";
-                string  state = "Lagos";
-                string  city = "Ikorodu";
-                string estateAddress = "A";
-                 uint24 postalCode = 10;
-                string description = "createlist";
-                uint price = 1;
-                string  images = "";
-
-
-        function testCreatedListStateINVALIDLISTING() public {
-               switchSigner(A);   
-                      
-            bytes32 hash1 = keccak256(
-            abi.encodePacked(
-                '1',
-              A,
+                "1",
+                A,
                 country,
                 state,
                 city,
@@ -332,14 +316,32 @@ contract DiamondDeployer is Test, IDiamondCut {
                 images
             )
         );
-       
-        boundEstate.approveListing('1', hash1, A);
+
+        boundEstate.approveListing("1", hash1, A);
         vm.expectRevert(
             abi.encodeWithSelector(ERRORS.INVALID_LISTING_HASH.selector)
-        ); 
+        );
         boundEstate.createListing(
-            '1',
-          A,
+            "1",
+            A,
+            country,
+            state,
+            city,
+            estateAddress,
+            postalCode,
+            description,
+            price,
+            images,
+            ""
+        );
+    }
+
+    function testCreatedListStateI() public {
+        switchSigner(A);
+        string memory hash_id = "UUIDV4";
+        bytes32 hash = keccak256(
+            abi.encodePacked(
+                B,
                 country,
                 state,
                 city,
@@ -347,69 +349,43 @@ contract DiamondDeployer is Test, IDiamondCut {
                 postalCode,
                 description,
                 price,
-                images
+                images,
+                "cover"
+            )
         );
-        }
+        boundEstate.approveListing(hash_id, hash, B);
 
+        switchSigner(B);
 
-
-
-
-
-
-
-
-        // function testCreatedListStateI() public {
-        //         switchSigner(A);   
-                      
-        //     bytes32 hash1 = keccak256(
-        //     abi.encodePacked(
-        //         '1',
-        //       A,
-        //         country,
-        //         state,
-        //         city,
-        //         estateAddress,
-        //         postalCode,
-        //         description,
-        //         price,
-        //         images
-        //     )
-        // );
-    //      bytes32 key = boundEstate.computeHash(owner, country, state, city, estateAddress, postalCode, description, price, images);
-
-    //         boundEstate.approveListing('1', key, A); 
-    //     boundEstate.createListing(
-    //         '1',
-    //       A,
-    //             country,
-    //             state,
-    //             city,
-    //             estateAddress,
-    //             postalCode,
-    //             description,
-    //             price,
-    //             images
-    //     );
-      
-     
-    // // console.log(hash1);
-    // // console.log(boundEstate.getHash('1'));
-    // bytes32 new_listing = boundEstate.getHash('1');
-
-    //      assertEq(key, 0xc9bc89bf30a551897e0c19ef18640629b2f474d8cc30a9b1327898486cfe46f5);
-    //       console2.logBytes32(key);
-    //     }
-        
-
+        boundEstate.createListing(
+            hash_id,
+            B,
+            country,
+            state,
+            city,
+            estateAddress,
+            postalCode,
+            description,
+            price,
+            images,
+            "cover"
+        );
 
         // LibAppStorage.Listing memory new_listing = boundEstate.getListing(0);
-        // assertEq(new_listing.owner, A);
-        // assertEq(new_listing.country, "nigeria");
-        // assertEq(new_listing.state, "lagos");
-        // assertEq(new_listing.city, "ikorodu");
-        // assertEq(new_listing.tokenId, 1);
 
+        // assertEq(new_listing.owner, B);
+        // assertEq(new_listing.country, country);
+        // assertEq(new_listing.state, state);
+        // assertEq(new_listing.city, city);
+        // assertEq(new_listing.tokenId, 1);
+    }
+
+    // LibAppStorage.Listing memory new_listing = boundEstate.getListing(0);
+    // assertEq(new_listing.owner, A);
+    // assertEq(new_listing.country, "nigeria");
+    // assertEq(new_listing.state, "lagos");
+    // assertEq(new_listing.city, "ikorodu");
+    // assertEq(new_listing.tokenId, 1);
 
     function generateSelectors(
         string memory _facetName
