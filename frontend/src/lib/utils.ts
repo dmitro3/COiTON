@@ -1,7 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Account, Client } from "appwrite";
-import { z } from "zod";
 
 const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
@@ -55,17 +54,20 @@ export const formatDate = (inputTime: any) => {
   return `${formattedDate} - ${formattedTime}`;
 };
 
+export const amountFormatter = (amount: any) => {
+  if (amount >= 1000000000000) {
+    return (amount / 1000000000000).toFixed(0) + "t";
+  } else if (amount >= 1000000000) {
+    return (amount / 1000000000).toFixed(0) + "b";
+  } else if (amount >= 1000000) {
+    return (amount / 1000000).toFixed(0) + "m";
+  } else if (amount >= 1000) {
+    return (amount / 1000).toFixed(0) + "k";
+  } else {
+    return amount.toString();
+  }
+};
+
 export const shortenAddress = (addr: string) => {
   return `${addr?.substring(0, 6)}...${addr?.substring(addr.length - 4)}`;
 };
-
-export const listingSchema = z.object({
-  description: z.string().min(2).max(50),
-  address: z.string().min(2).max(50),
-  city: z.string().min(2).max(50),
-  country: z.string().min(2).max(50),
-  state: z.string().min(2).max(50),
-  postalCode: z.string().min(2).max(50),
-  price: z.string().min(2).max(50),
-  images: z.array(z.string()),
-});

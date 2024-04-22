@@ -16,7 +16,7 @@ export default function Header() {
   const { user } = useContext(AuthContext);
 
   return (
-    <div className="w-full sticky top-0 inset-x-0 z-20 bg-background/70 backdrop-blur-lg">
+    <div className="w-full sticky top-0 inset-x-0 z-50 bg-background/70 backdrop-blur-lg">
       <MaxWrapper className="flex items-center justify-between gap-4 py-6">
         <Link href="/" className="font-bold text-lg md:text-xl tracking-wider">
           {site.name}

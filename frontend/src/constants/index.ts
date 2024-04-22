@@ -1,10 +1,10 @@
 import { CandlestickChart, LayoutDashboard } from "lucide-react";
 
 export const site: SiteConfigProps = {
-  title: "UrbanXchange: Revolutionizing Real Estate Trading in Cities",
-  name: "UrbanXchange",
+  title: "COiTON: Revolutionizing Real Estate Trading in Cities",
+  name: "COiTON",
   description:
-    "UrbanXchange is a cutting-edge platform at the forefront of the real estate industry's digital transformation. By harnessing the power of blockchain technology, UrbanXchange introduces a decentralized approach to real estate trading, making it accessible to anyone, anywhere.",
+    "COiTON is a cutting-edge platform at the forefront of the real estate industry's digital transformation. By harnessing the power of blockchain technology, COiTON introduces a decentralized approach to real estate trading, making it accessible to anyone, anywhere.",
 };
 
 export const links = [
@@ -87,7 +87,7 @@ export const listings: SingleListingType[] = [
       state: "lagos",
       postalCode: 123123,
       description: "1 sqr meter land with 4 buildings",
-      price: 50000,
+      price: 4000000,
       images: ["/img/banner.avif", "sdfasdf"],
     },
     id: "32596465-8470-4168-873a-28d7ee44fa6d",

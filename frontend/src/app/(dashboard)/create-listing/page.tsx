@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { listingSchema } from "@/lib/utils";
+import { listingSchema } from "@/validations";
 import { AuthContext } from "@/context/authentication";
 import { Loader2 } from "lucide-react";
 import { FileUploader } from "@/components/shared/file-uploader";
@@ -25,37 +25,28 @@ import { useRouter } from "next/navigation";
 
 export default function CreateListingPage() {
   const router = useRouter();
+  const data: ListingType = {
+    owner: "",
+    address: "",
+    city: "",
+    country: "",
+    state: "",
+    description: "",
+    images: [],
+    postalCode: "",
+    price: "",
+  };
 
   const { user, isFetchingUser } = useContext(AuthContext);
 
   const [files, setFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [listingData, setListingData] = useState<ListingType>({
-    owner: user ? user?.name : "",
-    address: "",
-    city: "",
-    country: "",
-    state: "",
-    postalCode: 0,
-    description: "",
-    price: 0,
-    images: [],
-  });
+  const [listingData, setListingData] = useState<ListingType>(data);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof listingSchema>>({
     resolver: zodResolver(listingSchema),
-    defaultValues: {
-      owner: user ? user?.name : "",
-      address: "",
-      city: "",
-      country: "",
-      state: "",
-      postalCode: "",
-      description: "",
-      price: "",
-      images: [],
-    },
+    defaultValues: data,
   });
 
   // 2. Define a submit handler.
@@ -121,7 +112,7 @@ export default function CreateListingPage() {
                   <FormControl>
                     <Input
                       placeholder="Price"
-                      type="text"
+                      type="number"
                       {...field}
                       disabled={isUploading || isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
@@ -217,7 +208,7 @@ export default function CreateListingPage() {
                   <FormControl>
                     <Input
                       placeholder="Postal Code"
-                      type="text"
+                      type="number"
                       {...field}
                       disabled={isUploading || isFetchingUser}
                       className="w-full h-12 bg-secondary/20"

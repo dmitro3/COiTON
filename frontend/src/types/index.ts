@@ -28,19 +28,21 @@ interface UserType {
 }
 
 interface ListingType {
-  owner: string;
+  owner: string | undefined;
   address: string;
   city: string;
   country: string;
   state: string;
-  postalCode: number;
   description: string;
-  price: number;
   images: any[];
+  postalCode: string | number;
+  price: string | number;
 }
 
 interface SingleListingType {
-  details: ListingType;
+  details:
+    | Pick<ListingType, "owner" | "description" | "images" | "price">
+    | ListingType;
   id: string;
   createdAt: string;
   updatedAt: string;
