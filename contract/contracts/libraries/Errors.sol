@@ -24,4 +24,5 @@ library ERRORS {
     error LISTING_NOT_APPROVED();
     error INVALID_LISTING_HASH();
     error LISTING_ALREADY_CREATED();
+    error NO_APPROVAL_TO_SPEND_TOKENS();
 }
