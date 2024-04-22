@@ -7,7 +7,7 @@ export const listingSchema = z.object({
   city: z.string().min(2).max(50),
   country: z.string().min(2).max(50),
   state: z.string().min(2).max(50),
-  postalCode: z.string().min(2).max(50),
-  price: z.string().min(2).max(50),
+  postalCode: z.string().min(2),
+  price: z.string().min(2),
   images: z.array(z.string()),
 });

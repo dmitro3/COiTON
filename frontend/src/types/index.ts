@@ -35,8 +35,8 @@ interface ListingType {
   state: string;
   description: string;
   images: any[];
-  postalCode: string | number;
-  price: string | number;
+  postalCode: string;
+  price: string;
 }
 
 interface SingleListingType {

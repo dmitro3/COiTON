@@ -57,9 +57,9 @@ export default function CreateListingPage() {
       city: values.city,
       country: values.country,
       state: values.state,
-      postalCode: String(values.postalCode), // Ensure postalCode is always a string
+      postalCode: values.postalCode,
       description: values.description,
-      price: String(values.price), // Ensure price is always a string
+      price: values.price,
       images: files,
     };
 
@@ -112,7 +112,7 @@ export default function CreateListingPage() {
                   <FormControl>
                     <Input
                       placeholder="Price"
-                      type="number"
+                      type="text"
                       {...field}
                       disabled={isUploading || isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
@@ -208,7 +208,7 @@ export default function CreateListingPage() {
                   <FormControl>
                     <Input
                       placeholder="Postal Code"
-                      type="number"
+                      type="text"
                       {...field}
                       disabled={isUploading || isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
