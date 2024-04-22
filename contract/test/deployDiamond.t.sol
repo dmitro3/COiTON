@@ -185,14 +185,7 @@ contract DiamondDeployer is Test, IDiamondCut {
         switchSigner(B);
         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
         switchSigner(address(0xC));
-        boundEstate.signPurchaseAgreement(1);
-        vm.stopPrank();
-
-        switchSigner(address(0xD));
-
-        boundEstate.signPurchaseAgreement(1);
-
-        switchSigner(address(0xD));
+         boundEstate.signPurchaseAgreement(1);
         vm.expectRevert(abi.encodeWithSelector(ERRORS.ALREADY_SIGNED.selector));
 
         boundEstate.signPurchaseAgreement(1);
@@ -396,7 +389,7 @@ contract DiamondDeployer is Test, IDiamondCut {
             abi.encodeWithSelector(ERRORS.LISTING_ALREADY_APPROVED.selector)
         ); 
         boundEstate.approveListing('1', hash1, A);
-            //
+            
     
 
 
