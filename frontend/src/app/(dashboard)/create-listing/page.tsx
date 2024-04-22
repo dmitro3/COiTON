@@ -30,7 +30,17 @@ export default function CreateListingPage() {
 
   const [files, setFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [listingData, setListingData] = useState<ListingType>();
+  const [listingData, setListingData] = useState<ListingType>({
+    owner: user ? user?.name : "",
+    address: "",
+    city: "",
+    country: "",
+    state: "",
+    postalCode: 0,
+    description: "",
+    price: 0,
+    images: [],
+  });
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof listingSchema>>({
