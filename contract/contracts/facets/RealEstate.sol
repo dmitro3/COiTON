@@ -321,8 +321,6 @@ contract RealEstate {
             assert(
                 erc721Token.ownerOf(listing.tokenId) == _purchaseAgreement.buyer
             );
-
-            /// TRANSFER TOKENS HERE;
         }
     }
 }
