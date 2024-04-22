@@ -28,7 +28,7 @@ interface UserType {
 }
 
 interface ListingType {
-  owner?: string;
+  owner: string;
   address: string;
   city: string;
   country: string;

@@ -36,7 +36,7 @@ export default function CreateListingPage() {
   const form = useForm<z.infer<typeof listingSchema>>({
     resolver: zodResolver(listingSchema),
     defaultValues: {
-      owner: "",
+      owner: user ? user?.name : "",
       address: "",
       city: "",
       country: "",
