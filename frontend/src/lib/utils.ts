@@ -6,6 +6,24 @@ const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
   .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID as string);
 
+export function formatBytes(
+  bytes: number,
+  opts: {
+    decimals?: number;
+    sizeType?: "accurate" | "normal";
+  } = {}
+) {
+  const { decimals = 0, sizeType = "normal" } = opts;
+
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  const accurateSizes = ["Bytes", "KiB", "MiB", "GiB", "TiB"];
+  if (bytes === 0) return "0 Byte";
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${
+    sizeType === "accurate" ? accurateSizes[i] ?? "Bytest" : sizes[i] ?? "Bytes"
+  }`;
+}
+
 export const account = new Account(client);
 
 export function cn(...inputs: ClassValue[]) {
@@ -34,6 +52,20 @@ export const formatDate = (inputTime: any) => {
     .padStart(2, "0")} ${ampm}`;
 
   return `${formattedDate} - ${formattedTime}`;
+};
+
+export const amountFormatter = (amount: any) => {
+  if (amount >= 1000000000000) {
+    return (amount / 1000000000000).toFixed(0) + "t";
+  } else if (amount >= 1000000000) {
+    return (amount / 1000000000).toFixed(0) + "b";
+  } else if (amount >= 1000000) {
+    return (amount / 1000000).toFixed(0) + "m";
+  } else if (amount >= 1000) {
+    return (amount / 1000).toFixed(0) + "k";
+  } else {
+    return amount.toString();
+  }
 };
 
 export const shortenAddress = (addr: string) => {
