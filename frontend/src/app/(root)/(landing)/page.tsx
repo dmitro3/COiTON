@@ -3,6 +3,7 @@ import ContactSection from "@/components/sections/ContactSection";
 import TestimonialSection from "@/components/sections/TestimonialSection";
 import MaxWrapper from "@/components/shared/wrapper";
 import { Button } from "@/components/ui/button";
+import { listings } from "@/constants";
 import Image from "next/image";
 
 export default function LandingPage() {
@@ -81,8 +82,8 @@ export default function LandingPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array.from({ length: 3 }).map((_, _key) => (
-            <ListingCard key={_key} />
+          {listings.map((listing: SingleListingType) => (
+            <ListingCard key={listing.id} {...listing} />
           ))}
         </div>
       </MaxWrapper>
