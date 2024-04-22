@@ -23,8 +23,8 @@ contract DiamondDeployer is Test, IDiamondCut {
     OwnershipFacet ownerF;
     RealEstate realEstate;
     Trade trade;
-    CoitonNFT coitonNFT = new CoitonNFT();
-    CoitonERC20 coitonERC20 = new CoitonERC20();
+    CoitonNFT coitonNFT;
+    CoitonERC20 coitonERC20;
 
     address A = address(0xa);
     address B = address(0xb);
@@ -40,6 +40,7 @@ contract DiamondDeployer is Test, IDiamondCut {
     function setUp() public {
         A = mkaddr("signer A");
         B = mkaddr("signer B");
+        // C = mkaddr("signer C");
         //deploy facets
         dCutFacet = new DiamondCutFacet();
         diamond = new Diamond(address(this), address(dCutFacet), A);
@@ -47,6 +48,9 @@ contract DiamondDeployer is Test, IDiamondCut {
         ownerF = new OwnershipFacet();
         realEstate = new RealEstate();
         trade = new Trade();
+
+        coitonNFT = new CoitonNFT();
+        coitonERC20 = new CoitonERC20(A);
 
         // l.diamondAddress = address(diamond);
 
@@ -187,14 +191,50 @@ contract DiamondDeployer is Test, IDiamondCut {
         switchSigner(B);
         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
         switchSigner(address(0xC));
-         boundEstate.signPurchaseAgreement(1);
+        boundEstate.signPurchaseAgreement(1);
         vm.expectRevert(abi.encodeWithSelector(ERRORS.ALREADY_SIGNED.selector));
 
         boundEstate.signPurchaseAgreement(1);
     }
 
     function testSignPurchaseAgreementStateChangeTrue() public {
+        switchSigner(A);
+        coitonERC20.mintTo(B, 5 * 10 ** 18);
+        string memory hash_id = "UUIDV4";
+        bytes32 hash = keccak256(
+            abi.encodePacked(
+                B,
+                country,
+                state,
+                city,
+                estateAddress,
+                postalCode,
+                description,
+                price,
+                images,
+                "cover"
+            )
+        );
+        boundEstate.approveListing(hash_id, hash, B);
+
         switchSigner(B);
+
+        boundEstate.createListing(
+            hash_id,
+            B,
+            country,
+            state,
+            city,
+            estateAddress,
+            postalCode,
+            description,
+            price,
+            images,
+            "cover"
+        );
+
+        coitonERC20.approve(address(boundEstate), price);
+        coitonNFT.approve(address(boundEstate), 1);
         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
         switchSigner(address(0xC));
         boundEstate.signPurchaseAgreement(1);
@@ -365,16 +405,15 @@ contract DiamondDeployer is Test, IDiamondCut {
             images,
             "cover"
         );
-
     }
-    
-            function testApproveListing() public{
-        switchSigner(A);   
-                      
-            bytes32 hash1 = keccak256(
+
+    function testApproveListing() public {
+        switchSigner(A);
+
+        bytes32 hash1 = keccak256(
             abi.encodePacked(
-                '1',
-              A,
+                "1",
+                A,
                 country,
                 state,
                 city,
@@ -385,25 +424,21 @@ contract DiamondDeployer is Test, IDiamondCut {
                 images
             )
         );
-       
-         boundEstate.approveListing('1', hash1, A);
+
+        boundEstate.approveListing("1", hash1, A);
         vm.expectRevert(
             abi.encodeWithSelector(ERRORS.LISTING_ALREADY_APPROVED.selector)
-        ); 
-        boundEstate.approveListing('1', hash1, A);
-            
-    
+        );
+        boundEstate.approveListing("1", hash1, A);
+    }
 
+    function testApproveListingStateChange() public {
+        switchSigner(A);
 
-        }
-
-        function testApproveListingStateChange() public{
-             switchSigner(A);   
-                      
-            bytes32 hash1 = keccak256(
+        bytes32 hash1 = keccak256(
             abi.encodePacked(
-                '1',
-              A,
+                "1",
+                A,
                 country,
                 state,
                 city,
@@ -414,16 +449,15 @@ contract DiamondDeployer is Test, IDiamondCut {
                 images
             )
         );
-       
-         boundEstate.approveListing('1', hash1, A);
-         LibAppStorage.ListingApproval memory new_list = boundEstate.getHash('1');
-    
-        assertEq(new_list.approved, true);
-         assertEq(new_list.owner, A);
-      
-        }
 
- 
+        boundEstate.approveListing("1", hash1, A);
+        LibAppStorage.ListingApproval memory new_list = boundEstate.getHash(
+            "1"
+        );
+
+        assertEq(new_list.approved, true);
+        assertEq(new_list.owner, A);
+    }
 
     function generateSelectors(
         string memory _facetName
