@@ -371,21 +371,64 @@ contract DiamondDeployer is Test, IDiamondCut {
             "cover"
         );
 
-        // LibAppStorage.Listing memory new_listing = boundEstate.getListing(0);
-
-        // assertEq(new_listing.owner, B);
-        // assertEq(new_listing.country, country);
-        // assertEq(new_listing.state, state);
-        // assertEq(new_listing.city, city);
-        // assertEq(new_listing.tokenId, 1);
     }
+    
+            function testApproveListing() public{
+        switchSigner(A);   
+                      
+            bytes32 hash1 = keccak256(
+            abi.encodePacked(
+                '1',
+              A,
+                country,
+                state,
+                city,
+                estateAddress,
+                postalCode,
+                description,
+                price,
+                images
+            )
+        );
+       
+         boundEstate.approveListing('1', hash1, A);
+        vm.expectRevert(
+            abi.encodeWithSelector(ERRORS.LISTING_ALREADY_APPROVED.selector)
+        ); 
+        boundEstate.approveListing('1', hash1, A);
+            //
+    
 
-    // LibAppStorage.Listing memory new_listing = boundEstate.getListing(0);
-    // assertEq(new_listing.owner, A);
-    // assertEq(new_listing.country, "nigeria");
-    // assertEq(new_listing.state, "lagos");
-    // assertEq(new_listing.city, "ikorodu");
-    // assertEq(new_listing.tokenId, 1);
+
+        }
+
+        function testApproveListingStateChange() public{
+             switchSigner(A);   
+                      
+            bytes32 hash1 = keccak256(
+            abi.encodePacked(
+                '1',
+              A,
+                country,
+                state,
+                city,
+                estateAddress,
+                postalCode,
+                description,
+                price,
+                images
+            )
+        );
+       
+         boundEstate.approveListing('1', hash1, A);
+         LibAppStorage.ListingApproval memory new_list = boundEstate.getHash('1');
+    
+        assertEq(new_list.approved, true);
+         assertEq(new_list.owner, A);
+      
+        }
+
+ 
 
     function generateSelectors(
         string memory _facetName

@@ -166,8 +166,10 @@ contract RealEstate {
         return l.proposals[Id];
     }
 
-    function getHash(string memory Id) external view returns (bytes32) {
-        return l.listingApproval[Id].hash;
+          function getHash(
+        string memory Id
+    ) external view returns (LibAppStorage.ListingApproval memory) {
+        return l.listingApproval[Id];
     }
 
     function computeHash(
