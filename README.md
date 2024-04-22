@@ -1,4 +1,4 @@
-# COLLABORATIVE ONCHAIN INVESTMENT AND TRADING OF NEIGBORHOODS ([COiTON](https://urban-xchange.vercel.app/))
+# COLLABORATIVE ONCHAIN INVESTMENT AND TRADING OF NEIGBORHOODS ([COiTON](coiton.vercel.app/)
 ### A Decentralized Real Estate and Indices Trading Platform
 
                                    CCCCCCC    OOOOOOO      oo   TTTTTTT    OOOOOOO     N       N
