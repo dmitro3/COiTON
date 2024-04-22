@@ -303,16 +303,16 @@ contract DiamondDeployer is Test, IDiamondCut {
         );
        
         }
-                string id;
-               address owner;
-                string  country;
-                string  state;
-                string  city;
-                string estateAddress;
-                 uint24 postalCode;
-                string description;
-                uint price;
-                string  images;
+                string id = '1';
+               address owner = A;
+                string  country = "Nigeria";
+                string  state = "Lagos";
+                string  city = "Ikorodu";
+                string estateAddress = "A";
+                 uint24 postalCode = 10;
+                string description = "createlist";
+                uint price = 1;
+                string  images = "";
 
 
         function testCreatedListStateINVALIDLISTING() public {
@@ -349,49 +349,58 @@ contract DiamondDeployer is Test, IDiamondCut {
                 price,
                 images
         );
-
-    
-        LibAppStorage.ListingApproval memory new_listing = boundEstate.getHash('1');
-        // assertEq(new_listing.hash, hash1);
         }
 
 
-        function testCreatedListStateI() public {
-               switchSigner(A);   
+
+
+
+
+
+
+
+        // function testCreatedListStateI() public {
+        //         switchSigner(A);   
                       
-            bytes32 hash1 = keccak256(
-            abi.encodePacked(
-                '1',
-              A,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images
-            )
-        );
-       
-        boundEstate.approveListing('1', hash1, A);
-        boundEstate.createListing(
-            '1',
-          A,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images
-        );
+        //     bytes32 hash1 = keccak256(
+        //     abi.encodePacked(
+        //         '1',
+        //       A,
+        //         country,
+        //         state,
+        //         city,
+        //         estateAddress,
+        //         postalCode,
+        //         description,
+        //         price,
+        //         images
+        //     )
+        // );
+    //      bytes32 key = boundEstate.computeHash(owner, country, state, city, estateAddress, postalCode, description, price, images);
 
-    
-        LibAppStorage.ListingApproval memory new_listing = boundEstate.getHash('1');
-        // assertEq(new_listing.hash, hash1);
-        }
+    //         boundEstate.approveListing('1', key, A); 
+    //     boundEstate.createListing(
+    //         '1',
+    //       A,
+    //             country,
+    //             state,
+    //             city,
+    //             estateAddress,
+    //             postalCode,
+    //             description,
+    //             price,
+    //             images
+    //     );
+      
+     
+    // // console.log(hash1);
+    // // console.log(boundEstate.getHash('1'));
+    // bytes32 new_listing = boundEstate.getHash('1');
+
+    //      assertEq(key, 0xc9bc89bf30a551897e0c19ef18640629b2f474d8cc30a9b1327898486cfe46f5);
+    //       console2.logBytes32(key);
+    //     }
+        
 
 
         // LibAppStorage.Listing memory new_listing = boundEstate.getListing(0);

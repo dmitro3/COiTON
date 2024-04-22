@@ -161,10 +161,14 @@ contract RealEstate {
     }
 
         function getHash(
-        string  memory Id
-    ) external view returns (LibAppStorage.ListingApproval memory) {
-        return l.listingApproval[Id];
+        string memory Id
+    ) external view returns (bytes32) {
+        return l.listingApproval[Id].hash;
     }
+
+     function computeHash(address owner, string memory country, string memory state, string memory city, string memory estateAddress, uint24 postalCode, string memory description, uint256 price, string memory images) public returns (bytes32) {
+    return keccak256(abi.encodePacked(owner, country, state, city, estateAddress, postalCode, description, price, images));
+}
 
     function isValidSigner(
         uint agreementId,
