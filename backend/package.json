@@ -4,7 +4,8 @@
   "main": "server.js",
   "license": "MIT",
   "scripts": {
-    "start": "node server.js"
+    "start": "export NODE_ENV=production && node server.js",
+    "dev": "export NODE_ENV=development && node server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

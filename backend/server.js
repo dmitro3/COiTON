@@ -21,7 +21,8 @@ app.use("/api/v1", AppRoutes)
 const server = app;
 const PORT = 5000 || process.env.PORT
 server.listen(PORT, async () => {
-    sequelize.authenticate();
+    await sequelize.authenticate();
+    console.log("Connected to database")
     console.log("server running on port ", PORT);
 
 });
