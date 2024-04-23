@@ -8,7 +8,7 @@ import { site } from "@/constants";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Toaster } from "@/components/ui/sonner";
-import AuthProvider from "@/context/authentication";
+import AuthContextProvider from "@/context/authContext";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <AuthProvider>
+    <AuthContextProvider>
       <html lang="en" suppressHydrationWarning>
         <body
           className={cn(
@@ -40,6 +40,6 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
         </body>
       </html>
-    </AuthProvider>
+    </AuthContextProvider>
   );
 }

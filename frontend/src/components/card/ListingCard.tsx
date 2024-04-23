@@ -10,11 +10,11 @@ export default function ListingCard({
 }: SingleListingType) {
   return (
     <Link
-      href={`/property/${id}`}
-      className="bg-secondary/30 hover:bg-secondary/50 w-full rounded-xl overflow-hidden transition z-20">
+      href={`/listing/${id}`}
+      className="bg-secondary/30 hover:bg-secondary/50 w-full rounded-xl overflow-hidden transition">
       <div className="w-full aspect-[1.5] bg-card group overflow-hidden">
         <Image
-          src={details?.images[0]}
+          src={`https://bronze-gigantic-quokka-778.mypinata.cloud/ipfs/${details?.images[0]}`}
           alt={details?.description}
           width={700}
           height={700}
@@ -40,9 +40,7 @@ export default function ListingCard({
         </div>
 
         <div className="flex items-center justify-between pt-3 pb-1">
-          <p className="text-base md:text-lg font-bold">
-            ${amountFormatter(Number(details?.price))}
-          </p>
+          <p className="text-base md:text-lg font-bold">${details?.price}</p>
           <p className="text-xs md:text-sm font-medium text-muted-foreground">
             {shortenAddress(`${details?.owner}`)}
           </p>

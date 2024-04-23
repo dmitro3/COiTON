@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Input } from "../ui/input";
 
 import { RiSearch2Line } from "react-icons/ri";
@@ -17,12 +17,11 @@ import { FaRegUserCircle, FaUserCircle } from "react-icons/fa";
 import { AiOutlineLogout } from "react-icons/ai";
 
 import { IoPieChartOutline, IoPieChart } from "react-icons/io5";
-import { useContext } from "react";
-import { AuthContext } from "@/context/authentication";
+import { logoutUser } from "@/auth";
 
 export default function Sidebar() {
+  const router = useRouter();
   const pathname = usePathname();
-  const { logoutUser } = useContext(AuthContext);
 
   return (
     <div className="flex h-full w-full flex-col rounded-xl bg-clip-border p-3 sticky top-0 left-0">
@@ -186,7 +185,10 @@ export default function Sidebar() {
 
         <div
           role="button"
-          onClick={logoutUser}
+          onClick={() => {
+            router.push("/login");
+            logoutUser();
+          }}
           className="mt-auto flex items-center w-full p-3 h-12 leading-tight transition-all rounded-lg text-[#f96565] outline-none text-start hover:bg-destructive/10">
           <span className="grid mr-4 place-items-center">
             <AiOutlineLogout className="w-5 h-5" />

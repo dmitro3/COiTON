@@ -17,11 +17,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { listingSchema } from "@/validations";
-import { AuthContext } from "@/context/authentication";
+
 import { Loader2 } from "lucide-react";
 import { FileUploader } from "@/components/shared/file-uploader";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { AuthContext } from "@/context/authContext";
+import { onUpload } from "@/lib/utils";
 
 export default function CreateListingPage() {
   const router = useRouter();
@@ -37,7 +39,7 @@ export default function CreateListingPage() {
     price: "",
   };
 
-  const { user, isFetchingUser } = useContext(AuthContext);
+  const user = useContext(AuthContext);
 
   const [files, setFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -49,27 +51,69 @@ export default function CreateListingPage() {
     defaultValues: data,
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof listingSchema>) {
-    const data: ListingType = {
-      owner: user?.name,
-      address: values.address,
-      city: values.city,
-      country: values.country,
-      state: values.state,
-      postalCode: values.postalCode,
-      description: values.description,
-      price: values.price,
-      images: files,
-    };
+  async function uploadImagesToIPFS(files: any) {
+    try {
+      const fileUrl = await onUpload(files);
 
-    setListingData(data);
-    toast("Submitted Data", {
-      description: JSON.stringify(data),
-    });
+      return fileUrl;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  if (!isFetchingUser && !user) {
+  // 2. Define a submit handler.
+  async function onSubmit(values: z.infer<typeof listingSchema>) {
+    try {
+      setIsUploading(true);
+      const fileUrls = await onUpload(files);
+
+      if (fileUrls) {
+        const data: ListingType = {
+          owner: user?.credentials?.address,
+          address: values.address,
+          city: values.city,
+          country: values.country,
+          state: values.state,
+          postalCode: values.postalCode,
+          description: values.description,
+          price: values.price,
+          images: fileUrls,
+        };
+
+        const response = await fetch(
+          "https://decentralized-real-estate-trading.onrender.com/api/v1/listings",
+          {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to create listing");
+        }
+
+        await response.json();
+        toast("Listing created successfully", {
+          description: "You are being redirected to the listing details",
+        });
+        // router.push(`/listing/${result?.data?.id}`);
+        router.push("/dashboard");
+      }
+    } catch (error: any) {
+      console.error("Error:", error);
+      toast("Failed to create listing", {
+        description:
+          error.message || "An error occurred while creating the listing",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  if (!user?.isFetchingUser && !user?.credentials) {
     return router.push("/login");
   }
 
@@ -94,7 +138,7 @@ export default function CreateListingPage() {
                     rows={8}
                     placeholder="Description"
                     className="bg-secondary/20"
-                    disabled={isUploading || isFetchingUser}
+                    disabled={isUploading || user?.isFetchingUser}
                     {...field}
                   />
                 </FormControl>
@@ -114,7 +158,7 @@ export default function CreateListingPage() {
                       placeholder="Price"
                       type="text"
                       {...field}
-                      disabled={isUploading || isFetchingUser}
+                      disabled={isUploading || user?.isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -132,7 +176,7 @@ export default function CreateListingPage() {
                       placeholder="Address"
                       type="text"
                       {...field}
-                      disabled={isUploading || isFetchingUser}
+                      disabled={isUploading || user?.isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -153,7 +197,7 @@ export default function CreateListingPage() {
                       placeholder="Country"
                       type="text"
                       {...field}
-                      disabled={isUploading || isFetchingUser}
+                      disabled={isUploading || user?.isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -171,7 +215,7 @@ export default function CreateListingPage() {
                       placeholder="City"
                       type="text"
                       {...field}
-                      disabled={isUploading || isFetchingUser}
+                      disabled={isUploading || user?.isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -192,7 +236,7 @@ export default function CreateListingPage() {
                       placeholder="State"
                       type="text"
                       {...field}
-                      disabled={isUploading || isFetchingUser}
+                      disabled={isUploading || user?.isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -210,7 +254,7 @@ export default function CreateListingPage() {
                       placeholder="Postal Code"
                       type="text"
                       {...field}
-                      disabled={isUploading || isFetchingUser}
+                      disabled={isUploading || user?.isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -230,12 +274,12 @@ export default function CreateListingPage() {
               maxFiles={8}
               maxSize={8 * 1024 * 1024}
               onValueChange={setFiles}
-              disabled={isUploading || isFetchingUser}
+              disabled={isUploading || user?.isFetchingUser}
             />
           </div>
 
           <Button
-            disabled={isUploading || isFetchingUser}
+            disabled={isUploading || user?.isFetchingUser}
             type="submit"
             className="h-12">
             {isUploading ? (
@@ -252,3 +296,14 @@ export default function CreateListingPage() {
     </div>
   );
 }
+
+// TO LET
+//
+// Serviced 3 Bedroom Apartment located off Admiralty Way, Lekki phase 1, Lekki
+//
+// Rent-N5.5m per annum
+// Service charge -N2m per annum, Agency-10%, Legal-10% and Caution Deposit-10%
+//
+// CONTACT TOPLIFT REALTORS ON 08029763540 or 07046057286
+
+// Off Admiralty Way, Lekki Phase 1, Lekki, Lagos

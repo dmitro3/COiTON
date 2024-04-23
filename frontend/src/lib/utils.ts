@@ -1,10 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Account, Client } from "appwrite";
-
-const client = new Client()
-  .setEndpoint("https://cloud.appwrite.io/v1")
-  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID as string);
 
 export function formatBytes(
   bytes: number,
@@ -23,8 +18,6 @@ export function formatBytes(
     sizeType === "accurate" ? accurateSizes[i] ?? "Bytest" : sizes[i] ?? "Bytes"
   }`;
 }
-
-export const account = new Account(client);
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -70,4 +63,41 @@ export const amountFormatter = (amount: any) => {
 
 export const shortenAddress = (addr: string) => {
   return `${addr?.substring(0, 6)}...${addr?.substring(addr.length - 4)}`;
+};
+
+export const onUpload = async (files: File[]) => {
+  const uploadedFiles: string[] = [];
+
+  try {
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const options = {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`,
+        },
+        body: formData,
+      };
+
+      const response = await fetch(
+        "https://api.pinata.cloud/pinning/pinFileToIPFS",
+        options
+      );
+      const pinataResponse = await response.json();
+      const fileUrl = pinataResponse.IpfsHash;
+
+      if (!pinataResponse) {
+        throw new Error("Failed to upload file(s) to Pinata");
+      }
+
+      uploadedFiles.push(fileUrl);
+    }
+
+    return uploadedFiles; // Return the array of uploaded files
+  } catch (error) {
+    console.error("Error uploading file(s) to Pinata:", error);
+    throw new Error("Failed to upload file(s) to Pinata");
+  }
 };

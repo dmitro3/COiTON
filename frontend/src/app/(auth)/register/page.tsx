@@ -22,69 +22,83 @@ import {
   useWeb3Modal,
   useWeb3ModalAccount,
 } from "@web3modal/ethers/react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { cn, shortenAddress } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { AuthContext } from "@/context/authentication";
-
-const formSchema = z.object({
-  email: z.string().min(2).max(50),
-});
+import { toast } from "sonner";
+import { registerUser } from "@/auth";
+import { Loader2, Wallet2 } from "lucide-react";
+import { registerSchema } from "@/validations";
 
 export default function RegisterPage() {
   const router = useRouter();
 
-  const { registerUser, isLoading, user } = useContext(AuthContext);
   const { address, isConnected } = useWeb3ModalAccount();
   const { disconnect } = useDisconnect();
   const { open } = useWeb3Modal();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [isAddress, setIsAddress] = useState("");
   const [isError, setIsError] = useState("");
 
   useEffect(() => {
-    if (user) {
-      router.push("/dashboard");
-    }
-
     if (isConnected) {
       setIsAddress(`0x${address}`);
     }
-  }, [address, isConnected, router, user]);
+  }, [address, isConnected, router]);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: "",
       email: "",
+      password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof registerSchema>) {
+    if (!isConnected) return setIsError("You need to connect your wallet");
+    setIsLoading(true);
+
     const data = {
+      name: values.name,
       email: values.email,
+      password: values.password,
       address: isAddress,
     };
 
-    if (isConnected) {
-      registerUser(data);
-    } else {
-      setIsError("You need to connect your wallet");
+    try {
+      const result: any = await registerUser(data);
+
+      if (result?.data?.user !== null) {
+        router.push("/login");
+        toast("Account created successfully", {
+          description: "You are being redirected to the login",
+        });
+        form.reset();
+      } else {
+        toast.error(result?.error?.message);
+        console.log(result?.error?.message);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   return (
     <div className="flex-1 flex flex-col justify-end gap-6 h-full">
-      <div className="flex justify-end">
-        <Link
-          href="/login"
-          className={buttonVariants({
-            variant: "ghost",
-            size: "sm",
-            className: "w-max",
-          })}>
-          Login
-        </Link>
-      </div>
+      <Link
+        href="/"
+        className={buttonVariants({
+          variant: "ghost",
+          size: "sm",
+          className: "w-max",
+        })}>
+        Go Back
+      </Link>
 
       <div className="w-full h-full flex items-center justify-center">
         <div className="w-full max-w-[350px] flex flex-col items-center">
@@ -96,6 +110,23 @@ export default function RegisterPage() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
               <div className="w-full flex flex-col gap-2">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }: { field: any }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          disabled={isLoading}
+                          placeholder="John Doe"
+                          type="text"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="email"
@@ -113,60 +144,70 @@ export default function RegisterPage() {
                     </FormItem>
                   )}
                 />
-                <div className="flex flex-col w-full gap-1">
-                  {!isConnected && (
-                    <p
-                      onClick={() => {
-                        if (isConnected) {
-                          disconnect();
-                        } else {
-                          open({ view: "Connect" });
-                        }
-                      }}
-                      className="bg-secondary rounded-md px-2 py-1 text-xs cursor-pointer w-max flex justify-end">
-                      Connect Wallet
-                    </p>
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }: { field: any }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          disabled={isLoading}
+                          placeholder="**********"
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
+                />
 
-                  <p
-                    className={cn(
-                      "flex items-center rounded-md border w-full text-[14px] h-9 px-4 text-muted-foreground",
-                      {
-                        "cursor-not-allowed opacity-70 select-none": isLoading,
-                      }
-                    )}>
-                    {isConnected
-                      ? shortenAddress(isAddress)
-                      : "Wallet not connected"}
-                  </p>
-                  {!isAddress && isError && (
-                    <p className="text-[0.8rem] font-medium text-destructive">
-                      {isError}
-                    </p>
-                  )}
-                </div>
                 <Button disabled={isLoading} type="submit" className="w-full">
-                  {isLoading ? "Processing..." : "Register"}
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2" /> Registering...
+                    </>
+                  ) : (
+                    "Continue"
+                  )}
                 </Button>
               </div>
 
               <p className="text-xs flex items-center gap-2 my-6 text-muted-foreground">
                 <span className="flex-1 h-[1px] bg-secondary" />
-                OR CONTINUE WITH
+                {!address
+                  ? "YOU NEED TO CONNECT YOUR WALLET"
+                  : "CLICK ON CONTINUE TO REGISTER"}
                 <span className="flex-1 h-[1px] bg-secondary" />
               </p>
 
               <Button
-                disabled
+                onClick={() => {
+                  if (isConnected) {
+                    disconnect();
+                  } else {
+                    open({ view: "Connect" });
+                  }
+                }}
+                disabled={!!address}
                 type="submit"
                 className="w-full mb-4"
-                variant="outline">
-                <FaGithub className="w-4 h-4 mr-2" /> Github
+                variant="secondary">
+                {!address ? (
+                  <>
+                    Connect Wallet
+                    <Wallet2 className="w-4 h-4 ml-2" />
+                  </>
+                ) : (
+                  shortenAddress(`0x${address}`)
+                )}
               </Button>
 
               <p className="text-sm text-muted-foreground text-center">
-                By clicking continue, you agree to our Terms of Service and
-                Privacy Policy.
+                Already have an account?{" "}
+                <Link href="/login" className="text-primary hover:underline">
+                  Login
+                </Link>
               </p>
             </form>
           </Form>

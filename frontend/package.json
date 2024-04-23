@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "coiton-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -20,13 +20,14 @@
     "@radix-ui/react-progress": "^1.0.3",
     "@radix-ui/react-scroll-area": "^1.0.5",
     "@radix-ui/react-slot": "^1.0.2",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/ssr": "^0.3.0",
+    "@supabase/supabase-js": "^2.42.5",
     "@web3modal/ethers": "^4.1.10",
-    "appwrite": "^14.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "ethers": "^6.12.0",
     "lucide-react": "^0.368.0",
-    "newsapi": "^2.4.1",
     "next": "14.2.1",
     "next-themes": "^0.3.0",
     "pino-pretty": "^11.0.0",
@@ -44,6 +45,7 @@
     "zod": "^3.22.5"
   },
   "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

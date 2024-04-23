@@ -8,12 +8,11 @@ import { usePathname } from "next/navigation";
 import { Button, buttonVariants } from "../ui/button";
 import { AlignJustify, WalletIcon } from "lucide-react";
 import { SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { AuthContext } from "@/context/authentication";
 import { useContext } from "react";
 
 export default function Header() {
+  const user = true;
   const pathname = usePathname();
-  const { user } = useContext(AuthContext);
 
   return (
     <div className="w-full sticky top-0 inset-x-0 z-50 bg-background/70 backdrop-blur-lg">

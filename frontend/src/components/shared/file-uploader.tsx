@@ -10,10 +10,10 @@ import Dropzone, {
 import { toast } from "sonner";
 
 import { cn, formatBytes } from "@/lib/utils";
-import { useControllableState } from "@/hooks/useControllableState";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useControllableState } from "@/hooks/useControllableState";
 
 interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -164,7 +164,7 @@ export function FileUploader(props: FileUploaderProps) {
 
   function onRemove(index: number) {
     if (!files) return;
-    const newFiles = files.filter((_: any, i: number) => i !== index);
+    const newFiles = files.filter((_, i) => i !== index);
     setFiles(newFiles);
     onValueChange?.(newFiles);
   }
