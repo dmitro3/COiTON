@@ -88,6 +88,10 @@ export const onUpload = async (files: File[]) => {
       const pinataResponse = await response.json();
       const fileUrl = pinataResponse.IpfsHash;
 
+      if (!pinataResponse) {
+        throw new Error("Failed to upload file(s) to Pinata");
+      }
+
       uploadedFiles.push(fileUrl);
     }
 

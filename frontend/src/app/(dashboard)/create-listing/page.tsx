@@ -52,19 +52,22 @@ export default function CreateListingPage() {
   });
 
   async function uploadImagesToIPFS(files: any) {
-    return files;
+    try {
+      const fileUrl = await onUpload(files);
+
+      return fileUrl;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof listingSchema>) {
     try {
       setIsUploading(true);
-      const fileUrls = await uploadImagesToIPFS(files);
+      const fileUrls = await onUpload(files);
 
-      if (!fileUrls) {
-        setIsUploading(false);
-        throw new Error("Failed to upload images to IPFS");
-      } else {
+      if (fileUrls) {
         const data: ListingType = {
           owner: user?.credentials?.address,
           address: values.address,
@@ -77,29 +80,27 @@ export default function CreateListingPage() {
           images: fileUrls,
         };
 
-        console.log(data?.images);
+        const response = await fetch(
+          "https://decentralized-real-estate-trading.onrender.com/api/v1/listings",
+          {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-        // const response = await fetch(
-        //   "https://decentralized-real-estate-trading.onrender.com/api/v1/listings",
-        //   {
-        //     method: "POST",
-        //     body: JSON.stringify(data),
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //   }
-        // );
+        if (!response.ok) {
+          throw new Error("Failed to create listing");
+        }
 
-        // if (!response.ok) {
-        //   throw new Error("Failed to create listing");
-        // }
-
-        // await response.json();
-        // toast("Listing created successfully", {
-        //   description: "You are being redirected to the listing details",
-        // });
-        // // router.push(`/listing/${result?.data?.id}`);
-        // router.push("/dashboard");
+        await response.json();
+        toast("Listing created successfully", {
+          description: "You are being redirected to the listing details",
+        });
+        // router.push(`/listing/${result?.data?.id}`);
+        router.push("/dashboard");
       }
     } catch (error: any) {
       console.error("Error:", error);
