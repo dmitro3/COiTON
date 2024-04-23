@@ -10,11 +10,11 @@ export default function ListingCard({
 }: SingleListingType) {
   return (
     <Link
-      href={`/property/${id}`}
-      className="bg-secondary/30 hover:bg-secondary/50 w-full rounded-xl overflow-hidden transition z-20">
+      href={`/listing/${id}`}
+      className="bg-secondary/30 hover:bg-secondary/50 w-full rounded-xl overflow-hidden transition">
       <div className="w-full aspect-[1.5] bg-card group overflow-hidden">
         <Image
-          src={details?.images[0]}
+          src={`https://bronze-gigantic-quokka-778.mypinata.cloud/ipfs/${details?.images[0]}`}
           alt={details?.description}
           width={700}
           height={700}

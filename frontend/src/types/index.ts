@@ -9,22 +9,18 @@ interface SiteConfigProps {
   description: string;
 }
 
-interface AuthContextType {
-  user: any;
-  isLoading: boolean;
-  isFetchingUser: boolean;
-  registerUser: (data: { email: string; address: string }) => void;
-  loginUser: (data: { email: string; address: string }) => void;
-  logoutUser: () => void;
-  checkUserStatus: () => void;
+interface UserType {
+  name: string;
+  address: string;
+  email: string;
+  avatar: string;
+  id: string | undefined;
 }
 
-interface UserType {
-  avatar: string;
-  name: string;
-  email: string;
-  id: string;
-  registration: string;
+interface AuthContextType {
+  credentials?: UserType | any;
+  isFetchingUser?: boolean | any;
+  isError?: string;
 }
 
 interface ListingType {

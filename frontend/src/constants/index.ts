@@ -1,4 +1,7 @@
+import { createClient } from "@/utils/supabase/client";
 import { CandlestickChart, LayoutDashboard } from "lucide-react";
+
+export const supabase = createClient();
 
 export const site: SiteConfigProps = {
   title:
