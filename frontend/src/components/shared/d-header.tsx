@@ -1,19 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import React, { useContext } from "react";
 import MobileSidebar from "./mobile-sidebar";
 
 import { shortenAddress } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Skeleton } from "../ui/skeleton";
 import { AuthContext } from "@/context/authContext";
 
 export default function DashboardHeader() {
   const data = useContext(AuthContext);
-
-  // console.log(data?.credentials);
 
   return (
     <header className="sticky top-0 left-0 w-full py-2 bg-background z-50">
