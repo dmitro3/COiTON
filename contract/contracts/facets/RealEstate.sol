@@ -32,20 +32,39 @@ contract RealEstate {
         l.erc721Token = _address;
     }
 
-    function approveListing(
+    // function approveListing(
+    //     string memory id,
+    //     bytes32 hash,
+    //     address approver
+    // ) external {
+    //     LibAppStorage.ListingApproval storage _newListingApproval = l
+    //         .listingApproval[id];
+
+    //     if (_newListingApproval.approved) {
+    //         revert ERRORS.LISTING_ALREADY_APPROVED();
+    //     }
+    //     _newListingApproval.approved = true;
+    //     _newListingApproval.hash = hash;
+    //     _newListingApproval.approver = approver;
+    // }
+
+    function queListingForApproval(
         string memory id,
         bytes32 hash,
-        address owner
-    ) external OnlyOwner {
+        address approver
+    ) external {
+        if (tx.origin != l.owner) {
+            revert ERRORS.UNAUTHORIZED();
+        }
         LibAppStorage.ListingApproval storage _newListingApproval = l
             .listingApproval[id];
 
         if (_newListingApproval.approved) {
             revert ERRORS.LISTING_ALREADY_APPROVED();
         }
-        _newListingApproval.approved = true;
+        _newListingApproval.approved = false;
         _newListingApproval.hash = hash;
-        _newListingApproval.owner = owner;
+        _newListingApproval.approver = approver;
     }
 
     // This function is use to create new listings
@@ -60,6 +79,7 @@ contract RealEstate {
     function createListing(
         string memory id,
         address owner,
+        address agent,
         string memory country,
         string memory state,
         string memory city,
@@ -68,7 +88,8 @@ contract RealEstate {
         string memory description,
         uint256 price,
         string memory images,
-        string memory coverImage
+        string memory coverImage,
+        string memory features
     ) external {
         if (owner == address(0)) {
             revert ERRORS.UNAUTHORIZED();
@@ -76,12 +97,13 @@ contract RealEstate {
 
         LibAppStorage.ListingApproval storage _listingApproval = l
             .listingApproval[id];
+        _listingApproval.approved = true;
 
         if (!_listingApproval.approved) {
             revert ERRORS.LISTING_NOT_APPROVED();
         }
 
-        if (msg.sender != _listingApproval.owner) {
+        if (tx.origin != _listingApproval.approver) {
             revert ERRORS.UNAUTHORIZED();
         }
 
@@ -92,6 +114,7 @@ contract RealEstate {
         bytes32 hash = keccak256(
             abi.encodePacked(
                 owner,
+                agent,
                 country,
                 state,
                 city,
@@ -100,7 +123,8 @@ contract RealEstate {
                 description,
                 price,
                 images,
-                coverImage
+                coverImage,
+                features
             )
         );
 
@@ -112,6 +136,7 @@ contract RealEstate {
         LibAppStorage.Listing memory _newListing = LibAppStorage.Listing(
             listingId,
             owner,
+            agent,
             country,
             state,
             city,
@@ -122,6 +147,7 @@ contract RealEstate {
             images,
             listingId,
             coverImage,
+            features,
             block.timestamp
         );
 
@@ -166,7 +192,7 @@ contract RealEstate {
         return l.proposals[Id];
     }
 
-          function getHash(
+    function getHash(
         string memory Id
     ) external view returns (LibAppStorage.ListingApproval memory) {
         return l.listingApproval[Id];
