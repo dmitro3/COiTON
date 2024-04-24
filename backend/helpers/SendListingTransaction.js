@@ -6,6 +6,7 @@ exports.SendListingTransaction = async (id, details) => {
     const hash = ethers.solidityPackedKeccak256(
         [
             "address",
+            "address",
             "string",
             "string",
             "string",
@@ -15,8 +16,9 @@ exports.SendListingTransaction = async (id, details) => {
             "uint256",
             "string",
             "string",
+            "string",
         ],
-        [details.owner, details.country, details.state, details.city, details.address, details.postalCode, details.description, details.price, details.images.join(";"), details.coverImage]
+        [details.owner, details.agent, details.country, details.state, details.city, details.address, details.postalCode, details.description, details.price, details.images.join(";"), details.coverImage, details.features]
     );
 
 
@@ -29,7 +31,23 @@ exports.SendListingTransaction = async (id, details) => {
         ABI,
         wallet);
 
-    const tx = await contract.approveListing(id, hash, details.owner);
+    const listing = {
+        owner: details.owner,
+        agentId: details.agent,
+        country: details.country,
+        state: details.state,
+        city: details.city,
+        estateAddress: details.estateAddress,
+        postalCode: details.postalCode,
+        description: details.description,
+        price: details.price,
+        images: details.images,
+        features: details.features,
+        coverImage: details.coverImage,
+        id: id,
+    }
+
+    const tx = await contract.delegateListingForApproval(details.state, hash, listing);
     const receipt = await tx.wait();
 
     if (receipt.status) {
