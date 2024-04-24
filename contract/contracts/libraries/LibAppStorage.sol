@@ -21,6 +21,7 @@ library LibAppStorage {
     struct Listing {
         uint id;
         address owner;
+        address agent;
         string country;
         string state;
         string city;
@@ -31,6 +32,7 @@ library LibAppStorage {
         string images;
         uint tokenId;
         string coverImage;
+        string features;
         uint256 createdAt;
     }
 
@@ -78,7 +80,7 @@ library LibAppStorage {
 
     struct ListingApproval {
         bytes32 hash;
-        address owner;
+        address approver;
         bool approved;
         bool created;
     }
