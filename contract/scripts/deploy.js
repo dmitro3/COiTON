@@ -9,13 +9,13 @@ async function deployDiamond() {
   const diamondCutFacet = await DiamondCutFacet.deploy()
   await diamondCutFacet.deployed()
   console.log('DiamondCutFacet deployed:', diamondCutFacet.address)
-
+  const ACCOUNT = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
   // deploy Diamond
   const Diamond = await ethers.getContractFactory('Diamond')
   const diamond = await Diamond.deploy(
-    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    ACCOUNT,
     diamondCutFacet.address,
-    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+    ACCOUNT
   )
   await diamond.deployed()
 
@@ -31,7 +31,7 @@ async function deployDiamond() {
 
 
   const ERC20Token = await ethers.getContractFactory("CoitonERC20")
-  const erc20Token = await ERC20Token.deploy()
+  const erc20Token = await ERC20Token.deploy(ACCOUNT)
 
 
   const ERC721Token = await ethers.getContractFactory("CoitonNFT")
