@@ -5,6 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Input } from "../ui/input";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import { RiSearch2Line } from "react-icons/ri";
 import { MdAddHomeWork, MdOutlineAddHomeWork } from "react-icons/md";
@@ -12,7 +18,10 @@ import { MdOutlineRealEstateAgent, MdRealEstateAgent } from "react-icons/md";
 import { PiSealQuestionLight, PiSealQuestionFill } from "react-icons/pi";
 
 import { IoSettingsOutline, IoSettingsSharp } from "react-icons/io5";
-import { FaRegUserCircle, FaUserCircle } from "react-icons/fa";
+import { PiBellSimpleLight, PiBellSimpleFill } from "react-icons/pi";
+
+import { BiSelectMultiple, BiSolidSelectMultiple } from "react-icons/bi";
+import { PiUsersDuotone, PiUsersFill } from "react-icons/pi";
 
 import { AiOutlineLogout } from "react-icons/ai";
 
@@ -65,190 +74,195 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex min-w-[240px] flex-col flex-1 gap-1 p-2 font-sans text-base font-normal text-blue-gray-700">
-        <div className="relative block w-full">
-          <p className="block mr-auto font-sans text-xs sm:text-sm p-2 antialiased font-semibold tracking-widest">
-            DASHBOARD
-          </p>
-
-          <div className="overflow-hidden">
-            <div className="block w-full py-1 font-sans text-sm antialiased font-light leading-normal pl-2 sm:pl-4">
-              <nav className="flex min-w-[240px] flex-col gap-1 p-0 font-sans text-base font-normal">
-                <Link
-                  href="/dashboard"
-                  className={cn(
-                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
-                    {
-                      "bg-secondary/30 hover:bg-secondary/40 text-foreground":
-                        pathname === "/dashboard",
-                    }
-                  )}>
-                  <span className="grid mr-3 sm:mr-4 place-items-center">
-                    {pathname === "/dashboard" ? (
-                      <MdRealEstateAgent className="w-5 h-5" />
-                    ) : (
-                      <MdOutlineRealEstateAgent className="w-5 h-5" />
-                    )}
-                  </span>
-                  Estates
-                </Link>
-                <Link
-                  href="/tradings"
-                  className={cn(
-                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
-                    {
-                      "bg-secondary/30 hover:bg-secondary/40 text-foreground":
-                        pathname === "/tradings",
-                    }
-                  )}>
-                  <span className="grid mr-3 sm:mr-4 place-items-center">
-                    {pathname === "/tradings" ? (
-                      <IoPieChart className="w-5 h-5" />
-                    ) : (
-                      <IoPieChartOutline className="w-5 h-5" />
-                    )}
-                  </span>
-                  Tradings
-                </Link>
-                <Link
-                  href="/create-listing"
-                  className={cn(
-                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
-                    {
-                      "bg-secondary/30 hover:bg-secondary/40 text-foreground":
-                        pathname === "/create-listing",
-                    }
-                  )}>
-                  <span className="grid mr-3 sm:mr-4 place-items-center">
-                    {pathname === "/create-listing" ? (
-                      <MdAddHomeWork className="w-5 h-5" />
-                    ) : (
-                      <MdOutlineAddHomeWork className="w-5 h-5" />
-                    )}
-                  </span>
-                  Create Listing
-                </Link>
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        {isAdmin && (
-          <div className="relative block w-full">
-            <p className="block mr-auto font-sans text-xs sm:text-sm p-2 antialiased font-semibold tracking-widest">
-              ADMIN
-            </p>
-
-            <div className="overflow-hidden">
+        <Accordion type="multiple" className="w-full">
+          <AccordionItem value="item-1">
+            <AccordionTrigger>
+              <p className="block mr-auto font-sans text-xs sm:text-sm p-2 antialiased font-semibold tracking-widest">
+                DASHBOARD
+              </p>
+            </AccordionTrigger>
+            <AccordionContent>
               <div className="block w-full py-1 font-sans text-sm antialiased font-light leading-normal pl-2 sm:pl-4">
                 <nav className="flex min-w-[240px] flex-col gap-1 p-0 font-sans text-base font-normal">
                   <Link
-                    href="/approvals"
+                    href="/dashboard"
                     className={cn(
                       "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
                       {
                         "bg-secondary/30 hover:bg-secondary/40 text-foreground":
-                          pathname === "/approvals",
+                          pathname === "/dashboard",
                       }
                     )}>
                     <span className="grid mr-3 sm:mr-4 place-items-center">
-                      {pathname === "/approvals" ? (
+                      {pathname === "/dashboard" ? (
                         <MdRealEstateAgent className="w-5 h-5" />
                       ) : (
                         <MdOutlineRealEstateAgent className="w-5 h-5" />
                       )}
                     </span>
-                    Approvals
+                    Estates
                   </Link>
                   <Link
-                    href="/users"
+                    href="/tradings"
                     className={cn(
                       "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
                       {
                         "bg-secondary/30 hover:bg-secondary/40 text-foreground":
-                          pathname === "/users",
+                          pathname === "/tradings",
                       }
                     )}>
                     <span className="grid mr-3 sm:mr-4 place-items-center">
-                      {pathname === "/users" ? (
+                      {pathname === "/tradings" ? (
                         <IoPieChart className="w-5 h-5" />
                       ) : (
                         <IoPieChartOutline className="w-5 h-5" />
                       )}
                     </span>
-                    Users
+                    Tradings
+                  </Link>
+                  <Link
+                    href="/create-listing"
+                    className={cn(
+                      "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
+                      {
+                        "bg-secondary/30 hover:bg-secondary/40 text-foreground":
+                          pathname === "/create-listing",
+                      }
+                    )}>
+                    <span className="grid mr-3 sm:mr-4 place-items-center">
+                      {pathname === "/create-listing" ? (
+                        <MdAddHomeWork className="w-5 h-5" />
+                      ) : (
+                        <MdOutlineAddHomeWork className="w-5 h-5" />
+                      )}
+                    </span>
+                    Create Listing
+                  </Link>
+                  <Link
+                    href="/notifications"
+                    className={cn(
+                      "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
+                      {
+                        "bg-secondary/30 hover:bg-secondary/40 text-foreground":
+                          pathname === "/notifications",
+                      }
+                    )}>
+                    <span className="grid mr-3 sm:mr-4 place-items-center">
+                      {pathname === "/notifications" ? (
+                        <PiBellSimpleFill className="w-5 h-5" />
+                      ) : (
+                        <PiBellSimpleLight className="w-5 h-5" />
+                      )}
+                    </span>
+                    Notifications
                   </Link>
                 </nav>
               </div>
-            </div>
-          </div>
-        )}
+            </AccordionContent>
+          </AccordionItem>
 
-        <div className="relative block w-full">
-          <p className="block mr-auto font-sans text-xs sm:text-sm p-2 antialiased font-semibold tracking-widest">
-            SETTINGS
-          </p>
+          {isAdmin && (
+            <AccordionItem value="item-2">
+              <AccordionTrigger>
+                <p className="block mr-auto font-sans text-xs sm:text-sm p-2 antialiased font-semibold tracking-widest">
+                  ADMIN
+                </p>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="block w-full py-1 font-sans text-sm antialiased font-light leading-normal pl-2 sm:pl-4">
+                  <nav className="flex min-w-[240px] flex-col gap-1 p-0 font-sans text-base font-normal">
+                    <Link
+                      href="/approvals"
+                      className={cn(
+                        "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
+                        {
+                          "bg-secondary/30 hover:bg-secondary/40 text-foreground":
+                            pathname === "/approvals",
+                        }
+                      )}>
+                      <span className="grid mr-3 sm:mr-4 place-items-center">
+                        {pathname === "/approvals" ? (
+                          <BiSolidSelectMultiple className="w-5 h-5" />
+                        ) : (
+                          <BiSelectMultiple className="w-5 h-5" />
+                        )}
+                      </span>
+                      Approvals
+                    </Link>
+                    <Link
+                      href="/users"
+                      className={cn(
+                        "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
+                        {
+                          "bg-secondary/30 hover:bg-secondary/40 text-foreground":
+                            pathname === "/users",
+                        }
+                      )}>
+                      <span className="grid mr-3 sm:mr-4 place-items-center">
+                        {pathname === "/users" ? (
+                          <PiUsersFill className="w-5 h-5" />
+                        ) : (
+                          <PiUsersDuotone className="w-5 h-5" />
+                        )}
+                      </span>
+                      Users
+                    </Link>
+                  </nav>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          )}
 
-          <div className="overflow-hidden">
-            <div className="block w-full py-1 font-sans text-sm antialiased font-light leading-normal pl-2 sm:pl-4">
-              <nav className="flex min-w-[240px] flex-col gap-1 p-0 font-sans text-base font-normal">
-                <Link
-                  href="/support"
-                  className={cn(
-                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
-                    {
-                      "bg-secondary/30 hover:bg-secondary/40 text-foreground":
-                        pathname === "/support",
-                    }
-                  )}>
-                  <span className="grid mr-3 sm:mr-4 place-items-center">
-                    {pathname === "/support" ? (
-                      <PiSealQuestionFill className="w-5 h-5" />
-                    ) : (
-                      <PiSealQuestionLight className="w-5 h-5" />
-                    )}
-                  </span>
-                  Help & Support
-                </Link>
-                <Link
-                  href="/settings"
-                  className={cn(
-                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
-                    {
-                      "bg-secondary/30 hover:bg-secondary/40 text-foreground":
-                        pathname === "/settings",
-                    }
-                  )}>
-                  <span className="grid mr-3 sm:mr-4 place-items-center">
-                    {pathname === "/settings" ? (
-                      <IoSettingsSharp className="w-5 h-5" />
-                    ) : (
-                      <IoSettingsOutline className="w-5 h-5" />
-                    )}
-                  </span>
-                  Settings
-                </Link>
-                <Link
-                  href="/account"
-                  className={cn(
-                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
-                    {
-                      "bg-secondary/30 hover:bg-secondary/40 text-foreground":
-                        pathname === "/account",
-                    }
-                  )}>
-                  <span className="grid mr-3 sm:mr-4 place-items-center">
-                    {pathname === "/account" ? (
-                      <FaUserCircle className="w-5 h-5" />
-                    ) : (
-                      <FaRegUserCircle className="w-5 h-5" />
-                    )}
-                  </span>
-                  Account
-                </Link>
-              </nav>
-            </div>
-          </div>
-        </div>
+          <AccordionItem value="item-3">
+            <AccordionTrigger className="p-0 hover:no-underline">
+              <p className="block mr-auto font-sans text-xs p-2 sm:text-sm antialiased font-semibold tracking-widest">
+                SETTINGS
+              </p>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="block w-full py-1 font-sans text-sm antialiased font-light leading-normal pl-2 sm:pl-4">
+                <nav className="flex min-w-[240px] flex-col gap-1 p-0 font-sans text-base font-normal">
+                  <Link
+                    href="/support"
+                    className={cn(
+                      "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
+                      {
+                        "bg-secondary/30 hover:bg-secondary/40 text-foreground":
+                          pathname === "/support",
+                      }
+                    )}>
+                    <span className="grid mr-3 sm:mr-4 place-items-center">
+                      {pathname === "/support" ? (
+                        <PiSealQuestionFill className="w-5 h-5" />
+                      ) : (
+                        <PiSealQuestionLight className="w-5 h-5" />
+                      )}
+                    </span>
+                    Help & Support
+                  </Link>
+                  <Link
+                    href="/settings"
+                    className={cn(
+                      "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
+                      {
+                        "bg-secondary/30 hover:bg-secondary/40 text-foreground":
+                          pathname === "/settings",
+                      }
+                    )}>
+                    <span className="grid mr-3 sm:mr-4 place-items-center">
+                      {pathname === "/settings" ? (
+                        <IoSettingsSharp className="w-5 h-5" />
+                      ) : (
+                        <IoSettingsOutline className="w-5 h-5" />
+                      )}
+                    </span>
+                    Settings
+                  </Link>
+                </nav>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         <div
           role="button"
