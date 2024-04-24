@@ -66,23 +66,23 @@ export default function Sidebar() {
 
       <nav className="flex min-w-[240px] flex-col flex-1 gap-1 p-2 font-sans text-base font-normal text-blue-gray-700">
         <div className="relative block w-full">
-          <p className="block mr-auto font-sans text-sm p-2 antialiased font-semibold tracking-widest">
+          <p className="block mr-auto font-sans text-xs sm:text-sm p-2 antialiased font-semibold tracking-widest">
             DASHBOARD
           </p>
 
           <div className="overflow-hidden">
-            <div className="block w-full py-1 font-sans text-sm antialiased font-light leading-normal pl-4">
+            <div className="block w-full py-1 font-sans text-sm antialiased font-light leading-normal pl-2 sm:pl-4">
               <nav className="flex min-w-[240px] flex-col gap-1 p-0 font-sans text-base font-normal">
                 <Link
                   href="/dashboard"
                   className={cn(
-                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10",
+                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
                     {
                       "bg-secondary/30 hover:bg-secondary/40 text-foreground":
                         pathname === "/dashboard",
                     }
                   )}>
-                  <span className="grid mr-4 place-items-center">
+                  <span className="grid mr-3 sm:mr-4 place-items-center">
                     {pathname === "/dashboard" ? (
                       <MdRealEstateAgent className="w-5 h-5" />
                     ) : (
@@ -94,13 +94,13 @@ export default function Sidebar() {
                 <Link
                   href="/tradings"
                   className={cn(
-                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10",
+                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
                     {
                       "bg-secondary/30 hover:bg-secondary/40 text-foreground":
                         pathname === "/tradings",
                     }
                   )}>
-                  <span className="grid mr-4 place-items-center">
+                  <span className="grid mr-3 sm:mr-4 place-items-center">
                     {pathname === "/tradings" ? (
                       <IoPieChart className="w-5 h-5" />
                     ) : (
@@ -112,13 +112,13 @@ export default function Sidebar() {
                 <Link
                   href="/create-listing"
                   className={cn(
-                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10",
+                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
                     {
                       "bg-secondary/30 hover:bg-secondary/40 text-foreground":
                         pathname === "/create-listing",
                     }
                   )}>
-                  <span className="grid mr-4 place-items-center">
+                  <span className="grid mr-3 sm:mr-4 place-items-center">
                     {pathname === "/create-listing" ? (
                       <MdAddHomeWork className="w-5 h-5" />
                     ) : (
@@ -134,23 +134,23 @@ export default function Sidebar() {
 
         {isAdmin && (
           <div className="relative block w-full">
-            <p className="block mr-auto font-sans text-sm p-2 antialiased font-semibold tracking-widest">
+            <p className="block mr-auto font-sans text-xs sm:text-sm p-2 antialiased font-semibold tracking-widest">
               ADMIN
             </p>
 
             <div className="overflow-hidden">
-              <div className="block w-full py-1 font-sans text-sm antialiased font-light leading-normal pl-4">
+              <div className="block w-full py-1 font-sans text-sm antialiased font-light leading-normal pl-2 sm:pl-4">
                 <nav className="flex min-w-[240px] flex-col gap-1 p-0 font-sans text-base font-normal">
                   <Link
                     href="/approvals"
                     className={cn(
-                      "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10",
+                      "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
                       {
                         "bg-secondary/30 hover:bg-secondary/40 text-foreground":
                           pathname === "/approvals",
                       }
                     )}>
-                    <span className="grid mr-4 place-items-center">
+                    <span className="grid mr-3 sm:mr-4 place-items-center">
                       {pathname === "/approvals" ? (
                         <MdRealEstateAgent className="w-5 h-5" />
                       ) : (
@@ -162,13 +162,13 @@ export default function Sidebar() {
                   <Link
                     href="/users"
                     className={cn(
-                      "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10",
+                      "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
                       {
                         "bg-secondary/30 hover:bg-secondary/40 text-foreground":
                           pathname === "/users",
                       }
                     )}>
-                    <span className="grid mr-4 place-items-center">
+                    <span className="grid mr-3 sm:mr-4 place-items-center">
                       {pathname === "/users" ? (
                         <IoPieChart className="w-5 h-5" />
                       ) : (
@@ -184,23 +184,23 @@ export default function Sidebar() {
         )}
 
         <div className="relative block w-full">
-          <p className="block mr-auto font-sans text-sm p-2 antialiased font-semibold tracking-widest">
+          <p className="block mr-auto font-sans text-xs sm:text-sm p-2 antialiased font-semibold tracking-widest">
             SETTINGS
           </p>
 
           <div className="overflow-hidden">
-            <div className="block w-full py-1 font-sans text-sm antialiased font-light leading-normal pl-4">
+            <div className="block w-full py-1 font-sans text-sm antialiased font-light leading-normal pl-2 sm:pl-4">
               <nav className="flex min-w-[240px] flex-col gap-1 p-0 font-sans text-base font-normal">
                 <Link
                   href="/support"
                   className={cn(
-                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10",
+                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
                     {
                       "bg-secondary/30 hover:bg-secondary/40 text-foreground":
                         pathname === "/support",
                     }
                   )}>
-                  <span className="grid mr-4 place-items-center">
+                  <span className="grid mr-3 sm:mr-4 place-items-center">
                     {pathname === "/support" ? (
                       <PiSealQuestionFill className="w-5 h-5" />
                     ) : (
@@ -212,13 +212,13 @@ export default function Sidebar() {
                 <Link
                   href="/settings"
                   className={cn(
-                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10",
+                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
                     {
                       "bg-secondary/30 hover:bg-secondary/40 text-foreground":
                         pathname === "/settings",
                     }
                   )}>
-                  <span className="grid mr-4 place-items-center">
+                  <span className="grid mr-3 sm:mr-4 place-items-center">
                     {pathname === "/settings" ? (
                       <IoSettingsSharp className="w-5 h-5" />
                     ) : (
@@ -230,13 +230,13 @@ export default function Sidebar() {
                 <Link
                   href="/account"
                   className={cn(
-                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10",
+                    "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10 text-sm sm:text-base",
                     {
                       "bg-secondary/30 hover:bg-secondary/40 text-foreground":
                         pathname === "/account",
                     }
                   )}>
-                  <span className="grid mr-4 place-items-center">
+                  <span className="grid mr-3 sm:mr-4 place-items-center">
                     {pathname === "/account" ? (
                       <FaUserCircle className="w-5 h-5" />
                     ) : (
@@ -257,8 +257,8 @@ export default function Sidebar() {
             logoutUser();
             await disconnect();
           }}
-          className="mt-auto flex items-center w-full p-3 h-12 leading-tight transition-all rounded-lg text-[#f96565] outline-none text-start hover:bg-destructive/10">
-          <span className="grid mr-4 place-items-center">
+          className="mt-auto flex items-center w-full p-3 h-12 leading-tight transition-all rounded-lg text-[#f96565] outline-none text-start hover:bg-destructive/10 text-sm sm:text-base">
+          <span className="grid mr-3 sm:mr-4 place-items-center">
             <AiOutlineLogout className="w-5 h-5" />
           </span>
           Logout
