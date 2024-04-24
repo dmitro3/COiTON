@@ -43,23 +43,12 @@ export default function CreateListingPage() {
 
   const [files, setFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [listingData, setListingData] = useState<ListingType>(data);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof listingSchema>>({
     resolver: zodResolver(listingSchema),
     defaultValues: data,
   });
-
-  async function uploadImagesToIPFS(files: any) {
-    try {
-      const fileUrl = await onUpload(files);
-
-      return fileUrl;
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof listingSchema>) {

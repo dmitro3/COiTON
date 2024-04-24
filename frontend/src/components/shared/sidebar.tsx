@@ -18,10 +18,25 @@ import { AiOutlineLogout } from "react-icons/ai";
 
 import { IoPieChartOutline, IoPieChart } from "react-icons/io5";
 import { logoutUser } from "@/auth";
+import { useEffect, useState } from "react";
+import { useDisconnect, useWeb3ModalAccount } from "@web3modal/ethers/react";
 
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
+
+  const { address } = useWeb3ModalAccount();
+  const { disconnect } = useDisconnect();
+
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (process.env.NEXT_PUBLIC_ADMIN_ADDRESS === address) {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [address]);
 
   return (
     <div className="flex h-full w-full flex-col rounded-xl bg-clip-border p-3 sticky top-0 left-0">
@@ -42,10 +57,10 @@ export default function Sidebar() {
 
       <div className="p-2">
         <div className="relative h-11 w-full min-w-[200px]">
-          <div className="absolute grid w-5 h-5 top-2/4 right-3 -translate-y-2/4 place-items-center">
+          <div className="absolute grid w-5 h-5 top-2/4 right-3 -translate-y-2/4 place-items-center opacity-50">
             <RiSearch2Line className="w-5 h-5" />
           </div>
-          <Input className="pr-10 h-full" placeholder="Search" />
+          <Input className="pr-10 h-full" disabled placeholder="Search" />
         </div>
       </div>
 
@@ -116,6 +131,58 @@ export default function Sidebar() {
             </div>
           </div>
         </div>
+
+        {isAdmin && (
+          <div className="relative block w-full">
+            <p className="block mr-auto font-sans text-sm p-2 antialiased font-semibold tracking-widest">
+              ADMIN
+            </p>
+
+            <div className="overflow-hidden">
+              <div className="block w-full py-1 font-sans text-sm antialiased font-light leading-normal pl-4">
+                <nav className="flex min-w-[240px] flex-col gap-1 p-0 font-sans text-base font-normal">
+                  <Link
+                    href="/approvals"
+                    className={cn(
+                      "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10",
+                      {
+                        "bg-secondary/30 hover:bg-secondary/40 text-foreground":
+                          pathname === "/approvals",
+                      }
+                    )}>
+                    <span className="grid mr-4 place-items-center">
+                      {pathname === "/approvals" ? (
+                        <MdRealEstateAgent className="w-5 h-5" />
+                      ) : (
+                        <MdOutlineRealEstateAgent className="w-5 h-5" />
+                      )}
+                    </span>
+                    Approvals
+                  </Link>
+                  <Link
+                    href="/users"
+                    className={cn(
+                      "flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-secondary/10",
+                      {
+                        "bg-secondary/30 hover:bg-secondary/40 text-foreground":
+                          pathname === "/users",
+                      }
+                    )}>
+                    <span className="grid mr-4 place-items-center">
+                      {pathname === "/users" ? (
+                        <IoPieChart className="w-5 h-5" />
+                      ) : (
+                        <IoPieChartOutline className="w-5 h-5" />
+                      )}
+                    </span>
+                    Users
+                  </Link>
+                </nav>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="relative block w-full">
           <p className="block mr-auto font-sans text-sm p-2 antialiased font-semibold tracking-widest">
             SETTINGS
@@ -185,9 +252,10 @@ export default function Sidebar() {
 
         <div
           role="button"
-          onClick={() => {
+          onClick={async () => {
             router.push("/login");
             logoutUser();
+            await disconnect();
           }}
           className="mt-auto flex items-center w-full p-3 h-12 leading-tight transition-all rounded-lg text-[#f96565] outline-none text-start hover:bg-destructive/10">
           <span className="grid mr-4 place-items-center">

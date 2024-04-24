@@ -2,12 +2,9 @@
 
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { Web3ModalProvider } from "./web3modal";
-import { toast } from "sonner";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { supabase } from "@/constants";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
-import { logoutUser } from "@/auth";
 
 // Create a default value for the context
 const defaultContextValue = {
@@ -26,9 +23,6 @@ export default function AuthContextProvider({
   children: ReactNode;
 }) {
   const router = useRouter();
-  const pathname = usePathname();
-
-  const { address } = useWeb3ModalAccount();
 
   const [isFetchingUser, setIsFetchingUser] = useState<boolean | undefined>(
     true
@@ -37,28 +31,31 @@ export default function AuthContextProvider({
   const [isError, setIsError] = useState<string>("");
 
   useEffect(() => {
-    loggedInUser()
-      .then(async (user) => {
-        setCredentials({
-          name: user?.user_metadata?.name,
-          address: user?.user_metadata?.address,
-          email: user?.user_metadata?.email,
-          avatar: user?.user_metadata?.avatar,
-          id: user?.id,
-        });
+    const interval = setInterval(() => {
+      loggedInUser()
+        .then(async (user) => {
+          setCredentials({
+            name: user?.user_metadata?.name,
+            address: user?.user_metadata?.address,
+            email: user?.user_metadata?.email,
+            avatar: user?.user_metadata?.avatar,
+            id: user?.id,
+          });
 
-        return user;
-      })
-      .catch((error) => {
-        setIsError("Error fetching user");
-        console.log(error);
-        router.push("/");
-      })
-      .finally(() => {
-        setIsFetchingUser(false);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+          return user;
+        })
+        .catch((error) => {
+          setIsError("Error fetching user");
+          console.log(error);
+          router.push("/");
+        })
+        .finally(() => {
+          setIsFetchingUser(false);
+        });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [router]);
 
   // Set the context data including user
   const contextData = {

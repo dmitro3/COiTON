@@ -40,7 +40,9 @@ export default function ListingCard({
         </div>
 
         <div className="flex items-center justify-between pt-3 pb-1">
-          <p className="text-base md:text-lg font-bold">${details?.price}</p>
+          <p className="text-base md:text-lg font-bold">
+            ${amountFormatter(details?.price)}
+          </p>
           <p className="text-xs md:text-sm font-medium text-muted-foreground">
             {shortenAddress(`${details?.owner}`)}
           </p>
