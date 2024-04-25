@@ -67,19 +67,6 @@ Refer [HERE](https://miro.com/app/board/uXjVKSLpxGc=/?share_link_id=836656075422
   [Here](https://docs.google.com/document/d/16zT6QBD0OLYLt4DStwxQAO-kORfeXYmqucrKSnFvW3k/edit) for project documentation
 
 
-## Made With
-  ### Languages
-   * Solidity
-   * Javascript
-   * Typescript
-
- ### Tools/Frameworks
-  * Foundry
-  * Ethers.js
-  * React.js
-  * Tailwind CSS
-  * Next.js
-
 ## Repository Structure
  ### Contract
    Contracts
