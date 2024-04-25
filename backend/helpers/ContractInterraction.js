@@ -59,24 +59,33 @@ exports.SendListingTransaction = async (id, details) => {
 
 
 exports.exchange = async (address, amount) => {
-    const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+    try {
+        const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 
-    const encryptedJsonKey = fs.readFileSync("./config/.encryptedKey.json", "utf8");
-    let wallet = ethers.Wallet.fromEncryptedJsonSync(encryptedJsonKey, process.env.PRIVATE_KEY_PASSWORD);
-    wallet = wallet.connect(provider)
-    const contract = new ethers.Contract(process.env.CONTRACT_ADDRESS,
-        ABI,
-        wallet);
+        const encryptedJsonKey = fs.readFileSync("./config/.encryptedKey.json", "utf8");
+        let wallet = ethers.Wallet.fromEncryptedJsonSync(encryptedJsonKey, process.env.PRIVATE_KEY_PASSWORD);
+        wallet = wallet.connect(provider)
+        const contract = new ethers.Contract(process.env.CONTRACT_ADDRESS,
+            ABI,
+            wallet);
 
-    const tx = await contract.mint(address, amount);
-    const receipt = await tx.wait();
+        const tx = await contract.mintTo(address, amount);
+        const receipt = await tx.wait();
+        const bal = await contract.balanceOf(address);
+        console.log(bal.toString());
+        if (receipt.status) {
 
-    if (receipt.status) {
+            return { success: true, tx, message: "Transaction successful" }
+        } else {
+            return { success: false, tx, message: "Transaction failed" }
+        }
 
-        return { success: true, tx, message: "Transaction successful" }
-    } else {
-        return { success: false, tx, message: "Transaction failed" }
+    } catch (error) {
+        console.log(error)
+        return {
+            success: false, tx: {}, message: "Transaction failed"
+        }
+
     }
-
 
 }
