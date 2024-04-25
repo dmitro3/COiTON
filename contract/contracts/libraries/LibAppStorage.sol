@@ -21,7 +21,7 @@ library LibAppStorage {
     struct Listing {
         uint id;
         address owner;
-        address agent;
+        // address agent;
         string country;
         string state;
         string city;
@@ -32,7 +32,7 @@ library LibAppStorage {
         string images;
         uint tokenId;
         string coverImage;
-        string features;
+        // string features;
         uint256 createdAt;
     }
 
