@@ -79,7 +79,7 @@ contract RealEstate {
     function createListing(
         string memory id,
         address owner,
-        address agent,
+        // address agent,
         string memory country,
         string memory state,
         string memory city,
@@ -88,8 +88,7 @@ contract RealEstate {
         string memory description,
         uint256 price,
         string memory images,
-        string memory coverImage,
-        string memory features
+        string memory coverImage // string calldata features
     ) external {
         if (owner == address(0)) {
             revert ERRORS.UNAUTHORIZED();
@@ -114,7 +113,7 @@ contract RealEstate {
         bytes32 hash = keccak256(
             abi.encodePacked(
                 owner,
-                agent,
+                // agent,
                 country,
                 state,
                 city,
@@ -123,8 +122,8 @@ contract RealEstate {
                 description,
                 price,
                 images,
-                coverImage,
-                features
+                coverImage
+                // features
             )
         );
 
@@ -136,7 +135,7 @@ contract RealEstate {
         LibAppStorage.Listing memory _newListing = LibAppStorage.Listing(
             listingId,
             owner,
-            agent,
+            // agent,
             country,
             state,
             city,
@@ -147,7 +146,7 @@ contract RealEstate {
             images,
             listingId,
             coverImage,
-            features,
+            // features,
             block.timestamp
         );
 
