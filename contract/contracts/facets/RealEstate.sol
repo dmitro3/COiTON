@@ -247,10 +247,6 @@ contract RealEstate {
                     coverImage
                 )
             );
-
-        // emit EVENTS.HashCompute(owner,hash);
-
-        // return hash;
     }
 
     function isValidSigner(
