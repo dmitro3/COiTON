@@ -1,35 +1,20 @@
-import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
-import { NextResponse } from "next/server";
+import { updateSession } from "@/utils/supabase/middleware";
+import { type NextRequest } from "next/server";
 
-// export default authMiddleware({
-//     publicRoutes: ["/", "/contact"],
-
-// });
-
-export default authMiddleware({
-  afterAuth(auth, req, evt) {
-    // Handle users who aren't authenticated
-    if (!auth.userId && !auth.isPublicRoute) {
-      return redirectToSignIn({ returnBackUrl: req.url });
-    }
-    // Redirect signed in users to organization selection page if they are not active in an organization
-    if (
-      auth.userId &&
-      !auth.orgId &&
-      req.nextUrl.pathname !== "/org-selection"
-    ) {
-      const orgSelection = new URL("/org-selection", req.url);
-      return NextResponse.redirect(orgSelection);
-    }
-    // If the user is signed in and trying to access a protected route, allow them to access route
-    if (auth.userId && !auth.isPublicRoute) {
-      return NextResponse.next();
-    }
-    // Allow users visiting public routes to access them
-    return NextResponse.next();
-  },
-});
+export async function middleware(request: NextRequest) {
+  // update user's auth session
+  return await updateSession(request);
+}
 
 export const config = {
-  matcher: ["/((?!.+.[w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * Feel free to modify this pattern to include more paths.
+     */
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

@@ -6,6 +6,14 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.punchng.com",
+      },
+      {
+        protocol: "https",
+        hostname: "bronze-gigantic-quokka-778.mypinata.cloud",
+      },
     ],
   },
 };

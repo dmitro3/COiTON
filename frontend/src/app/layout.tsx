@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
-import { Lato as FontSans } from "next/font/google";
-
-import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
+import { Noto_Sans as FontSans } from "next/font/google";
 
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import { site } from "@/constants";
-import Header from "@/components/shared/header";
-import LoadingScreen from "@/components/shared/loading-screen";
+
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { Toaster } from "@/components/ui/sonner";
+import AuthContextProvider from "@/context/authContext";
 
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["100", "300", "400", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -30,22 +29,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider appearance={{ baseTheme: dark }}>
+    <AuthContextProvider>
       <html lang="en" suppressHydrationWarning>
         <body
           className={cn(
             "min-h-screen bg-background font-sans antialiased flex flex-col",
             fontSans.variable
           )}>
-          <ClerkLoading>
-            <LoadingScreen />
-          </ClerkLoading>
-          <ClerkLoaded>
-            <Header />
-            <main className="flex-1">{children}</main>
-          </ClerkLoaded>
+          <Toaster />
+          <main className="flex-1">{children}</main>
         </body>
       </html>
-    </ClerkProvider>
+    </AuthContextProvider>
   );
 }

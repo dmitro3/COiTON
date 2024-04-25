@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "user",
+    "password": "testpassword",
+    "database": "dev-db",
+    "dialect": "sqlite",
+    "storage": "./dev.sqlite",
+    "logging": false
+  },
+  "test": {
+    "username": "user",
+    "password": "testpassword",
+    "database": "dev-db",
+    "dialect": "sqlite",
+    "storage": "./dev.sqlite",
+    "logging": false
+  },
+  "production": {
+    "username": "gasukqyr",
+    "password": "f70BtC10hcifM4XGOTrL5eEl3ILS4MaP",
+    "database": "gasukqyr",
+    "host": "kala.db.elephantsql.com",
+    "dialect": "postgres",
+    "logging": false
+  }
+}
