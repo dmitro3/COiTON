@@ -54,4 +54,22 @@ library EVENTS {
     address owner,
     bytes32 hash
    );
+
+   // The CreateAdministration event logs the creation of a new DAO administration of a particular state.
+    event AdministrationCreated(
+        address indexed adminSuperior,
+        string indexed state,
+        string indexed region
+    );
+// The addAgent event logs the addition of an agent to the system.
+    event AgentResgistered(
+        string state,
+        Agent agent
+    );
+// The ApproveListing event logs the approval of a real estate listing by the agent.
+    event ListingApproved(
+        string state,
+        uint assignedId,
+        string listingId
+    );
 }
