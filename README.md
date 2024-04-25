@@ -26,7 +26,7 @@
                        [_____________]       TRADE NFT's                     [              ]  ]
                        [                                                     [              ]  ]
                        [                                                     [              ]  ]
-                       [                                                     [              ]  ]
+                       [                                                     [            ==]  ]
                        [                                                     [              ]  ]
                        [                                                     [              ]  ]
                        [                                                     [              ]  ]
@@ -43,7 +43,7 @@
 This project aims to develop a Decentralized Real Estate Trading Platform that enables users to speculate on and trade city indices representing real estate markets. The platform will use blockchain technology to ensure transparency, security, and accessibility, allowing users to engage in trading without the need to own physical properties.
 
 ## About
-The platform offers users enhanced flexibility in trading various property indices that have been transformed into NFTs. Initially, the valuation of each NFT mirrors the price of its corresponding physical property. However, due to the dynamics of virtual trading, while the starting price of each NFT is equivalent to the actual property, it may fluctuate based on user interactions. The prices of the NFT properties will vary as different users engage in buying or selling these tokens, influencing their market value.
+COiTON offers users enhanced flexibility in trading various property indices that have been transformed into NFTs. Initially, the valuation of each NFT mirrors the price of its corresponding physical property. However, due to the dynamics of virtual trading, while the starting price of each NFT is equivalent to the actual property, it may fluctuate based on user interactions. The prices of the NFT properties will vary as different users engage in buying or selling these tokens, influencing their market value.
 
 ## Screenshot
 ![Screenshot from 2024-04-18 21-51-06](https://github.com/WebSculptor/decentralized-real-estate-trading-platform/assets/137540755/ac087875-54b4-4c41-959c-41cdf80b5265)
@@ -51,42 +51,22 @@ The platform offers users enhanced flexibility in trading various property indic
 ![Screenshot from 2024-04-22 20-14-56](https://github.com/WebSculptor/decentralized-real-estate-trading-platform/assets/137540755/160dd12e-830c-4ed2-84c3-4b69a16f3d26)
 
 
-#### The structure for the decentralized real estate trading platform:
+#### COiTON: The structure
 ![Screenshot from 2024-04-20 15-37-06](https://github.com/WebSculptor/decentralized-real-estate-trading-platform/assets/137540755/ba5823d1-2702-4895-9868-c7ca415e7d13)
 
-The schema includes fields for ERC20 and ERC721 tokens, which serve as our payment and trading mechanisms. The ERC20 token is essential for tokenizing the system, requiring users to possess this token to participate in governance. On the other hand, the ERC721 token represents the NFT, as previously mentioned, which facilitates the conversion of listed real estate into NFTs. This allows users the flexibility to trade these NFTs, and due to the nature of ERC721, multiple users can simultaneously buy and sell shares of a single real estate NFT.
+The schema includes fields for ERC20 and ERC721 tokens, which serve as our payment and trading mechanisms respectively . The ERC20 token is essential for tokenizing the system, requiring users to possess this token to participate in governance. On the other hand, the ERC721 token represents the NFT, as previously mentioned, which facilitates the conversion of listed real estate into NFTs. This allows users the flexibility to trade these NFTs, and due to the nature of ERC721,  users can  buy and sell shares of a single real estate NFT.
 
-#### Business Model
-![Screenshot from 2024-04-20 15-40-25](https://github.com/WebSculptor/decentralized-real-estate-trading-platform/assets/137540755/68fe9a28-a93c-4391-be80-b16aa96c3d61)
+#### COiTON User Flow
+![Screenshot from 2024-04-25 14-36-17](https://github.com/WebSculptor/decentralized-real-estate-trading-platform/assets/137540755/f6bff56f-459b-4575-963a-dce38330b4dc)
 
-The application flow details each step of how users will interact with our system. The core business logic hinges on agents or property owners listing their properties. To do so, they must first pay a listing fee. Once payment verification is complete, they can proceed to list their property. Our team then conducts a final check to ensure the property's validity in terms of both its physical condition and ownership.
+The verification process for real estate is crucial to confirm the legitimacy of properties listed on COiTON. To facilitate this, a DAO has been integrated into the system, managed by the land and property administrations across various states and regions. This DAO acts as a multi-process approval mechanism for authenticating listed real estate. It enhances COiTON's security by mitigating potential vulnerabilities in the services it offers.
+As a result, each DAO must be registered specifically for each state and region. This necessity arises because different states have their own unique land and property regulations. By having separate DAO for different states, COiTON can accommodate the varied requirements of listed properties from different regions, ensuring a flexible and secure platform.
+
 
 Refer [HERE](https://miro.com/app/board/uXjVKSLpxGc=/?share_link_id=836656075422) for clear image
 
 #### Refer :point_down:
   [Here](https://docs.google.com/document/d/16zT6QBD0OLYLt4DStwxQAO-kORfeXYmqucrKSnFvW3k/edit) for project documentation
-
-
-## Repository Structure
- ### Contract
-   Contracts
-   A Foundry + Hardhat Diamond Contract
-   consisting:
-   * Facets
-   * Interfaces
-   * Libraries
-   * UpgradeInitializers
-   * Diamond contract
- ### Frontend
-   src
-   User Interface Logic
-   * app
-   * components
-   * constants
-   * hooks
-   * lib
-   * styles
-   * types
    
 
 ## Team
