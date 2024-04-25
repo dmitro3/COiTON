@@ -41,4 +41,17 @@ library EVENTS {
         uint indexed amount,
         uint8 indexed shares
     );
+
+// The ListingQueuedForApproval event track the listing that needs to be approved.
+    event ListingQueuedForApproval(
+    string indexed id, 
+    bytes32 indexed hash,
+    address indexed approver
+    );
+   
+   //The HashCompute event track the computed hash for the real estate listing.
+   event HashCompute(
+    address owner,
+    bytes32 hash
+   );
 }
