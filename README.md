@@ -60,6 +60,7 @@ The schema includes fields for ERC20 and ERC721 tokens, which serve as our payme
 ![Screenshot from 2024-04-25 14-36-17](https://github.com/WebSculptor/decentralized-real-estate-trading-platform/assets/137540755/f6bff56f-459b-4575-963a-dce38330b4dc)
 
 The verification process for real estate is crucial to confirm the legitimacy of properties listed on COiTON. To facilitate this, a DAO has been integrated into the system, managed by the land and property administrations across various states and regions. This DAO acts as a multi-process approval mechanism for authenticating listed real estate. It enhances COiTON's security by mitigating potential vulnerabilities in the services it offers.
+
 As a result, each DAO must be registered specifically for each state and region. This necessity arises because different states have their own unique land and property regulations. By having separate DAO for different states, COiTON can accommodate the varied requirements of listed properties from different regions, ensuring a flexible and secure platform.
 
 
