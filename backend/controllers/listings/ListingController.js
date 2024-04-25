@@ -1,5 +1,5 @@
 const { ResponseMessage } = require("../../helpers/Response");
-const { SendListingTransaction } = require("../../helpers/SendListingTransaction");
+const { SendListingTransaction } = require("../../helpers/ContractInterraction");
 const { Listing } = require("../../models");
 
 exports.createListing = async (req, res) => {

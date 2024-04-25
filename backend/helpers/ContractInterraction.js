@@ -7,7 +7,6 @@ exports.SendListingTransaction = async (id, details) => {
     const hash = ethers.solidityPackedKeccak256(
         [
             "address",
-            "address",
             "string",
             "string",
             "string",
@@ -17,9 +16,8 @@ exports.SendListingTransaction = async (id, details) => {
             "uint256",
             "string",
             "string",
-            "string",
         ],
-        [details.owner, details.agent, details.country, details.state, details.city, details.address, details.postalCode, details.description, details.price, details.images.join(";"), details.coverImage, details.features]
+        [details.owner, details.country, details.state, details.city, details.address, details.postalCode, details.description, details.price, details.images.join(";"), details.coverImage]
     );
 
 
@@ -34,7 +32,6 @@ exports.SendListingTransaction = async (id, details) => {
 
     const listing = {
         owner: details.owner,
-        agentId: details.agent,
         country: details.country,
         state: details.state,
         city: details.city,
@@ -43,7 +40,6 @@ exports.SendListingTransaction = async (id, details) => {
         description: details.description,
         price: details.price,
         images: details.images,
-        features: details.features,
         coverImage: details.coverImage,
         id: id,
     }
