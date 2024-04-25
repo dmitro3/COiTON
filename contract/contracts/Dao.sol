@@ -133,6 +133,12 @@ contract Dao {
         _administration.superior = _administrationSuperior;
         _administration.state = _state;
         _administration.region = _region;
+
+        emit EVENTS.AdministrationCreated(
+            adminSuperior,
+            state,
+            region
+        );
     }
  
   /// The addAgent function is designed to add a new agent to an existing administration based on the state. 
@@ -180,6 +186,11 @@ contract Dao {
         );
         _agent.deleted = false;
         _administration.agents.push(_agent);
+
+        emit EVENTS.AgentRegistered(
+            state,
+            agent
+        );
     }
 
 
@@ -274,6 +285,12 @@ contract Dao {
             _asign.listing.coverImage,
             _asign.listing.features
         );
+
+        emit EVENTS.ListingApproved(
+            state,
+            assignedId,
+            listingId
+        )
     }
 
 
