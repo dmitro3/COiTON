@@ -48,13 +48,12 @@ contract RealEstate {
     //     _newListingApproval.approver = approver;
     // }
 
-
-     // The queueListingForApproval function is designed to handle the initiation of a listing approval 
-     /// @param id : Unique identifier for the listing
-     /// @param hash : Hash of the listing details for integrity verification
-     /// @param approver : Address of the entity authorized to approve the listing
-     // This function accepts the following parameters from the backend:
-     // a hash and an ID associated with the listing that needs approval.
+    // The queueListingForApproval function is designed to handle the initiation of a listing approval
+    /// @param id : Unique identifier for the listing
+    /// @param hash : Hash of the listing details for integrity verification
+    /// @param approver : Address of the entity authorized to approve the listing
+    // This function accepts the following parameters from the backend:
+    // a hash and an ID associated with the listing that needs approval.
     function queListingForApproval(
         string memory id,
         bytes32 hash,
@@ -73,7 +72,7 @@ contract RealEstate {
         _newListingApproval.hash = hash;
         _newListingApproval.approver = approver;
 
-        emit EVENTS.ListingQueuedForApproval(id,hash, approver);
+        emit EVENTS.ListingQueuedForApproval(id, hash, approver);
     }
 
     // This function is use to create new listings
@@ -200,29 +199,27 @@ contract RealEstate {
         return l.proposals[Id];
     }
 
-
-/// This function is to get all the real estate listing hash.
-/// @param Id : The Id is use to fetch all the Listing real estate hash.
-//@notice returns all the hash from the array.
+    /// This function is to get all the real estate listing hash.
+    /// @param Id : The Id is use to fetch all the Listing real estate hash.
+    //@notice returns all the hash from the array.
     function getHash(
         string memory Id
     ) external view returns (LibAppStorage.ListingApproval memory) {
         return l.listingApproval[Id];
     }
 
-
-/// This functions takes in the important information for the listing estate and hash it 
-/// @param owner : the owner's address in the hash helps bind the hash specifically to the owner, 
-//                ensuring that the same data owned by different addresses results in different hashes.
-/// @param country : The country where the property is located.
-/// @param state :The state or region within the country where the property is located
-/// @param city  : The city where the property is located
-/// @param estateAddress : The specific street address of the property.
-/// @param postalCode  : The postal code of the property's location.
-/// @param description : description of the property
-/// @param price : The listing price of the property
-/// @param images : Image of the listed house 
-/// @param coverImage : The image that will act as an NFT in the trading platform
+    /// This functions takes in the important information for the listing estate and hash it
+    /// @param owner : the owner's address in the hash helps bind the hash specifically to the owner,
+    //                ensuring that the same data owned by different addresses results in different hashes.
+    /// @param country : The country where the property is located.
+    /// @param state :The state or region within the country where the property is located
+    /// @param city  : The city where the property is located
+    /// @param estateAddress : The specific street address of the property.
+    /// @param postalCode  : The postal code of the property's location.
+    /// @param description : description of the property
+    /// @param price : The listing price of the property
+    /// @param images : Image of the listed house
+    /// @param coverImage : The image that will act as an NFT in the trading platform
     function computeHash(
         address owner,
         string memory country,
@@ -251,9 +248,9 @@ contract RealEstate {
                 )
             );
 
-            emit EVENTS.HashCompute(owner,hash);
+        // emit EVENTS.HashCompute(owner,hash);
 
-            return hash;
+        // return hash;
     }
 
     function isValidSigner(
@@ -317,8 +314,8 @@ contract RealEstate {
         );
     }
 
-/// The function  is to get all the agreement purchase 
-/// @param agreementId : Use to fetch all the agreement purchase from the array.
+    /// The function  is to get all the agreement purchase
+    /// @param agreementId : Use to fetch all the agreement purchase from the array.
     function getPurchaseAgreement(
         uint agreementId
     ) external view returns (LibAppStorage.PurchaseAgreement memory) {
