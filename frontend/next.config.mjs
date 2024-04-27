@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "bronze-gigantic-quokka-778.mypinata.cloud",
       },
+      {
+        protocol: "https",
+        hostname: "ipfs.io",
+      },
     ],
   },
 };

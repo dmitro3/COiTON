@@ -2,7 +2,7 @@ import { IoIosStar } from "react-icons/io";
 
 export default function TestimonialCard() {
   return (
-    <div className="w-full max-w-[455px] bg-secondary/80 rounded-xl p-5">
+    <div className="w-full bg-secondary/80 rounded-xl p-5">
       <div className="flex items-center">
         {Array.from({ length: 5 }).map((_, _key) => (
           <IoIosStar key={_key} className="w-6 h-6" />

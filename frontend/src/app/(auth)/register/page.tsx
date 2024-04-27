@@ -175,9 +175,7 @@ export default function RegisterPage() {
 
               <p className="text-xs flex items-center gap-2 my-6 text-muted-foreground">
                 <span className="flex-1 h-[1px] bg-secondary" />
-                {!address
-                  ? "YOU NEED TO CONNECT YOUR WALLET"
-                  : "CLICK ON CONTINUE TO REGISTER"}
+                A WALLET IS REQUIRED TO USE COiTON
                 <span className="flex-1 h-[1px] bg-secondary" />
               </p>
 
@@ -190,7 +188,7 @@ export default function RegisterPage() {
                   }
                 }}
                 disabled={!!address}
-                type="submit"
+                type="button"
                 className="w-full mb-4"
                 variant="secondary">
                 {!address ? (

@@ -1,51 +1,39 @@
 import { useEffect, useState } from "react";
 
 export const useFetchNews = () => {
-  const [data, setData] = useState({
-    allNews: [],
-    isLoading: false,
-    isError: "",
-  });
+  const [articles, setArticles] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [nextPage, setNextPage] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setData((prevData) => ({ ...prevData, isLoading: true }));
-      try {
-        const url = `https://newsapi.org/v2/everything?q=RealEstate&apiKey=${process.env.NEXT_PUBLIC_NEWS_API_KEY}`;
+    fetchNews();
+  }, []); // Fetch initial news on component mount
 
-        const response = await fetch(url);
-        const responseData = await response.json();
-
-        if (response.ok) {
-          // Filter out articles with the specified URL
-          const filteredNews = responseData.articles.filter(
-            (article: any) => article.url !== "https://removed.com"
-          );
-
-          setData({
-            allNews: filteredNews,
-            isLoading: false,
-            isError: "",
-          });
-        } else {
-          setData({
-            allNews: [],
-            isLoading: false,
-            isError: responseData.message,
-          });
-        }
-      } catch (error: any) {
-        console.error(error);
-        setData({
-          ...data,
-          isLoading: false,
-          isError: error.message,
-        });
+  const fetchNews = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `https://newsdata.io/api/1/news?apikey=pub_426623565acca0aa0428db885304f33b19218&q=real%20estate&country=ng,kr,ae,gb,us&language=en${
+          nextPage ? nextPage : ""
+        }`
+      );
+      const data = await response.json();
+      if (data?.results) {
+        setArticles((prevArticles: any) => [...prevArticles, ...data.results]);
       }
-    };
+      setNextPage(data?.nextPage);
+    } catch (error) {
+      console.error("Error fetching news:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchData();
-  }, [data]);
+  const loadMoreNews = () => {
+    if (nextPage) {
+      setNextPage(nextPage);
+    }
+  };
 
-  return data;
+  return { articles, loadMoreNews, isLoading };
 };

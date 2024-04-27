@@ -2,6 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AuthContext, loggedInUser } from "@/context/authContext";
+import { RENDER_ENDPOINT } from "@/hooks/useFetchBackend";
 import { cn, formatDate } from "@/lib/utils";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import {
@@ -14,8 +16,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
+import TradingViewWidget from "@/components/shared/trading-view-widget";
 
 export default function ListingDetailsPage({
   params,
@@ -24,25 +27,23 @@ export default function ListingDetailsPage({
 }) {
   const router = useRouter();
 
+  const user = useContext(AuthContext);
+
   const { address } = useWeb3ModalAccount();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [listing, setListing] = useState<any>();
   const [selectedImage, setSelectedImage] = useState<string>("");
 
   async function fetchListingData() {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        "https://decentralized-real-estate-trading.onrender.com/api/v1/listings",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${RENDER_ENDPOINT}/listings`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (!response.ok) {
         toast("Failed to fetch listing");
         throw new Error("Failed to fetch listing");
@@ -69,38 +70,10 @@ export default function ListingDetailsPage({
       setIsLoading(false);
     }
   }
-
-  async function deleteListing() {
-    if (address !== listing?.details?.owner)
-      return toast("You are not authorized to delete this listing");
-
-    try {
-      setIsDeleting(true);
-      const response = await fetch(
-        `https://decentralized-real-estate-trading.onrender.com/api/v1/listings/${params.id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        toast("Failed to delete listing");
-        throw new Error("Failed to delete listing");
-      }
-      toast("Successfully deleted listing");
-      router.push("/dashboard");
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setIsDeleting(false);
-    }
-  }
-
   useEffect(() => {
     fetchListingData();
     setSelectedImage(listing?.details?.images[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listing?.details?.images[0]]);
 
   const handleImageClick = (image: string) => {
@@ -117,7 +90,7 @@ export default function ListingDetailsPage({
         <div className="w-full h-full bg-background/40 absolute inset-0 hidden xl:flex"></div>
         <div className="w-full h-full bg-secondary rounded-xl overflow-hidden mb-3">
           <Image
-            src={`https://bronze-gigantic-quokka-778.mypinata.cloud/ipfs/${
+            src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${
               selectedImage || listing?.details?.images[0]
             }`}
             alt="Main Image"
@@ -141,7 +114,7 @@ export default function ListingDetailsPage({
                 }
               )}>
               <Image
-                src={`https://bronze-gigantic-quokka-778.mypinata.cloud/ipfs/${image}`}
+                src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${image}`}
                 alt={`Image ${index}`}
                 width={200}
                 height={200}
@@ -174,19 +147,8 @@ export default function ListingDetailsPage({
 
           <div className="flex items-center gap-4 mt-4">
             <Button>Creating Proposal</Button>
-            {address === listing?.details?.owner && (
-              <Button
-                size="icon"
-                variant="destructive"
-                disabled={isDeleting}
-                onClick={deleteListing}>
-                {isDeleting ? (
-                  <Loader2 className="w-4 h-4" />
-                ) : (
-                  <Trash2 className="w-4 h-4" />
-                )}
-              </Button>
-            )}
+
+            <Button variant="secondary">View Market</Button>
           </div>
         </div>
 
@@ -306,6 +268,10 @@ export default function ListingDetailsPage({
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="p-4 md:p-6 bg-secondary/20 rounded border sm:border-0 w-full">
+          <TradingViewWidget title="5 bedroom duplex vgc." />
         </div>
       </div>
     </div>

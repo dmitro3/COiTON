@@ -9,11 +9,11 @@ import { useFetchNews } from "@/hooks/useFetchNews";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import NewsCard from "@/components/card/NewsCard";
 
 export default function NewsPage() {
-  const { isLoading, isError, allNews } = useFetchNews();
+  const { articles, isLoading, loadMoreNews } = useFetchNews();
 
   return (
     <div className="flex-1">
@@ -58,9 +58,11 @@ export default function NewsPage() {
                     className="rounded-[30px] bg-card aspect-[1.3] w-full"
                   />
                 ))
-              : allNews?.map((news: any) => (
-                  <NewsCard {...news} key={news.publishedAt} />
+              : articles?.map((news: any) => (
+                  <NewsCard {...news} key={news.article_id + Math.random()} />
                 ))}
+
+            <Button onClick={loadMoreNews}>Load More</Button>
           </div>
         </div>
       </MaxWrapper>

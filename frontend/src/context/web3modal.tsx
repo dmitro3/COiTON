@@ -1,47 +1,56 @@
 "use client";
 
+import { site } from "@/constants";
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers/react";
 import { ReactNode } from "react";
 
-// 1. Get projectId at https://cloud.walletconnect.com
+export const SEPOLIA_CHAIN_ID: number = 11155111;
+export const OPTIMISM_CHATAIN_ID: number = 10;
+const projectId = "35fadd8ea93791ac21f87e7fa5c5d0ec";
 
-// 2. Set chains
-const mainnet = {
-  chainId: 1,
-  name: "Ethereum",
+const ethereumSepolia = {
+  chainId: SEPOLIA_CHAIN_ID,
+  name: "Ethereum Sepolia Testnet",
   currency: "ETH",
-  explorerUrl: "https://etherscan.io",
-  rpcUrl: "https://cloudflare-eth.com",
+  explorerUrl: "https://sepolia.etherscan.io/",
+  rpcUrl: `https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
 };
 
-// 3. Create a metadata object
+// const optimismSepolia = {
+//   chainId: OPTIMISM_CHATAIN_ID,
+//   name: "Optimism Sepolia",
+//   currency: "ETH",
+//   explorerUrl: "https://optimistic.etherscan.io/",
+//   rpcUrl: `https://optimism-sepolia.infura.io/v3/${process.env.ALCHEMY_API_KEY}`,
+// };
+
+// const optimismMainnet = {
+//   chainId: OPTIMISM_CHATAIN_ID,
+//   name: "Optimism Mainnet",
+//   currency: "ETH",
+//   explorerUrl: "https://optimistic.etherscan.io/",
+//   rpcUrl: `https://optimism-mainnet.infura.io/v3/${process.env.ALCHEMY_API_KEY}`,
+// };
+
 const metadata = {
-  name: "COITON",
-  description: "My Website description",
-  url: "https://mywebsite.com", // origin must match your domain & subdomain
+  name: site.name,
+  description: site.description,
+  url: site.url,
   icons: ["https://avatars.mywebsite.com/"],
 };
-// 4. Create Ethers config
-const ethersConfig = defaultConfig({
-  /*Required*/
-  metadata,
 
-  /*Optional*/
-  enableEIP6963: true, // true by default
-  enableInjected: true, // true by default
-  enableCoinbase: true, // true by default
-  rpcUrl: `https://optimism-sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}`, // used for the Coinbase SDK
-  defaultChainId: 1, // used for the Coinbase SDK
-  enableEmail: false,
+const ethersConfig = defaultConfig({
+  metadata,
+  defaultChainId: 10,
+  enableEmail: true,
 });
 
-// 5. Create a Web3Modal instance
 createWeb3Modal({
   ethersConfig,
-  chains: [mainnet],
-  projectId: "33fbbd3bd8ca469dfba7bd6d5d3d2bfa",
-  enableAnalytics: true,
+  chains: [ethereumSepolia],
+  projectId: projectId,
   enableOnramp: true,
+  enableAnalytics: true, // Optional - defaults to your Cloud configuration
 });
 
 export function Web3ModalProvider({ children }: { children: ReactNode }) {
