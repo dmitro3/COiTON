@@ -1,12 +1,18 @@
+"use client";
+
 import ListingCard from "@/components/card/ListingCard";
-import ContactSection from "@/components/sections/ContactSection";
 import TestimonialSection from "@/components/sections/TestimonialSection";
+
 import MaxWrapper from "@/components/shared/wrapper";
-import { Button } from "@/components/ui/button";
-import { listings } from "@/constants";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useFetchListings } from "@/hooks/useFetchBackend";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function LandingPage() {
+  const { isLoading, listings } = useFetchListings();
+
   return (
     <div className="flex-1">
       <MaxWrapper className="w-full flex relative py-16 md:py-32">
@@ -78,18 +84,29 @@ export default function LandingPage() {
             Discover latest listing
           </h1>
 
-          <Button variant="secondary">See All Listing</Button>
+          <Link
+            href="/listings"
+            className={buttonVariants({
+              variant: "secondary",
+            })}>
+            See All Listing
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {listings.map((listing: SingleListingType) => (
-            <ListingCard key={listing.id} {...listing} />
-          ))}
+          {isLoading
+            ? Array.from({ length: 3 }).map((_, _key) => (
+                <Skeleton key={_key} className="w-full rounded-xl h-[416px]" />
+              ))
+            : listings
+                ?.slice(0, 3)
+                ?.map((listing: SingleListingType) => (
+                  <ListingCard key={listing.id} {...listing} />
+                ))}
         </div>
       </MaxWrapper>
 
       <TestimonialSection />
-      <ContactSection />
     </div>
   );
 }

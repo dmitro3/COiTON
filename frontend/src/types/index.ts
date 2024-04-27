@@ -7,6 +7,7 @@ interface SiteConfigProps {
   title: string;
   name: string;
   description: string;
+  url: string;
 }
 
 interface UserType {
@@ -15,6 +16,11 @@ interface UserType {
   email: string;
   avatar: string;
   id: string | undefined;
+}
+
+interface DatesType {
+  x: Date;
+  y: number[];
 }
 
 interface AuthContextType {

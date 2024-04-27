@@ -154,9 +154,7 @@ export default function LoginPage() {
 
               <p className="text-xs flex items-center gap-2 my-6 text-muted-foreground">
                 <span className="flex-1 h-[1px] bg-secondary" />
-                {!address
-                  ? "YOU NEED TO CONNECT YOUR WALLET"
-                  : "CLICK ON CONTINUE TO LOGIN"}
+                CONNECT YOUR WALLET TO CONTINUE
                 <span className="flex-1 h-[1px] bg-secondary" />
               </p>
 

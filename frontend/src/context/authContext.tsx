@@ -52,7 +52,7 @@ export default function AuthContextProvider({
         .finally(() => {
           setIsFetchingUser(false);
         });
-    }, 1000);
+    }, 100);
 
     return () => clearInterval(interval);
   }, [router]);
@@ -71,7 +71,7 @@ export default function AuthContextProvider({
   );
 }
 
-const loggedInUser = async () => {
+export const loggedInUser = async () => {
   const {
     data: { user },
   } = await supabase.auth.getUser();

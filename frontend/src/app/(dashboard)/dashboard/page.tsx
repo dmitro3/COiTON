@@ -3,44 +3,12 @@
 import ListingCard from "@/components/card/ListingCard";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useFetchListings } from "@/hooks/useFetchBackend";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export default function DashboardPage() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [listings, setListings] = useState<SingleListingType[]>();
-  async function fetchListingData() {
-    setIsLoading(true);
-
-    try {
-      const response = await fetch(
-        "https://decentralized-real-estate-trading.onrender.com/api/v1/listings",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        toast("Failed to create listing");
-        throw new Error("Failed to create listing");
-      }
-      const result = await response.json();
-      setListings(result?.data?.rows);
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchListingData();
-  }, []);
+  const { isLoading, listings } = useFetchListings();
 
   return (
     <div className="flex-1 flex flex-col gap-4">

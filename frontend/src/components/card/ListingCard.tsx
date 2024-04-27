@@ -14,7 +14,7 @@ export default function ListingCard({
       className="bg-secondary/30 hover:bg-secondary/50 w-full rounded-xl overflow-hidden transition">
       <div className="w-full aspect-[1.4] md:aspect-[1.5] bg-card group overflow-hidden">
         <Image
-          src={`https://bronze-gigantic-quokka-778.mypinata.cloud/ipfs/${details?.images[0]}`}
+          src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${details?.images[0]}`}
           alt={details?.description}
           width={700}
           height={700}
