@@ -19,10 +19,8 @@ library LibAppStorage {
         uint price;
     }
     struct Listing {
-        uint id;
+        string id;
         address owner;
-        // address agent;
-        string country;
         string state;
         string city;
         string estateAddress;
@@ -32,7 +30,6 @@ library LibAppStorage {
         string images;
         uint tokenId;
         string coverImage;
-        // string features;
         uint256 createdAt;
     }
 
