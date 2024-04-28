@@ -63,17 +63,6 @@
   display: none !important;
 }
 
-.progressbar_loader-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background-color: white;
-}
-
-.progressbar_loader {
-  height: 100%;
-  background-color: red;
-  transition: width 0.5s ease-in-out;
+.apexcharts-svg {
+  background-color: transparent !important;
 }

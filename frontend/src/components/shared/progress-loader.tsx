@@ -16,9 +16,10 @@ export default function ProgressLoader() {
   }, []);
 
   return (
-    <div className="fixed top-0 w-full h-[3px] z-50 bg-secondary">
+    <div className="fixed top-0 w-full h-[3px] z-50 bg-background">
       <div
-        className={`h-full bg-primary w-[${progress}%] transition-all`}></div>
+        style={{ width: `${progress}%` }}
+        className="h-full bg-primary transition-[width]"></div>
     </div>
   );
 }
