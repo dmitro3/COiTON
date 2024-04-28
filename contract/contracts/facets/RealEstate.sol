@@ -88,7 +88,7 @@ contract RealEstate {
         string memory id,
         address owner,
         // address agent,
-        string memory country,
+        // string memory country,
         string memory state,
         string memory city,
         string memory estateAddress,
@@ -96,7 +96,7 @@ contract RealEstate {
         string memory description,
         uint256 price,
         string memory images,
-        string memory coverImage // string calldata features
+        string memory coverImage
     ) external {
         if (owner == address(0)) {
             revert ERRORS.UNAUTHORIZED();
@@ -120,18 +120,15 @@ contract RealEstate {
 
         bytes32 hash = keccak256(
             abi.encodePacked(
+                id,
                 owner,
-                // agent,
-                country,
                 state,
                 city,
                 estateAddress,
                 postalCode,
                 description,
                 price,
-                images,
-                coverImage
-                // features
+                images
             )
         );
 
@@ -141,10 +138,8 @@ contract RealEstate {
         uint listingId = l.listings.length + 1;
         ICoitonNFT(l.erc721Token).mint(msg.sender, listingId, coverImage);
         LibAppStorage.Listing memory _newListing = LibAppStorage.Listing(
-            listingId,
+            id,
             owner,
-            // agent,
-            country,
             state,
             city,
             estateAddress,
@@ -154,7 +149,6 @@ contract RealEstate {
             images,
             listingId,
             coverImage,
-            // features,
             block.timestamp
         );
 
@@ -188,6 +182,14 @@ contract RealEstate {
         uint Id
     ) external view returns (LibAppStorage.Listing memory) {
         return l.listings[Id];
+    }
+
+    function getListings()
+        external
+        view
+        returns (LibAppStorage.Listing[] memory)
+    {
+        return l.listings;
     }
 
     //This function is designed to retrieve all the proposals to buy that have been submitted
