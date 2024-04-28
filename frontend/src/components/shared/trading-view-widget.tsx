@@ -13,10 +13,13 @@ const TradingViewWidget = ({ title }: { title: string }) => {
     ],
     options: {
       colors: ["#3B82F6"],
+      theme: {
+        mode: "dark",
+      },
       chart: {
         stacked: false,
         id: "realtime",
-        height: 350,
+        height: 550,
         type: "line",
         animations: {
           enabled: true,
@@ -38,7 +41,7 @@ const TradingViewWidget = ({ title }: { title: string }) => {
         enabled: false,
       },
       stroke: {
-        // curve: "smooth",
+        curve: "smooth",
       },
       markers: {
         size: 0,
@@ -46,6 +49,12 @@ const TradingViewWidget = ({ title }: { title: string }) => {
       title: {
         text: title,
         align: "left",
+        style: {
+          fontSize: "17px",
+          fontWeight: "600",
+          color: "#fff",
+          marginBottom: "10px",
+        },
       },
       fill: {
         type: "gradient",
@@ -60,21 +69,24 @@ const TradingViewWidget = ({ title }: { title: string }) => {
       yaxis: {
         labels: {
           formatter: function (val: any) {
-            return (val / 1000000).toFixed(0);
+            return (val / 1000000).toFixed(1);
           },
         },
         title: {
-          text: "Price",
+          text: "Left title goes here",
         },
       },
       xaxis: {
         type: "datetime",
+        title: {
+          text: "Right title goes here",
+        },
       },
       tooltip: {
-        // enabled: false,
+        enabled: true,
       },
       grid: {
-        borderColor: "rgba(255,255,255,0.3)",
+        borderColor: "rgba(255,255,255,0.1)",
       },
     },
   });
@@ -86,7 +98,7 @@ const TradingViewWidget = ({ title }: { title: string }) => {
           options={state.options}
           series={state.series}
           type="area"
-          height={350}
+          height={450}
         />
       </div>
     </div>
@@ -94,60 +106,3 @@ const TradingViewWidget = ({ title }: { title: string }) => {
 };
 
 export default TradingViewWidget;
-
-// import React, { useEffect, useState } from "react";
-// import { createChart } from "lightweight-charts";
-
-// const initialData: any = [
-//   { value: 0, time: 1642425322 },
-//   { value: 0, time: 1642511722 },
-//   { value: 24, time: 1642598122 },
-//   { value: 25, time: 3434200785 },
-//   { value: 50, time: 1642943722 },
-//   { value: 9, time: 2310781394 },
-// ];
-
-// const TradingViewWidget = () => {
-//   const [data, setData] = useState(initialData);
-
-//   useEffect(() => {
-//     const chartOptions: any = {
-//       layout: {
-//         textColor: "#ffffff",
-//         background: {
-//           type: "outline",
-//           color: "#01040A",
-//         },
-//       },
-//     };
-
-//     const chart = createChart(
-//       document.getElementById("container") as any,
-//       chartOptions
-//     );
-//     const candlestickSeries = chart.addBaselineSeries({
-//       baseValue: { type: "price", price: 25 },
-//       topLineColor: "rgba( 38, 166, 154, 1)",
-//       topFillColor1: "rgba( 38, 166, 154, 0.28)",
-//       topFillColor2: "rgba( 38, 166, 154, 0.05)",
-//       bottomLineColor: "rgba( 239, 83, 80, 1)",
-//       bottomFillColor1: "rgba( 239, 83, 80, 0.05)",
-//       bottomFillColor2: "rgba( 239, 83, 80, 0.28)",
-//     });
-
-//     const sortedData = data?.sort((a: any, b: any) => a.time - b.time);
-
-//     candlestickSeries.setData(sortedData);
-
-//     chart.timeScale().fitContent();
-
-//     // Cleanup function
-//     return () => {
-//       chart.remove();
-//     };
-//   }, [data]);
-
-//   return <div id="container" className="w-full h-[450px] md:h-[650px]"></div>;
-// };
-
-// export default TradingViewWidget;

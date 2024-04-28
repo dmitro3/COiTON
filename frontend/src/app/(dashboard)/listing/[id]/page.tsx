@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import TradingViewWidget from "@/components/shared/trading-view-widget";
+import { CreateProposal } from "@/components/shared/create-proposal";
 
 export default function ListingDetailsPage({
   params,
@@ -146,7 +147,7 @@ export default function ListingDetailsPage({
           </p>
 
           <div className="flex items-center gap-4 mt-4">
-            <Button>Creating Proposal</Button>
+            <CreateProposal />
 
             <Button variant="secondary">View Market</Button>
           </div>
