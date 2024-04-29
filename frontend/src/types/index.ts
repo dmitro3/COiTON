@@ -18,9 +18,9 @@ interface UserType {
   id: string | undefined;
 }
 
-interface DatesType {
-  x: Date;
-  y: number[];
+interface ChartType {
+  date: number;
+  price: number;
 }
 
 interface AuthContextType {
