@@ -4,54 +4,57 @@ const fs = require("fs-extra")
 require("dotenv").config();
 
 exports.SendListingTransaction = async (id, details) => {
-    const hash = ethers.solidityPackedKeccak256(
-        [
-            "address",
-            "string",
-            "string",
-            "string",
-            "string",
-            "uint24",
-            "string",
-            "uint256",
-            "string",
-            "string",
-        ],
-        [details.owner, details.country, details.state, details.city, details.address, details.postalCode, details.description, details.price, details.images.join(";"), details.coverImage]
-    );
+    try {
+        const hash = ethers.solidityPackedKeccak256(
+            [
+                "string",
+                "address",
+                "address",
+                "string",
+                "uint24",
+                "string",
+                "uint256",
+                "string",
+            ],
+            [id, details.owner, details.agentId, details.region, details.postalCode, details.description, details.price, details.images.join(";")]
+        );
 
 
-    const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+        const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 
-    const encryptedJsonKey = fs.readFileSync("./config/.encryptedKey.json", "utf8");
-    let wallet = ethers.Wallet.fromEncryptedJsonSync(encryptedJsonKey, process.env.PRIVATE_KEY_PASSWORD);
-    wallet = wallet.connect(provider)
-    const contract = new ethers.Contract(process.env.CONTRACT_ADDRESS,
-        ABI,
-        wallet);
+        const encryptedJsonKey = fs.readFileSync("./config/.encryptedKey.json", "utf8");
+        let wallet = ethers.Wallet.fromEncryptedJsonSync(encryptedJsonKey, process.env.PRIVATE_KEY_PASSWORD);
+        wallet = wallet.connect(provider)
+        const contract = new ethers.Contract(process.env.CONTRACT_ADDRESS,
+            ABI,
+            wallet);
 
-    const listing = {
-        owner: details.owner,
-        country: details.country,
-        state: details.state,
-        city: details.city,
-        estateAddress: details.estateAddress,
-        postalCode: details.postalCode,
-        description: details.description,
-        price: details.price,
-        images: details.images,
-        coverImage: details.coverImage,
-        id: id,
-    }
+        const listing = {
+            owner: details.owner,
+            agentId: details.agentId,
+            region: details.region,
+            postalCode: details.postalCode,
+            description: details.description,
+            price: details.price,
+            images: details.images.join(";"),
+            coverImage: details.coverImage,
+            id: id,
+        }
 
-    const tx = await contract.delegateListingForApproval(details.state, hash, listing);
-    const receipt = await tx.wait();
 
-    if (receipt.status) {
+        const tx = await contract.delegateListingForApproval(details.state, hash, listing);
+        const receipt = await tx.wait();
 
-        return { success: true, tx, message: "Transaction successful" }
-    } else {
-        return { success: false, tx, message: "Transaction failed" }
+        if (receipt.status) {
+
+            return { success: true, tx: receipt, message: "Transaction successful" }
+        } else {
+            return { success: false, tx: receipt, message: "Transaction failed" }
+        }
+    } catch (error) {
+        console.log(error);
+        return { success: false, tx: error.message, message: "Transaction failed" }
+
     }
 
 };
@@ -83,7 +86,7 @@ exports.exchange = async (address, amount) => {
     } catch (error) {
         console.log(error)
         return {
-            success: false, tx: {}, message: "Transaction failed"
+            success: false, tx: {}, message: "Transaction faileddddd"
         }
 
     }

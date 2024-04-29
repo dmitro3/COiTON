@@ -18,15 +18,11 @@ interface IRealEstate {
         string memory id,
         address owner,
         address agent,
-        string memory country,
-        string memory state,
-        string memory city,
-        string memory estateAddress,
+        string memory region,
         uint24 postalCode,
         string memory description,
         uint256 price,
         string memory images,
-        string memory coverImage,
-        string memory features
+        string memory coverImage
     ) external;
 }

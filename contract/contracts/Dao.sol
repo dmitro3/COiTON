@@ -19,15 +19,11 @@ contract Dao {
     struct Listing {
         address owner;
         address agentId;
-        string country;
-        string state;
-        string city;
-        string estateAddress;
+        string region;
         uint24 postalCode;
         string description;
         uint256 price;
         string images;
-        string features;
         string coverImage;
         string id;
     }
@@ -67,6 +63,8 @@ contract Dao {
     /// @param _realEstateContractAddress : This real estate contract address sets the initial address in the state variable to reference the real estate contract.
     constructor(address _realEstateContractAddress) {
         realEstateContractAddress = _realEstateContractAddress;
+        owner = msg.sender;
+        superior = msg.sender;
     }
 
     /// transferStateSuperior  is designed to update the administration information for a given state by assigning a new superior address.
@@ -129,7 +127,7 @@ contract Dao {
         require(
             keccak256(abi.encode(_administration.region)) !=
                 keccak256(abi.encode(_region)),
-            "ALREDY_EXIST"
+            "ALREADY_EXIST"
         );
         _administration.superior = _administrationSuperior;
         _administration.state = _state;
@@ -144,7 +142,7 @@ contract Dao {
     function addAgent(string calldata _state, Agent memory _agent) external {
         Administration storage _administration = administration[_state];
         require(msg.sender == _administration.superior, "UNAUTHORIZED");
-        require(_agent.id == address(0), "INVALID_ADDRESS");
+        require(_agent.id != address(0), "INVALID_ADDRESS");
         require(
             keccak256(abi.encode(_agent.name)) != keccak256(abi.encode("")),
             "INVALID_NAME_FIELD"
@@ -192,34 +190,41 @@ contract Dao {
     /// The function is interacting with the real estate function that handles the initiation of a listing approval
     /// @param _state : The designated state for the listing approvals
     /// @param hash : Hash of the listing details for integrity verification
-    /// @param _listing : The new instance of the listing struct.
     function delegateListingForApproval(
-        string calldata _state,
+        string memory _state,
         bytes32 hash,
-        Listing calldata _listing
+        Listing calldata _listing // address _owner, // address agentId, // string memory region, // uint24 postalCode, // string memory description, // uint price, // string memory images, // string memory coverImage, // string memory _id
     ) external {
-        require(msg.sender == owner, "UNAUTHORIZED");
-        Administration storage _administration = administration[_state];
-
-        require(_administration.superior != address(0), "STATE_NOT_REGISTERED");
-        bool isValidAgent;
-
-        for (uint i; i < _administration.agents.length; i++) {
-            if (_administration.agents[i].id == _listing.agentId) {
-                isValidAgent = true;
-            }
+        {
+            require(msg.sender == owner, "UNAUTHORIZED");
         }
-        require(isValidAgent, "NOT_A_VALID_AGENT");
-        uint id = assign[_state].length;
-        assign[_state].push(
-            Assign({
-                timestamp: block.timestamp,
-                listing: _listing,
-                id: id + 1,
-                approved: false
-            })
-        );
+        Administration storage _administration = administration[_state];
+        {
+            require(
+                _administration.superior != address(0),
+                "STATE_NOT_REGISTERED"
+            );
+            bool isValidAgent;
 
+            for (uint i; i < _administration.agents.length; i++) {
+                if (_administration.agents[i].id == _listing.agentId) {
+                    isValidAgent = true;
+                }
+            }
+            require(isValidAgent, "NOT_A_VALID_AGENT");
+        }
+        {
+            uint id = assign[_state].length;
+
+            assign[_state].push(
+                Assign({
+                    timestamp: block.timestamp,
+                    listing: _listing,
+                    id: id + 1,
+                    approved: false
+                })
+            );
+        }
         IRealEstate(realEstateContractAddress).queListingForApproval(
             _listing.id,
             hash,
@@ -232,55 +237,51 @@ contract Dao {
     /// @param _state : The designated state for the listing approvals
     /// @param assignId : The Id for the assigned agent to approve listing
     /// @param listingId :The Id for the listings set to be approved.
-    // function approveListing(
-    //     string calldata _state,
-    //     uint assignId,
-    //     string calldata listingId
-    // ) external {
-    //     Administration storage _administration = administration[_state];
-    //     require(msg.sender == _administration.superior, "UNAUTHORIZED");
+    function approveListing(
+        string calldata _state,
+        uint assignId,
+        string calldata listingId
+    ) external {
+        Administration storage _administration = administration[_state];
+        require(msg.sender == _administration.superior, "UNAUTHORIZED");
 
-    //     {
-    //         Assign[] memory _assign = assign[_state];
+        {
+            Assign[] memory _assign = assign[_state];
 
-    //         require(
-    //             _assign.length > 0 && _assign.length >= assignId - 1,
-    //             "INVALID_ASSIGN_ID"
-    //         );
-    //     }
-    //     Assign storage _asign = assign[_state][assignId - 1];
-    //     require(
-    //         keccak256(abi.encode(_asign.listing.state)) ==
-    //             keccak256(abi.encode(_state)),
-    //         "STATE_DID_NOT_MATCH"
-    //     );
+            require(
+                _assign.length > 0 && _assign.length >= assignId - 1,
+                "INVALID_ASSIGN_ID"
+            );
+        }
+        Assign storage _asign = assign[_state][assignId - 1];
+        // require(
+        //     keccak256(abi.encode(_asign.listing.state)) ==
+        //         keccak256(abi.encode(_state)),
+        //     "STATE_DID_NOT_MATCH"
+        // );
 
-    //     require(
-    //         keccak256(abi.encode(_asign.listing.id)) ==
-    //             keccak256(abi.encode(listingId)),
-    //         "CORRUPTED_DATA"
-    //     );
+        require(
+            keccak256(abi.encode(_asign.listing.id)) ==
+                keccak256(abi.encode(listingId)),
+            "CORRUPTED_DATA"
+        );
 
-    //     _asign.approved = true;
+        _asign.approved = true;
 
-    //     IRealEstate(realEstateContractAddress).createListing(
-    //         _asign.listing.id,
-    //         _asign.listing.owner,
-    //         _asign.listing.agentId,
-    //         _asign.listing.country,
-    //         _state,
-    //         _asign.listing.city,
-    //         _asign.listing.estateAddress,
-    //         _asign.listing.postalCode,
-    //         _asign.listing.description,
-    //         _asign.listing.price,
-    //         _asign.listing.images,
-    //         _asign.listing.coverImage,
-    //         _asign.listing.features
-    //     );
+        IRealEstate(realEstateContractAddress).createListing(
+            _asign.listing.id,
+            _asign.listing.owner,
+            _asign.listing.agentId,
+            _asign.listing.region,
+            _asign.listing.postalCode,
+            _asign.listing.description,
+            _asign.listing.price,
+            _asign.listing.images,
+            _asign.listing.coverImage
+        );
 
-    //     emit EVENTS.ListingApproved(_state, assignId, listingId);
-    // }
+        emit EVENTS.ListingApproved(_state, assignId, listingId);
+    }
 
     /// The getUnApprovedAssigns function  is designed to retrieve a list of unapproved assignments for a specific state.
     /// @param _state : The designated state to check for unapproved listings.

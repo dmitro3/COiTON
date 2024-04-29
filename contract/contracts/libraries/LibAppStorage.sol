@@ -21,9 +21,7 @@ library LibAppStorage {
     struct Listing {
         string id;
         address owner;
-        string state;
-        string city;
-        string estateAddress;
+        string region;
         uint24 postalCode;
         string description;
         uint256 price;
