@@ -94,15 +94,19 @@ export default function LandingPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {isLoading
-            ? Array.from({ length: 3 }).map((_, _key) => (
-                <Skeleton key={_key} className="w-full rounded-xl h-[416px]" />
+          {isLoading ? (
+            Array.from({ length: 3 }).map((_, _key) => (
+              <Skeleton key={_key} className="w-full rounded-xl h-[416px]" />
+            ))
+          ) : !listings ? (
+            <p>Nothing to display</p>
+          ) : (
+            listings
+              ?.slice(0, 3)
+              ?.map((listing: SingleListingType) => (
+                <ListingCard key={listing.id} {...listing} />
               ))
-            : listings
-                ?.slice(0, 3)
-                ?.map((listing: SingleListingType) => (
-                  <ListingCard key={listing.id} {...listing} />
-                ))}
+          )}
         </div>
       </MaxWrapper>
 
