@@ -3,7 +3,7 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 
-const TradingViewWidget = () => {
+const TradingViewWidget = ({ title }: { title: string }) => {
   // Sample data for demonstration
   const seriesData: any = [
     {
@@ -192,7 +192,7 @@ const TradingViewWidget = () => {
         size: 0,
       },
       title: {
-        text: "Market price of property",
+        text: title,
         align: "left",
         style: {
           fontSize: "17px",
