@@ -87,11 +87,8 @@ contract RealEstate {
     function createListing(
         string memory id,
         address owner,
-        // address agent,
-        // string memory country,
-        string memory state,
-        string memory city,
-        string memory estateAddress,
+        address agent,
+        string memory region,
         uint24 postalCode,
         string memory description,
         uint256 price,
@@ -104,11 +101,6 @@ contract RealEstate {
 
         LibAppStorage.ListingApproval storage _listingApproval = l
             .listingApproval[id];
-        _listingApproval.approved = true;
-
-        if (!_listingApproval.approved) {
-            revert ERRORS.LISTING_NOT_APPROVED();
-        }
 
         if (tx.origin != _listingApproval.approver) {
             revert ERRORS.UNAUTHORIZED();
@@ -122,9 +114,8 @@ contract RealEstate {
             abi.encodePacked(
                 id,
                 owner,
-                state,
-                city,
-                estateAddress,
+                agent,
+                region,
                 postalCode,
                 description,
                 price,
@@ -136,13 +127,11 @@ contract RealEstate {
             revert ERRORS.INVALID_LISTING_HASH();
         }
         uint listingId = l.listings.length + 1;
-        ICoitonNFT(l.erc721Token).mint(msg.sender, listingId, coverImage);
+        ICoitonNFT(l.erc721Token).mint(owner, listingId, coverImage);
         LibAppStorage.Listing memory _newListing = LibAppStorage.Listing(
             id,
             owner,
-            state,
-            city,
-            estateAddress,
+            region,
             postalCode,
             description,
             price,
@@ -151,7 +140,7 @@ contract RealEstate {
             coverImage,
             block.timestamp
         );
-
+        _listingApproval.approved = true;
         _listingApproval.created = true;
         l.listing[listingId] = _newListing;
 

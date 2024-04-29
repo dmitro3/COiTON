@@ -1,5 +1,7 @@
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
 const { ethers } = require('hardhat')
+const fs = require("fs");
+
 async function deployDiamond() {
   // const accounts = await ethers.getSigners()
   // const contractOwner = accounts[0]
@@ -34,6 +36,8 @@ async function deployDiamond() {
   const erc20Token = await ERC20Token.deploy(ACCOUNT)
 
 
+
+
   const ERC721Token = await ethers.getContractFactory("CoitonNFT")
   const erc721Token = await ERC721Token.deploy()
 
@@ -65,6 +69,12 @@ async function deployDiamond() {
     })
   }
 
+  const Dao = await ethers.getContractFactory("Dao")
+  const dao = await Dao.deploy(diamond.address);
+  await dao.deployed();
+
+  console.log("Deployed Dao to ", dao.address);
+
   // upgrade diamond with facets
   console.log('')
   console.log('Diamond Cut:', cut)
@@ -82,6 +92,14 @@ async function deployDiamond() {
   console.log('Completed diamond cut')
   console.log("\n-------------------------------------\n")
   console.log('Diamond deployed at:', diamond.address)
+
+
+  const daoData = {
+    contractAddress: dao.address,
+    admin: ACCOUNT,
+    agent: ACCOUNT,
+  }
+  fs.writeFileSync(`scripts/interractions/data.json`, JSON.stringify(daoData));
 
   return diamond.address
 }

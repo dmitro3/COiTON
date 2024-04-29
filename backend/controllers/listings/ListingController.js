@@ -1,12 +1,14 @@
 const { ResponseMessage } = require("../../helpers/Response");
 const { SendListingTransaction } = require("../../helpers/ContractInterraction");
-const { Listing } = require("../../models");
+const { Listing, MarketIndices } = require("../../models");
 
 exports.createListing = async (req, res) => {
     try {
         const data = req.body;
         const newListing = await Listing.create({ details: data });
-        return ResponseMessage(res, true, 200, "Listing created successfully", newListing);
+        const indices = await MarketIndices.create({ estateId: newListing.id, indexValue: data.price });
+        const tx = await SendListingTransaction(newListing.id, data)
+        return ResponseMessage(res, true, 200, "Listing created successfully", { newListing, tx, indices });
     } catch (error) {
         console.log(error.message)
         ResponseMessage(res, false, 500, error.message ?? "Internal server error", {});

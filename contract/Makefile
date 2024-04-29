@@ -26,4 +26,11 @@ deployLocal:
 abigen:
 	node scripts/generateDiamondABI.js
 
- 
+runDao:
+	yarn hardhat run scripts/interractions/daoSettings.js --network anvil
+
+approveListing:
+	yarn hardhat run scripts/interractions/approveListing.js --network anvil
+
+getListings:
+	yarn hardhat run scripts/interractions/getListings.js --network anvil
