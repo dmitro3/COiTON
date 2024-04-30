@@ -5,19 +5,21 @@ pragma solidity ^0.8.0;
 /// @author Includes all the essential state variables, structs, and enums required for the real estate contract.
 library LibAppStorage {
     struct PurchaseAgreement {
-        uint id;
+        uint256 id;
         address initiator;
         address buyer;
-        uint estateId;
-        uint signersCount;
+        uint256 estateId;
+        uint256 signersCount;
         bool executed;
         address[] validSigners;
     }
+
     struct Proposal {
         address from;
-        uint estateId;
-        uint price;
+        uint256 estateId;
+        uint256 price;
     }
+
     struct Listing {
         string id;
         address owner;
@@ -28,7 +30,7 @@ library LibAppStorage {
         string description;
         uint256 price;
         string images;
-        uint tokenId;
+        uint256 tokenId;
         string coverImage;
         uint256 createdAt;
     }
@@ -39,14 +41,14 @@ library LibAppStorage {
     // }
 
     struct TokenHolding {
-        uint percent;
-        uint tokenId;
+        uint256 percent;
+        uint256 tokenId;
     }
 
     struct StakeHolder {
         address user;
-        uint price;
-        uint percentageShare;
+        uint256 price;
+        uint256 percentageShare;
     }
 
     struct Holdings {
@@ -60,17 +62,17 @@ library LibAppStorage {
     }
 
     struct TransactionHistory {
-        uint timestamp;
-        uint tokenId;
-        uint amount;
+        uint256 timestamp;
+        uint256 tokenId;
+        uint256 amount;
         address by;
         TransactionType type_;
         string description;
     }
 
     struct Market {
-        uint tokenId;
-        uint currentPrice;
+        uint256 tokenId;
+        uint256 currentPrice;
         uint8 consumedShares;
         StakeHolder[] stakeHolders;
     }
@@ -87,18 +89,18 @@ library LibAppStorage {
         // address diamondAddress;
         address erc20Token;
         address erc721Token;
-        mapping(uint => Market) market;
-        mapping(address => mapping(uint => uint8)) userMarketShare;
+        mapping(uint256 => Market) market;
+        mapping(address => mapping(uint256 => uint8)) userMarketShare;
         Listing[] listings;
-        mapping(uint => Listing) listing;
+        mapping(uint256 => Listing) listing;
         mapping(string => ListingApproval) listingApproval;
         Proposal[] proposals;
         TransactionHistory[] transactionHistory;
-        uint purchaseAgreementCount;
-        mapping(uint => mapping(address => bool)) isValidSigner;
-        mapping(uint => PurchaseAgreement) purchaseAgreement;
-        mapping(uint => mapping(address => bool)) hasSignedPurchaseAgreement;
-        mapping(address => uint) stake;
+        uint256 purchaseAgreementCount;
+        mapping(uint256 => mapping(address => bool)) isValidSigner;
+        mapping(uint256 => PurchaseAgreement) purchaseAgreement;
+        mapping(uint256 => mapping(address => bool)) hasSignedPurchaseAgreement;
+        mapping(address => uint256) stake;
         mapping(address => Holdings) holdings;
     }
 

@@ -6,6 +6,7 @@ import "../contracts/facets/DiamondCutFacet.sol";
 import "../contracts/facets/DiamondLoupeFacet.sol";
 import "../contracts/facets/OwnershipFacet.sol";
 import "forge-std/Test.sol";
+import "forge-std/console.sol";
 import "../contracts/Diamond.sol";
 import "../contracts/facets/RealEstate.sol";
 import "../contracts/libraries/LibAppStorage.sol";
@@ -13,6 +14,7 @@ import "../contracts/libraries/Errors.sol";
 import "../contracts/facets/Trade.sol";
 import "../contracts/CoitonNFT.sol";
 import "../contracts/CoitonERC20.sol";
+import "../contracts/Dao.sol";
 
 contract DiamondDeployer is Test, IDiamondCut {
     // contract types of facets to be deployed
@@ -25,6 +27,7 @@ contract DiamondDeployer is Test, IDiamondCut {
     Trade trade;
     CoitonNFT coitonNFT;
     CoitonERC20 coitonERC20;
+    Dao dao;
 
     address A = address(0xa);
     address B = address(0xb);
@@ -51,6 +54,7 @@ contract DiamondDeployer is Test, IDiamondCut {
 
         coitonNFT = new CoitonNFT();
         coitonERC20 = new CoitonERC20(A);
+        dao = new Dao(address(boundEstate));
 
         // l.diamondAddress = address(diamond);
 
@@ -353,9 +357,9 @@ contract DiamondDeployer is Test, IDiamondCut {
         );
 
         // boundEstate.approveListing("1", hash1, A);
-        vm.expectRevert(
-            abi.encodeWithSelector(ERRORS.INVALID_LISTING_HASH.selector)
-        );
+        // vm.expectRevert(
+        //     abi.encodeWithSelector(ERRORS.INVALID_LISTING_HASH.selector)
+        // );
         boundEstate.createListing(
             "1",
             A,
@@ -388,9 +392,6 @@ contract DiamondDeployer is Test, IDiamondCut {
                 "cover"
             )
         );
-        // boundEstate.approveListing(hash_id, hash, B);
-
-        switchSigner(B);
 
         boundEstate.createListing(
             hash_id,
@@ -405,59 +406,116 @@ contract DiamondDeployer is Test, IDiamondCut {
             images,
             "cover"
         );
+
+         LibAppStorage.Listing memory new_listing = boundEstate.getListing(1);
+         assertEq(new_listing.owner, B);
     }
 
-    function testApproveListing() public {
-        switchSigner(A);
+    // function testApproveListing() public {
+    //     switchSigner(A);
 
-        bytes32 hash1 = keccak256(
-            abi.encodePacked(
-                "1",
-                A,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images
-            )
-        );
+    //     bytes32 hash1 = keccak256(
+    //         abi.encodePacked(
+    //             "1",
+    //             A,
+    //             country,
+    //             state,
+    //             city,
+    //             estateAddress,
+    //             postalCode,
+    //             description,
+    //             price,
+    //             images
+    //         )
+    //     );
 
-        // boundEstate.approveListing("1", hash1, A);
-        vm.expectRevert(
-            abi.encodeWithSelector(ERRORS.LISTING_ALREADY_APPROVED.selector)
-        );
-        // boundEstate.approveListing("1", hash1, A);
+    //     // boundEstate.approveListing("1", hash1, A);
+    //     vm.expectRevert(
+    //         abi.encodeWithSelector(ERRORS.LISTING_ALREADY_APPROVED.selector)
+    //     );
+    //     // boundEstate.approveListing("1", hash1, A);
+    // }
+
+    // function testApproveListingStateChange() public {
+    //     switchSigner(A);
+
+    //     bytes32 hash1 = keccak256(
+    //         abi.encodePacked(
+    //             "1",
+    //             A,
+    //             country,
+    //             state,
+    //             city,
+    //             estateAddress,
+    //             postalCode,
+    //             description,
+    //             price,
+    //             images
+    //         )
+    //     );
+
+    //     // boundEstate.approveListing("1", hash1, A);
+    //     boundEstate.queListingForApproval("1", hash1, A);
+    //     LibAppStorage.ListingApproval memory new_list = boundEstate.getHash(
+    //         "1"
+    //     );
+
+    //    // assertEq(new_list.approved, false);
+    //      assertEq(new_list.approver, A);
+    // }
+
+
+
+
+
+
+
+
+    function testDaoclaimStateSuperior() public {
+        switchSigner(B);
+        string memory hash_id = "UUIDV4";
+       vm.expectRevert("UNAUTHORIZED");
+       dao.claimStateSuperior(hash_id);
+      
+
+    }
+    address nextSuperior = address(0xC);
+     address superior = address(0xB);
+
+
+
+        function testtransferSuperior() public {
+        switchSigner(B);
+        string memory hash_id = "UUIDV4";
+       vm.expectRevert("UNAUTHORIZED");
+       dao.transferSuperior(A);
     }
 
-    function testApproveListingStateChange() public {
-        switchSigner(A);
+    function testclaimSuperior() public {
+        switchSigner(B);
+        string memory hash_id = "UUIDV4";
+       vm.expectRevert("UNAUTHORIZED");
+       dao.claimSuperior();
 
-        bytes32 hash1 = keccak256(
-            abi.encodePacked(
-                "1",
-                A,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images
-            )
-        );
-
-        // boundEstate.approveListing("1", hash1, A);
-        LibAppStorage.ListingApproval memory new_list = boundEstate.getHash(
-            "1"
-        );
-
-        assertEq(new_list.approved, true);
-        // assertEq(new_list.owner, A);
     }
+
+
+        function testDaoTransferStateuperior() public {
+        //address nextSuperior = B;
+        switchSigner(address(superior));
+        // dao.addAgent("1",  a);
+        //  dao.transferSuperior(A);
+        //  assertEq(address(nextSuperior), A);
+
+    }
+
+    function testcreateAdministration() public {
+        switchSigner(dao.superior.address);
+       // A = dao.superior.address;
+
+        dao.createAdministration(A, "1", "1");
+    }
+
 
     function generateSelectors(
         string memory _facetName

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+
 import "./interfaces/IRealEstate.sol";
 import "./libraries/Events.sol";
 
@@ -7,7 +8,7 @@ import "./libraries/Events.sol";
 
 contract Dao {
     //The address of the superior in the land and ministry administration who will provide the initial approval.
-    address superior;
+    address public superior;
     //The address of the next higher authority in the land and ministry administration who will provide the second approval..
     address nextSuperior;
     // The address of the owners.
@@ -32,6 +33,7 @@ contract Dao {
         string id;
     }
     /// @dev This struct contains all the essential details for the designated agent.
+
     struct Agent {
         address id;
         string name;
@@ -42,6 +44,7 @@ contract Dao {
     }
     /// @dev This struct holds all the crucial information for the administration,
     /// @dev including the address of the multi-approver process and the agents involved in the administration.
+
     struct Administration {
         address superior;
         address nextSuperior;
@@ -50,10 +53,11 @@ contract Dao {
         Agent[] agents;
     }
     /// @devThis struct contains all the required information for allocating listings to agents.
+
     struct Assign {
         Listing listing;
-        uint timestamp;
-        uint id;
+        uint256 timestamp;
+        uint256 id;
         bool approved;
     }
 
@@ -72,10 +76,7 @@ contract Dao {
     /// transferStateSuperior  is designed to update the administration information for a given state by assigning a new superior address.
     /// @param state : The identified state for the next superior
     /// @param _nextSuperior : The address of the next superior
-    function transferStateSuperior(
-        string calldata state,
-        address _nextSuperior
-    ) external {
+    function transferStateSuperior(string calldata state, address _nextSuperior) external {
         Administration storage _administration = administration[state];
         require(msg.sender == _administration.superior, "UNAUTHORIZED");
         _administration.nextSuperior = _nextSuperior;
@@ -110,27 +111,15 @@ contract Dao {
     /// @param _administrationSuperior : The address of the new adminstration superior
     /// @param _state :The designated state for the administration.
     /// @param _region : The designated region for the adminstration.
-    function createAdministration(
-        address _administrationSuperior,
-        string calldata _state,
-        string calldata _region
-    ) external {
+    function createAdministration(address _administrationSuperior, string calldata _state, string calldata _region)
+        external
+    {
         require(msg.sender == superior, "UNAUTHORIZED");
         require(_administrationSuperior != address(0), "INVALID_ADDRESS");
-        require(
-            keccak256(abi.encode(_state)) != keccak256(abi.encode("")),
-            "INVALID_STATE_FIELD"
-        );
-        require(
-            keccak256(abi.encode(_region)) != keccak256(abi.encode("")),
-            "INVALID_REGION_FIELD"
-        );
+        require(keccak256(abi.encode(_state)) != keccak256(abi.encode("")), "INVALID_STATE_FIELD");
+        require(keccak256(abi.encode(_region)) != keccak256(abi.encode("")), "INVALID_REGION_FIELD");
         Administration storage _administration = administration[_state];
-        require(
-            keccak256(abi.encode(_administration.region)) !=
-                keccak256(abi.encode(_region)),
-            "ALREDY_EXIST"
-        );
+        require(keccak256(abi.encode(_administration.region)) != keccak256(abi.encode(_region)), "ALREDY_EXIST");
         _administration.superior = _administrationSuperior;
         _administration.state = _state;
         _administration.region = _region;
@@ -145,40 +134,24 @@ contract Dao {
         Administration storage _administration = administration[_state];
         require(msg.sender == _administration.superior, "UNAUTHORIZED");
         require(_agent.id == address(0), "INVALID_ADDRESS");
-        require(
-            keccak256(abi.encode(_agent.name)) != keccak256(abi.encode("")),
-            "INVALID_NAME_FIELD"
-        );
-        require(
-            keccak256(abi.encode(_agent.code)) != keccak256(abi.encode("")),
-            "INVALID_CODE_FIELD"
-        );
-        require(
-            keccak256(abi.encode(_agent.region)) != keccak256(abi.encode("")),
-            "INVALID_REGION_FIELD"
-        );
-        require(
-            keccak256(abi.encode(_agent.bio)) != keccak256(abi.encode("")),
-            "INVALID_BIO_FIELD"
-        );
+        require(keccak256(abi.encode(_agent.name)) != keccak256(abi.encode("")), "INVALID_NAME_FIELD");
+        require(keccak256(abi.encode(_agent.code)) != keccak256(abi.encode("")), "INVALID_CODE_FIELD");
+        require(keccak256(abi.encode(_agent.region)) != keccak256(abi.encode("")), "INVALID_REGION_FIELD");
+        require(keccak256(abi.encode(_agent.bio)) != keccak256(abi.encode("")), "INVALID_BIO_FIELD");
 
         bool exist;
-        for (uint i = 0; i < _administration.agents.length; i++) {
+        for (uint256 i = 0; i < _administration.agents.length; i++) {
             if (_administration.agents[i].id == _agent.id) {
                 exist = true;
             }
 
-            if (
-                keccak256(abi.encode(_administration.agents[i].code)) ==
-                keccak256(abi.encode(_agent.code))
-            ) {
+            if (keccak256(abi.encode(_administration.agents[i].code)) == keccak256(abi.encode(_agent.code))) {
                 exist = true;
             }
         }
         require(!exist, "AGENT_ALREADY_EXIST(CODE_OR_ADDRESS)");
         require(
-            keccak256(abi.encode(_administration.region)) !=
-                keccak256(abi.encode(_agent.region)),
+            keccak256(abi.encode(_administration.region)) != keccak256(abi.encode(_agent.region)),
             "REGION_DID_NOT_MATCH"
         );
         _agent.deleted = false;
@@ -193,38 +166,23 @@ contract Dao {
     /// @param _state : The designated state for the listing approvals
     /// @param hash : Hash of the listing details for integrity verification
     /// @param _listing : The new instance of the listing struct.
-    function delegateListingForApproval(
-        string calldata _state,
-        bytes32 hash,
-        Listing calldata _listing
-    ) external {
+    function delegateListingForApproval(string calldata _state, bytes32 hash, Listing calldata _listing) external {
         require(msg.sender == owner, "UNAUTHORIZED");
         Administration storage _administration = administration[_state];
 
         require(_administration.superior != address(0), "STATE_NOT_REGISTERED");
         bool isValidAgent;
 
-        for (uint i; i < _administration.agents.length; i++) {
+        for (uint256 i; i < _administration.agents.length; i++) {
             if (_administration.agents[i].id == _listing.agentId) {
                 isValidAgent = true;
             }
         }
         require(isValidAgent, "NOT_A_VALID_AGENT");
-        uint id = assign[_state].length;
-        assign[_state].push(
-            Assign({
-                timestamp: block.timestamp,
-                listing: _listing,
-                id: id + 1,
-                approved: false
-            })
-        );
+        uint256 id = assign[_state].length;
+        assign[_state].push(Assign({timestamp: block.timestamp, listing: _listing, id: id + 1, approved: false}));
 
-        IRealEstate(realEstateContractAddress).queListingForApproval(
-            _listing.id,
-            hash,
-            _administration.superior
-        );
+        IRealEstate(realEstateContractAddress).queListingForApproval(_listing.id, hash, _administration.superior);
     }
 
     /// The approveListing function is designed to finalize the approval of a real estate listing.
@@ -284,12 +242,10 @@ contract Dao {
 
     /// The getUnApprovedAssigns function  is designed to retrieve a list of unapproved assignments for a specific state.
     /// @param _state : The designated state to check for unapproved listings.
-    function getUnApprovedAssigns(
-        string calldata _state
-    ) external view returns (Assign[] memory) {
-        uint count;
+    function getUnApprovedAssigns(string calldata _state) external view returns (Assign[] memory) {
+        uint256 count;
         {
-            for (uint i; i < assign[_state].length; i++) {
+            for (uint256 i; i < assign[_state].length; i++) {
                 if (!assign[_state][i].approved) {
                     count += 1;
                 }
@@ -299,8 +255,8 @@ contract Dao {
         Assign[] memory _return = new Assign[](count);
 
         {
-            uint current_index;
-            for (uint i; i < assign[_state].length; i++) {
+            uint256 current_index;
+            for (uint256 i; i < assign[_state].length; i++) {
                 if (!assign[_state][i].approved) {
                     _return[current_index] = assign[_state][i];
                     current_index += 1;
@@ -313,12 +269,10 @@ contract Dao {
 
     /// The getApprovedAssigns function  is designed to retrieve a list of approved assignments for a specific state.
     /// @param _state : The designated state to check for unapproved listings.
-    function getApprovedAssigns(
-        string calldata _state
-    ) external view returns (Assign[] memory) {
-        uint count;
+    function getApprovedAssigns(string calldata _state) external view returns (Assign[] memory) {
+        uint256 count;
         {
-            for (uint i; i < assign[_state].length; i++) {
+            for (uint256 i; i < assign[_state].length; i++) {
                 if (assign[_state][i].approved) {
                     count += 1;
                 }
@@ -328,8 +282,8 @@ contract Dao {
         Assign[] memory _return = new Assign[](count);
 
         {
-            uint current_index;
-            for (uint i; i < assign[_state].length; i++) {
+            uint256 current_index;
+            for (uint256 i; i < assign[_state].length; i++) {
                 if (assign[_state][i].approved) {
                     _return[current_index] = assign[_state][i];
                     current_index += 1;

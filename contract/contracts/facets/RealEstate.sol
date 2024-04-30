@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.0;
+
 import "../libraries/LibAppStorage.sol";
 import "../libraries/Events.sol";
 import "../libraries/Errors.sol";
@@ -54,16 +55,11 @@ contract RealEstate {
     /// @param approver : Address of the entity authorized to approve the listing
     // This function accepts the following parameters from the backend:
     // a hash and an ID associated with the listing that needs approval.
-    function queListingForApproval(
-        string memory id,
-        bytes32 hash,
-        address approver
-    ) external {
+    function queListingForApproval(string memory id, bytes32 hash, address approver) external {
         if (tx.origin != l.owner) {
             revert ERRORS.UNAUTHORIZED();
         }
-        LibAppStorage.ListingApproval storage _newListingApproval = l
-            .listingApproval[id];
+        LibAppStorage.ListingApproval storage _newListingApproval = l.listingApproval[id];
 
         if (_newListingApproval.approved) {
             revert ERRORS.LISTING_ALREADY_APPROVED();
@@ -102,8 +98,7 @@ contract RealEstate {
             revert ERRORS.UNAUTHORIZED();
         }
 
-        LibAppStorage.ListingApproval storage _listingApproval = l
-            .listingApproval[id];
+        LibAppStorage.ListingApproval storage _listingApproval = l.listingApproval[id];
         _listingApproval.approved = true;
 
         if (!_listingApproval.approved) {
@@ -118,24 +113,13 @@ contract RealEstate {
             revert ERRORS.LISTING_ALREADY_CREATED();
         }
 
-        bytes32 hash = keccak256(
-            abi.encodePacked(
-                id,
-                owner,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images
-            )
-        );
+        bytes32 hash =
+            keccak256(abi.encodePacked(id, owner, state, city, estateAddress, postalCode, description, price, images));
 
         if (_listingApproval.hash != hash) {
             revert ERRORS.INVALID_LISTING_HASH();
         }
-        uint listingId = l.listings.length + 1;
+        uint256 listingId = l.listings.length + 1;
         ICoitonNFT(l.erc721Token).mint(msg.sender, listingId, coverImage);
         LibAppStorage.Listing memory _newListing = LibAppStorage.Listing(
             id,
@@ -163,12 +147,9 @@ contract RealEstate {
     // This function allows external caller to submit a proposal to purchase a real estate property
     //@param estateId : Identifying the estate that the user went to propose to buy
     //@param price: User estimated price.
-    function proposeBuy(uint estateId, uint price) external {
-        LibAppStorage.Proposal memory _newProposal = LibAppStorage.Proposal({
-            from: msg.sender,
-            price: price,
-            estateId: estateId
-        });
+    function proposeBuy(uint256 estateId, uint256 price) external {
+        LibAppStorage.Proposal memory _newProposal =
+            LibAppStorage.Proposal({from: msg.sender, price: price, estateId: estateId});
 
         l.proposals.push(_newProposal);
 
@@ -178,35 +159,25 @@ contract RealEstate {
     //This function is designed to retrieve all the listings that have been created.
     //@param Id: The Id use to fetch all the listing created
     //@notice returns all the listing created from the array
-    function getListing(
-        uint Id
-    ) external view returns (LibAppStorage.Listing memory) {
+    function getListing(uint256 Id) external view returns (LibAppStorage.Listing memory) {
         return l.listings[Id];
     }
 
-    function getListings()
-        external
-        view
-        returns (LibAppStorage.Listing[] memory)
-    {
+    function getListings() external view returns (LibAppStorage.Listing[] memory) {
         return l.listings;
     }
 
     //This function is designed to retrieve all the proposals to buy that have been submitted
     //@param Id: The Id is use to fetch all the Proposals submitted.
     //@notice returns all the proposals from the array
-    function getProposal(
-        uint Id
-    ) external view returns (LibAppStorage.Proposal memory) {
+    function getProposal(uint256 Id) external view returns (LibAppStorage.Proposal memory) {
         return l.proposals[Id];
     }
 
     /// This function is to get all the real estate listing hash.
     /// @param Id : The Id is use to fetch all the Listing real estate hash.
     //@notice returns all the hash from the array.
-    function getHash(
-        string memory Id
-    ) external view returns (LibAppStorage.ListingApproval memory) {
+    function getHash(string memory Id) external view returns (LibAppStorage.ListingApproval memory) {
         return l.listingApproval[Id];
     }
 
@@ -234,27 +205,14 @@ contract RealEstate {
         string memory images,
         string memory coverImage
     ) public pure returns (bytes32) {
-        return
-            keccak256(
-                abi.encodePacked(
-                    owner,
-                    country,
-                    state,
-                    city,
-                    estateAddress,
-                    postalCode,
-                    description,
-                    price,
-                    images,
-                    coverImage
-                )
-            );
+        return keccak256(
+            abi.encodePacked(
+                owner, country, state, city, estateAddress, postalCode, description, price, images, coverImage
+            )
+        );
     }
 
-    function isValidSigner(
-        uint agreementId,
-        address signer
-    ) external view returns (bool) {
+    function isValidSigner(uint256 agreementId, address signer) external view returns (bool) {
         return l.isValidSigner[agreementId][signer];
     }
 
@@ -265,11 +223,7 @@ contract RealEstate {
     //We tend to implement and check if it is the owner is initiating the transaction and if the buyer is among
     //the lists of signers.
     //Then the storage is updated .
-    function initiatePurchaseAgreement(
-        uint estateId,
-        address buyer,
-        address[] memory signers
-    ) external {
+    function initiatePurchaseAgreement(uint256 estateId, address buyer, address[] memory signers) external {
         if (signers.length == 0) {
             revert ERRORS.INVALID_SIGNERS_COUNT();
         }
@@ -279,7 +233,7 @@ contract RealEstate {
             is_party_valid = true;
         } else {
             if (l.listing[estateId].owner == msg.sender) {
-                for (uint i = 0; i < signers.length; i++) {
+                for (uint256 i = 0; i < signers.length; i++) {
                     if (signers[i] == buyer) {
                         is_party_valid = true;
                         break;
@@ -292,46 +246,38 @@ contract RealEstate {
             revert ERRORS.INVALID_ENTITIES();
         }
 
-        for (uint i = 0; i < signers.length; i++) {
+        for (uint256 i = 0; i < signers.length; i++) {
             l.isValidSigner[estateId][signers[i]] = true;
         }
 
         l.purchaseAgreementCount++;
-        LibAppStorage.PurchaseAgreement storage _newPurchaseAgreement = l
-            .purchaseAgreement[l.purchaseAgreementCount];
+        LibAppStorage.PurchaseAgreement storage _newPurchaseAgreement = l.purchaseAgreement[l.purchaseAgreementCount];
         _newPurchaseAgreement.id = l.purchaseAgreementCount;
         _newPurchaseAgreement.initiator = msg.sender;
         _newPurchaseAgreement.estateId = estateId;
         _newPurchaseAgreement.validSigners = signers;
         _newPurchaseAgreement.buyer = buyer;
 
-        emit EVENTS.PurchaseAgreementInitialization(
-            estateId,
-            msg.sender,
-            signers
-        );
+        emit EVENTS.PurchaseAgreementInitialization(estateId, msg.sender, signers);
     }
 
     /// The function  is to get all the agreement purchase
     /// @param agreementId : Use to fetch all the agreement purchase from the array.
-    function getPurchaseAgreement(
-        uint agreementId
-    ) external view returns (LibAppStorage.PurchaseAgreement memory) {
+    function getPurchaseAgreement(uint256 agreementId) external view returns (LibAppStorage.PurchaseAgreement memory) {
         return l.purchaseAgreement[agreementId];
     }
 
     // This function is designed to allow an authorized party to sign a purchase agreement for a specified real estate property on the platform.
     //@Param estateId: Identify the specific purchase agreement related to a real estate property.
     //After all the aggrement has been settled the transfer of our token is sent buyer
-    function signPurchaseAgreement(uint estateId) external {
+    function signPurchaseAgreement(uint256 estateId) external {
         if (!l.isValidSigner[estateId][msg.sender]) {
             revert ERRORS.NOT_A_VALID_SIGNER();
         }
         if (l.hasSignedPurchaseAgreement[estateId][msg.sender]) {
             revert ERRORS.ALREADY_SIGNED();
         }
-        LibAppStorage.PurchaseAgreement storage _purchaseAgreement = l
-            .purchaseAgreement[estateId];
+        LibAppStorage.PurchaseAgreement storage _purchaseAgreement = l.purchaseAgreement[estateId];
         if (_purchaseAgreement.executed) {
             revert ERRORS.ALREADY_EXECUTED();
         }
@@ -339,26 +285,16 @@ contract RealEstate {
         _purchaseAgreement.signersCount += 1;
         l.hasSignedPurchaseAgreement[estateId][msg.sender] = true;
 
-        if (
-            _purchaseAgreement.signersCount ==
-            _purchaseAgreement.validSigners.length
-        ) {
+        if (_purchaseAgreement.signersCount == _purchaseAgreement.validSigners.length) {
             _purchaseAgreement.executed = true;
 
             LibAppStorage.Listing memory listing = l.listing[estateId];
             IIERC20 erc20Token = IIERC20(l.erc20Token);
             IERC721 erc721Token = IERC721(l.erc721Token);
-            if (
-                erc20Token.allowance(_purchaseAgreement.buyer, address(this)) <
-                listing.price
-            ) {
+            if (erc20Token.allowance(_purchaseAgreement.buyer, address(this)) < listing.price) {
                 revert ERRORS.NO_APPROVAL_TO_SPEND_TOKENS();
             } else {
-                erc20Token.transferFrom(
-                    _purchaseAgreement.buyer,
-                    address(this),
-                    listing.price
-                );
+                erc20Token.transferFrom(_purchaseAgreement.buyer, address(this), listing.price);
             }
 
             if (erc721Token.getApproved(listing.tokenId) != address(this)) {
@@ -366,15 +302,9 @@ contract RealEstate {
             }
 
             erc20Token.transfer(listing.owner, listing.price);
-            erc721Token.safeTransferFrom(
-                listing.owner,
-                _purchaseAgreement.buyer,
-                listing.tokenId
-            );
+            erc721Token.safeTransferFrom(listing.owner, _purchaseAgreement.buyer, listing.tokenId);
 
-            assert(
-                erc721Token.ownerOf(listing.tokenId) == _purchaseAgreement.buyer
-            );
+            assert(erc721Token.ownerOf(listing.tokenId) == _purchaseAgreement.buyer);
         }
     }
 }
