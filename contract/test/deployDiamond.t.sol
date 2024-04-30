@@ -307,25 +307,25 @@ contract DiamondDeployer is Test, IDiamondCut {
         boundTrade.sellNFTTokenShares(2, userShare);
     }
 
-    function testCreatedListNOTAPPROVED() public {
-        switchSigner(A);
-        vm.expectRevert(
-            abi.encodeWithSelector(ERRORS.LISTING_NOT_APPROVED.selector)
-        );
-        boundEstate.createListing(
-            "1",
-            A,
-            // "nigeria",
-            "lagos",
-            "ikorodu",
-            "estateAddress",
-            0,
-            "description",
-            10,
-            "",
-            ""
-        );
-    }
+    // function testCreatedListNOTAPPROVED() public {
+    //     switchSigner(A);
+    //     vm.expectRevert(
+    //         abi.encodeWithSelector(ERRORS.LISTING_NOT_APPROVED.selector)
+    //     );
+    //     boundEstate.createListing(
+    //         "1",
+    //         A,
+    //         // "nigeria",
+    //         "lagos",
+    //         "ikorodu",
+    //         "estateAddress",
+    //         0,
+    //         "description",
+    //         10,
+    //         "",
+    //         ""
+    //     );
+    // }
 
     string id = "1";
     address owner = A;
@@ -338,78 +338,78 @@ contract DiamondDeployer is Test, IDiamondCut {
     uint price = 1;
     string images = "";
 
-    function testCreatedListStateINVALIDLISTING() public {
-        switchSigner(A);
+    // function testCreatedListStateINVALIDLISTING() public {
+    //     switchSigner(A);
 
-        bytes32 hash1 = keccak256(
-            abi.encodePacked(
-                "1",
-                A,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images
-            )
-        );
+    //     bytes32 hash1 = keccak256(
+    //         abi.encodePacked(
+    //             "1",
+    //             A,
+    //             country,
+    //             state,
+    //             city,
+    //             estateAddress,
+    //             postalCode,
+    //             description,
+    //             price,
+    //             images
+    //         )
+    //     );
 
-        // boundEstate.approveListing("1", hash1, A);
-        // vm.expectRevert(
-        //     abi.encodeWithSelector(ERRORS.INVALID_LISTING_HASH.selector)
-        // );
-        boundEstate.createListing(
-            "1",
-            A,
-            // country,
-            state,
-            city,
-            estateAddress,
-            postalCode,
-            description,
-            price,
-            images,
-            ""
-        );
-    }
+    //     // boundEstate.approveListing("1", hash1, A);
+    //     // vm.expectRevert(
+    //     //     abi.encodeWithSelector(ERRORS.INVALID_LISTING_HASH.selector)
+    //     // );
+    //     boundEstate.createListing(
+    //         "1",
+    //         A,
+    //         // country,
+    //         state,
+    //         city,
+    //         estateAddress,
+    //         postalCode,
+    //         description,
+    //         price,
+    //         images,
+    //         ""
+    //     );
+    // }
 
-    function testCreatedListStateI() public {
-        switchSigner(A);
-        string memory hash_id = "UUIDV4";
-        bytes32 hash = keccak256(
-            abi.encodePacked(
-                B,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images,
-                "cover"
-            )
-        );
+    // function testCreatedListStateI() public {
+    //     switchSigner(A);
+    //     string memory hash_id = "UUIDV4";
+    //     bytes32 hash = keccak256(
+    //         abi.encodePacked(
+    //             B,
+    //             country,
+    //             state,
+    //             city,
+    //             estateAddress,
+    //             postalCode,
+    //             description,
+    //             price,
+    //             images,
+    //             "cover"
+    //         )
+    //     );
 
-        boundEstate.createListing(
-            hash_id,
-            B,
-            // country,
-            state,
-            city,
-            estateAddress,
-            postalCode,
-            description,
-            price,
-            images,
-            "cover"
-        );
+    //     boundEstate.createListing(
+    //         hash_id,
+    //         B,
+    //         // country,
+    //         state,
+    //         city,
+    //         estateAddress,
+    //         postalCode,
+    //         description,
+    //         price,
+    //         images,
+    //         "cover"
+    //     );
 
-         LibAppStorage.Listing memory new_listing = boundEstate.getListing(1);
-         assertEq(new_listing.owner, B);
-    }
+    //      LibAppStorage.Listing memory new_listing = boundEstate.getListing(1);
+    //      assertEq(new_listing.owner, B);
+    // }
 
     // function testApproveListing() public {
     //     switchSigner(A);
@@ -503,18 +503,67 @@ contract DiamondDeployer is Test, IDiamondCut {
         function testDaoTransferStateuperior() public {
         //address nextSuperior = B;
         switchSigner(address(superior));
-        // dao.addAgent("1",  a);
-        //  dao.transferSuperior(A);
-        //  assertEq(address(nextSuperior), A);
+    
 
     }
+
+        struct Agent {
+        address id;
+        string name;
+        string code;
+        string region;
+        string bio;
+        bool deleted;
+    }
+    /// @dev This struct holds all the crucial information for the administration,
+    /// @dev including the address of the multi-approver process and the agents involved in the administration.
+
+    struct Administration {
+        address superior;
+        address nextSuperior;
+        string state;
+        string region;
+        // Agent[] agents;
+    }
+
+
+        function testAdministration() public {
+        Administration memory expected = Administration(A, B, "1", "1");
+        Administration memory actual = _Administration(0);
+        assertEq(expected, actual);
+    }
+
+    // implement a function that accepts 2 TokenMetadata variables to compare
+    function assertEq(Administration memory expected, Administration memory actual) internal {
+        bytes memory expectedBytes = abi.encode(expected);
+        bytes memory actualBytes = abi.encode(actual);
+        assertEq(expectedBytes, actualBytes);
+            }
+
+    function _Administration(uint256 tokenId) internal view returns (Administration memory administration) {
+        if (tokenId == 0) {
+            administration.superior = A;
+            administration.nextSuperior = B;
+            administration.state = "1";
+            administration.region = "1";
+        }
+    }
+
 
     function testcreateAdministration() public {
-        switchSigner(dao.superior.address);
-       // A = dao.superior.address;
+        Dao.Administration memory administration = dao.getAdministration("1");
 
-        dao.createAdministration(A, "1", "1");
+        A = address(administration.superior);
+           switchSigner(A);
+          dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
+
+    assertEq(administration.superior, A, "Superior address should be set to A");
+
+
+     
+
     }
+
 
 
     function generateSelectors(

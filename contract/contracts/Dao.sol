@@ -10,7 +10,7 @@ contract Dao {
     //The address of the superior in the land and ministry administration who will provide the initial approval.
     address public superior;
     //The address of the next higher authority in the land and ministry administration who will provide the second approval..
-    address nextSuperior;
+    address public nextSuperior;
     // The address of the owners.
     address owner;
     // The address of the real estate contract that includes the function for creating listings..
@@ -62,7 +62,7 @@ contract Dao {
     }
 
     /// @dev A mapping that tracks the administrative entities.
-    mapping(string => Administration) administration;
+    mapping(string => Administration) public administration;
 
     /// @dev A mapping that keeps track of designated entities.
     mapping(string => Assign[]) assign;
@@ -80,6 +80,10 @@ contract Dao {
         Administration storage _administration = administration[state];
         require(msg.sender == _administration.superior, "UNAUTHORIZED");
         _administration.nextSuperior = _nextSuperior;
+    }
+
+        function getAdministration(string memory state) public view returns (Administration memory) {
+        return administration[state];
     }
 
     /// claimStateSuperior is designed to finalize the transfer of administrative authority for a specified state.
