@@ -82,7 +82,7 @@ contract Dao {
         _administration.nextSuperior = _nextSuperior;
     }
 
-        function getAdministration(string memory state) public view returns (Administration memory) {
+    function getAdministration(string memory state) public view returns (Administration memory) {
         return administration[state];
     }
 

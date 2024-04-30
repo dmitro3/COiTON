@@ -141,17 +141,13 @@ contract DiamondDeployer is Test, IDiamondCut {
 
     function testEmptySignerPurchase() public {
         switchSigner(A);
-        vm.expectRevert(
-            abi.encodeWithSelector(ERRORS.INVALID_SIGNERS_COUNT.selector)
-        );
+        vm.expectRevert(abi.encodeWithSelector(ERRORS.INVALID_SIGNERS_COUNT.selector));
         boundEstate.initiatePurchaseAgreement(1, A, emptySigners);
     }
 
     function testIsSignerValid() public {
         switchSigner(B);
-        vm.expectRevert(
-            abi.encodeWithSelector(ERRORS.INVALID_ENTITIES.selector)
-        );
+        vm.expectRevert(abi.encodeWithSelector(ERRORS.INVALID_ENTITIES.selector));
         boundEstate.initiatePurchaseAgreement(1, A, mockSigners);
     }
 
@@ -166,8 +162,7 @@ contract DiamondDeployer is Test, IDiamondCut {
     function testInitiateSignerStateChange() public {
         switchSigner(B);
         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
-        LibAppStorage.PurchaseAgreement memory new_listing = boundEstate
-            .getPurchaseAgreement(1);
+        LibAppStorage.PurchaseAgreement memory new_listing = boundEstate.getPurchaseAgreement(1);
         assertEq(new_listing.id, 1);
         assertEq(new_listing.buyer, B);
         assertEq(new_listing.estateId, 1);
@@ -177,9 +172,7 @@ contract DiamondDeployer is Test, IDiamondCut {
     function testSignPurchaseAgreementvalid() public {
         switchSigner(B);
         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
-        vm.expectRevert(
-            abi.encodeWithSelector(ERRORS.NOT_A_VALID_SIGNER.selector)
-        );
+        vm.expectRevert(abi.encodeWithSelector(ERRORS.NOT_A_VALID_SIGNER.selector));
         boundEstate.signPurchaseAgreement(2);
     }
 
@@ -206,18 +199,7 @@ contract DiamondDeployer is Test, IDiamondCut {
         coitonERC20.mintTo(B, 5 * 10 ** 18);
         string memory hash_id = "UUIDV4";
         bytes32 hash = keccak256(
-            abi.encodePacked(
-                B,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images,
-                "cover"
-            )
+            abi.encodePacked(B, country, state, city, estateAddress, postalCode, description, price, images, "cover")
         );
         // boundEstate.approveListing(hash_id, hash, B);
 
@@ -246,8 +228,7 @@ contract DiamondDeployer is Test, IDiamondCut {
         switchSigner(address(0xD));
         boundEstate.signPurchaseAgreement(1);
 
-        LibAppStorage.PurchaseAgreement memory new_listing = boundEstate
-            .getPurchaseAgreement(1);
+        LibAppStorage.PurchaseAgreement memory new_listing = boundEstate.getPurchaseAgreement(1);
         assertEq(new_listing.executed, true);
     }
 
@@ -256,18 +237,15 @@ contract DiamondDeployer is Test, IDiamondCut {
         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
         switchSigner(address(0xC));
         boundEstate.signPurchaseAgreement(1);
-        LibAppStorage.PurchaseAgreement memory new_listing = boundEstate
-            .getPurchaseAgreement(1);
+        LibAppStorage.PurchaseAgreement memory new_listing = boundEstate.getPurchaseAgreement(1);
         assertEq(new_listing.executed, false);
     }
 
     /// Testing the Trade.sol
     function testEXHAUSTED_TOKEN_SHARE() public {
-        uint tokenId = 100;
+        uint256 tokenId = 100;
         uint8 sharesToExceed = 101;
-        vm.expectRevert(
-            abi.encodeWithSelector(ERRORS.EXHAUSTED_TOKEN_SHARES.selector)
-        );
+        vm.expectRevert(abi.encodeWithSelector(ERRORS.EXHAUSTED_TOKEN_SHARES.selector));
         boundTrade.buyNFTTokenShares(tokenId, sharesToExceed);
     }
 
@@ -293,9 +271,7 @@ contract DiamondDeployer is Test, IDiamondCut {
 
     function testINSUFFICIENT_SHARES() public {
         switchSigner(A);
-        vm.expectRevert(
-            abi.encodeWithSelector(ERRORS.INSUFFICIENT_SHARES.selector)
-        );
+        vm.expectRevert(abi.encodeWithSelector(ERRORS.INSUFFICIENT_SHARES.selector));
 
         boundTrade.sellNFTTokenShares(1, 1);
     }
@@ -335,7 +311,7 @@ contract DiamondDeployer is Test, IDiamondCut {
     string estateAddress = "A";
     uint24 postalCode = 10;
     string description = "createlist";
-    uint price = 1;
+    uint256 price = 1;
     string images = "";
 
     // function testCreatedListStateINVALIDLISTING() public {
@@ -464,50 +440,36 @@ contract DiamondDeployer is Test, IDiamondCut {
     //      assertEq(new_list.approver, A);
     // }
 
-
-
-
-
-
-
-
     function testDaoclaimStateSuperior() public {
         switchSigner(B);
         string memory hash_id = "UUIDV4";
-       vm.expectRevert("UNAUTHORIZED");
-       dao.claimStateSuperior(hash_id);
-      
-
+        vm.expectRevert("UNAUTHORIZED");
+        dao.claimStateSuperior(hash_id);
     }
+
     address nextSuperior = address(0xC);
-     address superior = address(0xB);
+    address superior = address(0xB);
 
-
-
-        function testtransferSuperior() public {
+    function testtransferSuperior() public {
         switchSigner(B);
         string memory hash_id = "UUIDV4";
-       vm.expectRevert("UNAUTHORIZED");
-       dao.transferSuperior(A);
+        vm.expectRevert("UNAUTHORIZED");
+        dao.transferSuperior(A);
     }
 
     function testclaimSuperior() public {
         switchSigner(B);
         string memory hash_id = "UUIDV4";
-       vm.expectRevert("UNAUTHORIZED");
-       dao.claimSuperior();
-
+        vm.expectRevert("UNAUTHORIZED");
+        dao.claimSuperior();
     }
 
-
-        function testDaoTransferStateuperior() public {
+    function testDaoTransferStateuperior() public {
         //address nextSuperior = B;
         switchSigner(address(superior));
-    
-
     }
 
-        struct Agent {
+    struct Agent {
         address id;
         string name;
         string code;
@@ -523,11 +485,10 @@ contract DiamondDeployer is Test, IDiamondCut {
         address nextSuperior;
         string state;
         string region;
-        // Agent[] agents;
     }
+    // Agent[] agents;
 
-
-        function testAdministration() public {
+    function testAdministration() public {
         Administration memory expected = Administration(A, B, "1", "1");
         Administration memory actual = _Administration(0);
         assertEq(expected, actual);
@@ -538,7 +499,7 @@ contract DiamondDeployer is Test, IDiamondCut {
         bytes memory expectedBytes = abi.encode(expected);
         bytes memory actualBytes = abi.encode(actual);
         assertEq(expectedBytes, actualBytes);
-            }
+    }
 
     function _Administration(uint256 tokenId) internal view returns (Administration memory administration) {
         if (tokenId == 0) {
@@ -549,26 +510,58 @@ contract DiamondDeployer is Test, IDiamondCut {
         }
     }
 
-
-    function testcreateAdministration() public {
+    function testcreateAdministrationState() public {
         Dao.Administration memory administration = dao.getAdministration("1");
 
         A = address(administration.superior);
-           switchSigner(A);
-          dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
+        switchSigner(A);
+        dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
 
-    assertEq(administration.superior, A, "Superior address should be set to A");
+        assertEq(administration.superior, A, "Superior address should be set to A");
+    }
 
+        function testcreateAdministrationINVALID_ADDRESS() public {
+        Dao.Administration memory administration = dao.getAdministration("1");
 
-     
+        A = address(administration.superior);
+        switchSigner(A);
+         vm.expectRevert("INVALID_ADDRESS");
+        dao.createAdministration(address(0), "1", "1");
+    }
+
+        function testcreateAdministrationStateAsserts() public {
+        Dao.Administration memory administration = dao.getAdministration("1");
+
+        A = address(administration.superior);
+        switchSigner(A);
+        dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
+         Dao.Administration memory _administration = dao.getAdministration("1");
+
+        assertEq(_administration.state, "1");
+        assertEq(_administration.region, "1");
+    }
+
+       function testcreateAdministratiSTATFIELD() public {
+        Dao.Administration memory administration = dao.getAdministration("1");
+
+        A = address(administration.superior);
+        switchSigner(A);
+         vm.expectRevert("INVALID_STATE_FIELD");
+        dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "", "1");
 
     }
 
+           function testcreateAdministratiREGIONFIELD() public {
+        Dao.Administration memory administration = dao.getAdministration("1");
 
+        A = address(administration.superior);
+        switchSigner(A);
+         vm.expectRevert("INVALID_REGION_FIELD");
+        dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "");
 
-    function generateSelectors(
-        string memory _facetName
-    ) internal returns (bytes4[] memory selectors) {
+    }
+
+    function generateSelectors(string memory _facetName) internal returns (bytes4[] memory selectors) {
         string[] memory cmd = new string[](3);
         cmd[0] = "node";
         cmd[1] = "scripts/genSelectors.js";
@@ -578,9 +571,7 @@ contract DiamondDeployer is Test, IDiamondCut {
     }
 
     function mkaddr(string memory name) public returns (address) {
-        address addr = address(
-            uint160(uint256(keccak256(abi.encodePacked(name))))
-        );
+        address addr = address(uint160(uint256(keccak256(abi.encodePacked(name)))));
         vm.label(addr, name);
         return addr;
     }
@@ -595,9 +586,5 @@ contract DiamondDeployer is Test, IDiamondCut {
         }
     }
 
-    function diamondCut(
-        FacetCut[] calldata _diamondCut,
-        address _init,
-        bytes calldata _calldata
-    ) external override {}
+    function diamondCut(FacetCut[] calldata _diamondCut, address _init, bytes calldata _calldata) external override {}
 }
