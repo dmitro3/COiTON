@@ -5,8 +5,8 @@ require("dotenv").config();
 
 exports.SendListingTransaction = async (id, details) => {
   try {
-    const region = `${details.state};${details.city};${details.address}`;
-    const description = `${details.description};${details.features.join(";")}`;
+    const region = details.region;
+    const description = details.description;
     const hash = ethers.solidityPackedKeccak256(
       [
         "string",
