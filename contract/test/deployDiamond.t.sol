@@ -561,6 +561,69 @@ contract DiamondDeployer is Test, IDiamondCut {
 
     }
 
+            Dao.Listing listing = Dao.Listing({
+    owner: A, 
+    agentId: B, 
+    country: "Country",
+    state: "State",
+    city: "City",
+    estateAddress: "Estate Address",
+    postalCode: 12345,
+    description: "Description",
+    price: 100,
+    images: "Images",
+    features: "Features",
+    coverImage: "Cover Image",
+    id: "Listing ID"
+});
+    function testdelegatecallorigin() public {
+
+                bytes32 hash = keccak256(
+            abi.encodePacked(
+                B,
+                country,
+                state,
+                city,
+                estateAddress,
+                postalCode,
+                description,
+                price,
+                images,
+                "cover"
+            )
+        );
+        address ownerAddress = dao.owner();
+
+
+        A = ownerAddress;
+        switchSigner(A);
+          vm.expectRevert("STATE_NOT_REGISTERED");
+        dao.delegateListingForApproval("1", hash, listing);
+    }
+    
+
+
+    function AddAgent() public {
+        switchSigner(A);
+
+    Dao.Agent memory agent = Dao.Agent({
+    id: A, 
+    name: "AgentName",
+    code: "AgentCode",
+    region: "AgentRegion",
+    bio: "AgentBio",
+    deleted: true 
+});
+
+    dao.addAgent("1", agent);
+         Dao.Administration memory administration = dao.getAdministration("1");
+            Dao.Agent memory addedAgent = administration.agents[0];
+        // //     A = address(administration.superior);
+        assertEq(addedAgent.id, B);
+        assertEq(addedAgent.deleted, true);
+
+    }
+
     function generateSelectors(string memory _facetName) internal returns (bytes4[] memory selectors) {
         string[] memory cmd = new string[](3);
         cmd[0] = "node";

@@ -12,7 +12,7 @@ contract Dao {
     //The address of the next higher authority in the land and ministry administration who will provide the second approval..
     address public nextSuperior;
     // The address of the owners.
-    address owner;
+    address public owner;
     // The address of the real estate contract that includes the function for creating listings..
     address realEstateContractAddress;
 
@@ -65,7 +65,7 @@ contract Dao {
     mapping(string => Administration) public administration;
 
     /// @dev A mapping that keeps track of designated entities.
-    mapping(string => Assign[]) assign;
+    mapping(string => Assign[]) public assign;
 
     /// The contructor set the initial value of a state variable in the contract,pointing to the real estate contract
     /// @param _realEstateContractAddress : This real estate contract address sets the initial address in the state variable to reference the real estate contract.
@@ -84,6 +84,9 @@ contract Dao {
 
     function getAdministration(string memory state) public view returns (Administration memory) {
         return administration[state];
+    }
+        function getAssignments(string calldata state) public view returns (Assign[] memory) {
+        return assign[state];
     }
 
     /// claimStateSuperior is designed to finalize the transfer of administrative authority for a specified state.
