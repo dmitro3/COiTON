@@ -1,25 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AuthContext, loggedInUser } from "@/context/authContext";
-import { RENDER_ENDPOINT } from "@/hooks/useFetchBackend";
-import { cn, formatDate } from "@/lib/utils";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
-import {
-  Bath,
-  BedSingle,
-  CheckCheck,
-  Loader2,
-  MapPin,
-  Trash2,
-} from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useFetchListings } from "@/hooks/useFetchBackend";
+import { Bath, BedSingle, CheckCheck, MapPin } from "lucide-react";
 import TradingViewWidget from "@/components/shared/trading-view-widget";
+import { cn, formatDate } from "@/lib/utils";
+import Image from "next/image";
 import { CreateProposal } from "@/components/shared/create-proposal";
+import { Button } from "@/components/ui/button";
 
 export default function ListingDetailsPage({
   params,
@@ -27,61 +17,60 @@ export default function ListingDetailsPage({
   params: { id: string };
 }) {
   const router = useRouter();
-
-  const user = useContext(AuthContext);
-
-  const { address } = useWeb3ModalAccount();
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [listing, setListing] = useState<any>();
+  const { listings, isLoading } = useFetchListings();
+  const [isFetchingListing, setIsFetchingListing] = useState(false);
+  const [listingData, setListingData] = useState<any>();
   const [selectedImage, setSelectedImage] = useState<string>("");
 
-  async function fetchListingData() {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`${RENDER_ENDPOINT}/listings`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        toast("Failed to fetch listing");
-        throw new Error("Failed to fetch listing");
-      }
-      const result = await response.json();
-      if (!result?.data?.rows) {
-        return router.push("/dashboard");
-      }
+  const transformListing = (listing: any) => ({
+    id: listing[0],
+    owner: listing[1],
+    region: listing[2],
+    postalCode: Number(listing[3]),
+    description: listing[4].split(";")[0],
+    features: listing[4].split(";")[1].split("\n"),
+    price: Number(listing[5]),
+    images: listing[6].split(";"),
+    tokenId: listing[7],
+    coverImage: listing[8],
+    createdAt: Number(listing[9]),
+  });
 
-      // Find the listing with matching ID
-      const foundListing = result?.data?.rows.find(
-        (item: any) => item.id === params.id
-      );
-      if (foundListing) {
-        setListing(foundListing);
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
-        toast("Listing not found");
-        return router.push("/dashboard");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setIsLoading(false);
-    }
-  }
+  // features.split("\n")
+
   useEffect(() => {
+    const fetchListingData = async () => {
+      if (!isLoading) {
+        try {
+          setIsFetchingListing(true);
+
+          const foundListing = listings.find(
+            (item: any) => item[0] === params.id
+          );
+          if (foundListing) {
+            const lt = transformListing(foundListing);
+            setListingData(lt);
+          } else {
+            toast("Listing not found");
+            router.push("/dashboard");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          router.push("/dashboard");
+        } finally {
+          setIsFetchingListing(false);
+        }
+      }
+    };
+
     fetchListingData();
-    setSelectedImage(listing?.details?.images[0]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listing?.details?.images[0]]);
+  }, [isLoading, listings, params.id, router]);
 
   const handleImageClick = (image: string) => {
     setSelectedImage(image);
   };
 
-  if (isLoading) {
+  if (isFetchingListing || isLoading) {
     return <p>Loading...</p>;
   }
 
@@ -92,7 +81,7 @@ export default function ListingDetailsPage({
         <div className="w-full h-full bg-secondary rounded-xl overflow-hidden mb-3">
           <Image
             src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${
-              selectedImage || listing?.details?.images[0]
+              selectedImage || listingData?.images[0]
             }`}
             alt="Main Image"
             width={3840}
@@ -103,7 +92,7 @@ export default function ListingDetailsPage({
           />
         </div>
         <div className="flex items-center gap-3 overflow-x-auto w-full relative xl:absolute xl:bottom-0 xl:left-0 p-3 bg-background/80">
-          {listing?.details?.images.map((image: string, index: number) => (
+          {listingData?.images.map((image: string, index: number) => (
             <div
               key={index}
               onClick={() => handleImageClick(image)}
@@ -139,11 +128,11 @@ export default function ListingDetailsPage({
           </p>
 
           <h1 className="text-xl md:text-2xl font-bold text-primary">
-            ₦ {listing?.details?.price}
+            ₦ {listingData?.price}
           </h1>
           <p className="text-sm md:text-base flex items-center gap-2">
             <MapPin className="w-4 h-4" />
-            {listing?.details?.address}
+            {listingData?.address}
           </p>
 
           <div className="flex items-center gap-4 mt-4">
@@ -159,7 +148,7 @@ export default function ListingDetailsPage({
               Description
             </h2>
             <pre className="font-sans text-sm md:text-base text-muted-foreground whitespace-pre-wrap">
-              {listing?.details?.description}
+              {listingData?.description}
             </pre>
           </div>
 
@@ -180,7 +169,7 @@ export default function ListingDetailsPage({
             </div>
             <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground mt-2">
               <span className="font-bold">Published On:</span>
-              <p>{formatDate(listing?.createdAt)}</p>
+              <p>{formatDate(listingData?.createdAt)}</p>
             </div>
           </div>
         </div>
@@ -225,48 +214,14 @@ export default function ListingDetailsPage({
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-2 gap-3">
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <CheckCheck className="w-5 h-5 text-primary" />
-                <p className="flex-1 text-sm md:text-base">
-                  All Ensuite Bedrooms
-                </p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <CheckCheck className="w-5 h-5 text-primary" />
-                <p className="flex-1 text-sm md:text-base">Back Yard</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <CheckCheck className="w-5 h-5 text-primary" />
-                <p className="flex-1 text-sm md:text-base">Balcony</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <CheckCheck className="w-5 h-5 text-primary" />
-                <p className="flex-1 text-sm md:text-base">Family Lounge</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <CheckCheck className="w-5 h-5 text-primary" />
-                <p className="flex-1 text-sm md:text-base">Fenced Yard</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <CheckCheck className="w-5 h-5 text-primary" />
-                <p className="flex-1 text-sm md:text-base">Gateman</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <CheckCheck className="w-5 h-5 text-primary" />
-                <p className="flex-1 text-sm md:text-base">Hot Tub</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <CheckCheck className="w-5 h-5 text-primary" />
-                <p className="flex-1 text-sm md:text-base">Kitchen</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <CheckCheck className="w-5 h-5 text-primary" />
-                <p className="flex-1 text-sm md:text-base">Swimming Pool</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <CheckCheck className="w-5 h-5 text-primary" />
-                <p className="flex-1 text-sm md:text-base">Washer and Dryer</p>
-              </div>
+              {listingData?.features?.map((feature: string, _key: number) => (
+                <div
+                  className="flex items-center gap-2 text-sm md:text-base text-muted-foreground"
+                  key={_key}>
+                  <CheckCheck className="w-5 h-5 text-primary" />
+                  <p className="flex-1 text-sm md:text-base">{feature}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>

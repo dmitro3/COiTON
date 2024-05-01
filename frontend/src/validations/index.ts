@@ -5,11 +5,12 @@ export const listingSchema = z.object({
   description: z.string().min(2).max(1000),
   address: z.string().min(2).max(50),
   city: z.string().min(2).max(50),
-  country: z.string().min(2).max(50),
+  coverImage: z.string(),
   state: z.string().min(2).max(50),
   postalCode: z.string().min(2),
   price: z.string().min(2),
   images: z.array(z.string()),
+  features: z.string(),
 });
 
 export const registerSchema = z.object({

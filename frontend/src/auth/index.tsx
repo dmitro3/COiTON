@@ -11,7 +11,7 @@ export const registerUser = async ({
   name: string;
   email: string;
   password: string;
-  address: string;
+  address: any;
 }) => {
   const avatar = createAvatar(pixelArt, {
     seed: `${name + email + address + password}`,

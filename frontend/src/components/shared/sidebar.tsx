@@ -21,7 +21,6 @@ import { IoSettingsOutline, IoSettingsSharp } from "react-icons/io5";
 import { RiNotification2Line, RiNotification2Fill } from "react-icons/ri";
 
 import { BiSelectMultiple, BiSolidSelectMultiple } from "react-icons/bi";
-import { PiUsersDuotone, PiUsersFill } from "react-icons/pi";
 
 import { MdReport, MdReportGmailerrorred } from "react-icons/md";
 
@@ -71,12 +70,6 @@ const side_links = [
         path: "/approvals",
         active: <BiSolidSelectMultiple className="w-5 h-5" />,
         inactive: <BiSelectMultiple className="w-5 h-5" />,
-      },
-      {
-        name: "Users",
-        path: "/users",
-        active: <PiUsersFill className="w-5 h-5" />,
-        inactive: <PiUsersDuotone className="w-5 h-5" />,
       },
       {
         name: "Reports",

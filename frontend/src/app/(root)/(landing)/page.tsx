@@ -101,11 +101,21 @@ export default function LandingPage() {
           ) : !listings ? (
             <p>Nothing to display</p>
           ) : (
-            listings
-              ?.slice(0, 3)
-              ?.map((listing: SingleListingType) => (
-                <ListingCard key={listing.id} {...listing} />
-              ))
+            listings?.slice(0, 3)?.map((listing: any) => {
+              const lt = {
+                id: listing[0],
+                owner: listing[1],
+                region: listing[2],
+                postalCode: Number(listing[3]),
+                description: listing[4],
+                price: Number(listing[5]),
+                images: listing[6],
+                tokenId: listing[7],
+                coverImage: listing[8],
+                createdAt: Number(listing[9]),
+              };
+              return <ListingCard key={lt.id} listing={lt} />;
+            })
           )}
         </div>
       </MaxWrapper>
