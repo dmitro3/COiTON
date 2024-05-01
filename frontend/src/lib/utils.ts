@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { twMerge } from "tailwind-merge";
 
 import DIAMOND_CONTRACT_ABI from "../json/diamond.json";
+import DAO_CONTRACT_ABI from "../json/dao.json";
 
 export function formatBytes(
   bytes: number,
@@ -111,6 +112,15 @@ export const getDiamondContract = (providerOrSigner: any) =>
     DIAMOND_CONTRACT_ABI,
     providerOrSigner
   );
+
+
+export const getDaoContract = (providerOrSigner: any) =>
+  new ethers.Contract(
+    "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
+    DAO_CONTRACT_ABI,
+    providerOrSigner
+  );
+  
 
 // read only provider pointing to sepolia. It allows read only access to the sepolia blockchain
 export const readOnlyProvider = new ethers.JsonRpcProvider(

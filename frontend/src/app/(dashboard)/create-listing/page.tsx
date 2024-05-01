@@ -91,12 +91,12 @@ export default function CreateListingPage() {
 
         if (res.data.tx.success === true) {
           toast(res.data.tx.message, {
-            description: "You are being redirected to the listing details",
+            description: "You are being redirected to the dashboard\nWait for 24 hours for your listing to be approved",
           });
           router.push("/dashboard");
         } else {
           toast(res.data.tx.message, {
-            description: "You are being redirected to the listing details",
+            description: "Your state has not been register in the DAO",
           });
         }
         console.log(res);
