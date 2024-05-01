@@ -46,7 +46,8 @@ This project aims to develop a Decentralized Real Estate Trading Platform that e
 COiTON offers users enhanced flexibility in trading various property indices that have been transformed into NFTs. Initially, the valuation of each NFT mirrors the price of its corresponding physical property. However, due to the dynamics of virtual trading, while the starting price of each NFT is equivalent to the actual property, it may fluctuate based on user interactions. The prices of the NFT properties will vary as different users engage in buying or selling these tokens, influencing their market value.
 
 ## Screenshot
-![Screenshot from 2024-04-18 21-51-06](https://github.com/WebSculptor/decentralized-real-estate-trading-platform/assets/137540755/ac087875-54b4-4c41-959c-41cdf80b5265)
+![Screenshot from 2024-05-01 03-58-42](https://github.com/WebSculptor/COiTON/assets/137540755/54acb379-d197-42e8-80c7-781af293304d)
+
 
 ![Screenshot from 2024-04-22 20-14-56](https://github.com/WebSculptor/decentralized-real-estate-trading-platform/assets/137540755/160dd12e-830c-4ed2-84c3-4b69a16f3d26)
 
