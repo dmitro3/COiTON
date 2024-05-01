@@ -39,6 +39,7 @@ interface ListingType {
   images: any[];
   postalCode: string;
   price: string;
+  features: string[];
 }
 
 interface SingleListingType {

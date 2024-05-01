@@ -107,14 +107,14 @@ export const onUpload = async (files: File[]) => {
 
 export const getDiamondContract = (providerOrSigner: any) =>
   new ethers.Contract(
-    process.env.NEXT_PUBLIC_DIAMOND_ADDRESS as string,
+    "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
     DIAMOND_CONTRACT_ABI,
     providerOrSigner
   );
 
 // read only provider pointing to sepolia. It allows read only access to the sepolia blockchain
 export const readOnlyProvider = new ethers.JsonRpcProvider(
-  `http://localhost:8545`
+  `http://127.0.0.1:8545`
 );
 
 // read/write provider, that allows you to read data and also sign transaction on whatever chain it's pointing to

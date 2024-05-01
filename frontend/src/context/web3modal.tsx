@@ -21,25 +21,25 @@ const localhost = {
   chainId: LOCALHOST_CHATAIN_ID,
   name: "Localhost Testnet",
   currency: "ETH",
-  explorerUrl: "http://localhost:8545",
-  rpcUrl: `http://localhost:8545`,
+  explorerUrl: "http://127.0.0.1:8545",
+  rpcUrl: `http://127.0.0.1:8545`,
 };
 
-// const optimismSepolia = {
-//   chainId: OPTIMISM_CHATAIN_ID,
-//   name: "Optimism Sepolia",
-//   currency: "ETH",
-//   explorerUrl: "https://optimistic.etherscan.io/",
-//   rpcUrl: `https://optimism-sepolia.infura.io/v3/${process.env.ALCHEMY_API_KEY}`,
-// };
+const optimismSepolia = {
+  chainId: OPTIMISM_CHATAIN_ID,
+  name: "Optimism Sepolia",
+  currency: "ETH",
+  explorerUrl: "https://optimistic.etherscan.io/",
+  rpcUrl: `https://optimism-sepolia.infura.io/v3/${process.env.ALCHEMY_API_KEY}`,
+};
 
-// const optimismMainnet = {
-//   chainId: OPTIMISM_CHATAIN_ID,
-//   name: "Optimism Mainnet",
-//   currency: "ETH",
-//   explorerUrl: "https://optimistic.etherscan.io/",
-//   rpcUrl: `https://optimism-mainnet.infura.io/v3/${process.env.ALCHEMY_API_KEY}`,
-// };
+const optimismMainnet = {
+  chainId: OPTIMISM_CHATAIN_ID,
+  name: "Optimism Mainnet",
+  currency: "ETH",
+  explorerUrl: "https://optimistic.etherscan.io/",
+  rpcUrl: `https://optimism-mainnet.infura.io/v3/${process.env.ALCHEMY_API_KEY}`,
+};
 
 const metadata = {
   name: site.name,
@@ -56,7 +56,7 @@ const ethersConfig = defaultConfig({
 
 createWeb3Modal({
   ethersConfig,
-  chains: [ethereumSepolia, localhost],
+  chains: [ethereumSepolia, localhost, optimismSepolia, optimismMainnet],
   projectId: projectId,
   enableOnramp: true,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration

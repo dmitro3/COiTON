@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormMessage,
@@ -18,32 +19,33 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { listingSchema } from "@/validations";
 
-import { Loader2 } from "lucide-react";
+import { Camera, Check, Loader2 } from "lucide-react";
 import { FileUploader } from "@/components/shared/file-uploader";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/context/authContext";
 import { onUpload } from "@/lib/utils";
 import { RENDER_ENDPOINT } from "@/hooks/useFetchBackend";
+import { Label } from "@/components/ui/label";
 
 export default function CreateListingPage() {
   const router = useRouter();
-  const data: ListingType = {
+  const data: any = {
     owner: "",
-    address: "",
-    city: "",
-    country: "",
-    state: "",
-    description: "",
-    images: [],
+    agentId: "",
+    region: "",
     postalCode: "",
-    price: "",
+    description: "",
+    price: 0,
+    images: [],
+    coverImage: "",
   };
 
   const user = useContext(AuthContext);
 
   const [files, setFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [coverPhoto, setCoverPhoto] = useState<any>();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof listingSchema>>({
@@ -55,20 +57,26 @@ export default function CreateListingPage() {
   async function onSubmit(values: z.infer<typeof listingSchema>) {
     try {
       setIsUploading(true);
+
+      toast("Your files are being uploaded to Pinata");
+      const cover = await onUpload([coverPhoto]);
       const fileUrls = await onUpload(files);
 
       if (fileUrls) {
-        const data: ListingType = {
+        toast("Files uploaded successfully");
+        const data: any = {
           owner: user?.credentials?.address,
-          address: values.address,
-          city: values.city,
-          country: values.country,
+          agentId: user?.credentials?.address,
+          region: `${values.state};${values.city};${values.address}`,
           state: values.state,
           postalCode: values.postalCode,
-          description: values.description,
-          price: values.price,
+          description: `${values.description};${values.features}`,
+          price: Number(values.price),
           images: fileUrls,
+          coverImage: cover[0],
         };
+
+        // values.features.split("\n")
 
         const response = await fetch(`${RENDER_ENDPOINT}/listings`, {
           method: "POST",
@@ -78,16 +86,21 @@ export default function CreateListingPage() {
           },
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to create listing");
-        }
+        const res = await response.json();
+        console.log(res.data.newListing);
 
-        await response.json();
-        toast("Listing created successfully", {
-          description: "You are being redirected to the listing details",
-        });
+        if (res.data.tx.success === true) {
+          toast(res.data.tx.message, {
+            description: "You are being redirected to the listing details",
+          });
+          router.push("/dashboard");
+        } else {
+          toast(res.data.tx.message, {
+            description: "You are being redirected to the listing details",
+          });
+        }
+        console.log(res);
         // router.push(`/listing/${result?.data?.id}`);
-        router.push("/dashboard");
       }
     } catch (error: any) {
       console.error("Error:", error);
@@ -174,23 +187,23 @@ export default function CreateListingPage() {
           </div>
 
           <div className="flex items-center flex-col md:flex-row gap-3 md:gap-4 w-full">
-            <FormField
-              control={form.control}
-              name="country"
-              render={({ field }: { field: any }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <Input
-                      placeholder="Country"
-                      type="text"
-                      {...field}
-                      disabled={isUploading || user?.isFetchingUser}
-                      className="w-full h-12 bg-secondary/20"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            <Label
+              htmlFor="coverPhoto"
+              className="w-14 h-12 flex items-center justify-center text-foreground bg-secondary/20 border rounded cursor-pointer">
+              {!coverPhoto ? (
+                <Camera className="w-5 h-5" />
+              ) : (
+                <Check className="w-5 h-5 text-green-500" />
               )}
+            </Label>
+            <Input
+              type="file"
+              accept="image/*"
+              id="coverPhoto"
+              hidden
+              onChange={(e: any) => setCoverPhoto(e.target.files[0])}
+              disabled={isUploading || user?.isFetchingUser}
+              className="w-full h-12 bg-secondary/20 hidden"
             />
             <FormField
               control={form.control}
@@ -251,7 +264,31 @@ export default function CreateListingPage() {
             />
           </div>
 
-          <div className="w-full p-6 border rounded-lg">
+          <FormField
+            control={form.control}
+            name="features"
+            render={({ field }: { field: any }) => (
+              <FormItem>
+                <FormControl>
+                  <Textarea
+                    cols={8}
+                    rows={8}
+                    placeholder="Features"
+                    className="bg-secondary/20"
+                    disabled={isUploading || user?.isFetchingUser}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+                <FormDescription>
+                  Each feature should be separated with a new line by clicking
+                  enter
+                </FormDescription>
+              </FormItem>
+            )}
+          />
+
+          <div className="w-full p-4 border rounded-lg">
             <h1 className="text-base md:text-lg font-semibold">Upload files</h1>
             <p className="text-sm text-muted-foreground mb-4">
               Drag and drop your files here or click to browse.
@@ -283,14 +320,3 @@ export default function CreateListingPage() {
     </div>
   );
 }
-
-// TO LET
-//
-// Serviced 3 Bedroom Apartment located off Admiralty Way, Lekki phase 1, Lekki
-//
-// Rent-N5.5m per annum
-// Service charge -N2m per annum, Agency-10%, Legal-10% and Caution Deposit-10%
-//
-// CONTACT TOPLIFT REALTORS ON 08029763540 or 07046057286
-
-// Off Admiralty Way, Lekki Phase 1, Lekki, Lagos

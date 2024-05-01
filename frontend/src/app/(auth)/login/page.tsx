@@ -43,7 +43,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isConnected) {
-      setIsAddress(`0x${address}`);
+      setIsAddress(`${address}`);
     }
   }, [address, isConnected, router]);
 
@@ -166,17 +166,17 @@ export default function LoginPage() {
                     open({ view: "Connect" });
                   }
                 }}
-                disabled={!!address}
-                type="submit"
+                disabled={!!isAddress}
+                type="button"
                 className="w-full mb-4"
                 variant="secondary">
-                {!address ? (
+                {!isAddress ? (
                   <>
                     Connect Wallet
                     <Wallet2 className="w-4 h-4 ml-2" />
                   </>
                 ) : (
-                  shortenAddress(`0x${address}`)
+                  shortenAddress(isAddress)
                 )}
               </Button>
 
