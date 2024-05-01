@@ -66,16 +66,21 @@ const side_links = [
     part: "ADMIN CONTROL",
     links: [
       {
-        name: "Approvals",
-        path: "/approvals",
-        active: <BiSolidSelectMultiple className="w-5 h-5" />,
-        inactive: <BiSelectMultiple className="w-5 h-5" />,
-      },
-      {
         name: "Reports",
         path: "/reports",
         active: <MdReport className="w-5 h-5" />,
         inactive: <MdReportGmailerrorred className="w-5 h-5" />,
+      },
+    ],
+  },
+  {
+    part: "DAO CONTROL",
+    links: [
+      {
+        name: "Approvals",
+        path: "/approvals",
+        active: <BiSolidSelectMultiple className="w-5 h-5" />,
+        inactive: <BiSelectMultiple className="w-5 h-5" />,
       },
     ],
   },
