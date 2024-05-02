@@ -63,7 +63,7 @@ const side_links = [
   },
   {
     isAdmin: true,
-    part: "ADMIN CONTROL",
+    part: "ADMIN PANEL",
     links: [
       {
         name: "Reports",
@@ -74,7 +74,7 @@ const side_links = [
     ],
   },
   {
-    part: "DAO CONTROL",
+    part: "DAO PANEL",
     links: [
       {
         name: "Approvals",
@@ -134,9 +134,9 @@ export default function Sidebar() {
         href="/dashboard"
         className="flex items-center gap-2 my-3.5 px-2 w-max">
         <Image
-          src="/logo.svg"
-          width={32}
-          height={32}
+          src="/img/logo.png"
+          width={24}
+          height={24}
           alt="brand"
           className="w-8 h-8"
         />
@@ -145,17 +145,17 @@ export default function Sidebar() {
         </h5>
       </Link>
 
-      {/* <div className="p-2">
+      <div className="p-2">
         <div className="relative h-11 w-full min-w-[200px]">
           <div className="absolute grid w-5 h-5 top-2/4 right-3 -translate-y-2/4 place-items-center opacity-50">
             <RiSearch2Line className="w-5 h-5" />
           </div>
           <Input className="pr-10 h-full" disabled placeholder="Search" />
         </div>
-      </div> */}
+      </div>
 
       <nav className="flex min-w-[240px] flex-col flex-1 gap-1 p-2 font-sans text-base font-normal text-blue-gray-700">
-        <Accordion type="multiple" className="w-full">
+        <Accordion type="multiple" className="w-full overflow-y-auto flex-1">
           {toRender.map((link, index) => (
             <AccordionItem value={`item-${index + 1}`} key={index}>
               <AccordionTrigger>

@@ -9,20 +9,12 @@ import { Button, buttonVariants } from "../ui/button";
 import { AlignJustify, WalletIcon } from "lucide-react";
 import { SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useContext, useEffect, useState } from "react";
-import { loggedInUser } from "@/context/authContext";
+import { useAuth } from "@/context/authContext";
 
 export default function Header() {
+  const { credentials, isFetchingUser } = useAuth();
+
   const pathname = usePathname();
-  const [isUser, setIsUser] = useState<any>();
-
-  const fetchUser = async () => {
-    const user = await loggedInUser();
-    setIsUser(user);
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
 
   return (
     <div className="w-full sticky top-0 inset-x-0 z-50 bg-background/70 backdrop-blur-lg">
@@ -48,7 +40,9 @@ export default function Header() {
             ))}
           </div>
 
-          {isUser ? (
+          {isFetchingUser ? (
+            <p>Loading...</p>
+          ) : credentials ? (
             <Link
               href="/dashboard"
               className={buttonVariants({

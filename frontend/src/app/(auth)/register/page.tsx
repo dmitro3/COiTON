@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { registerUser } from "@/auth";
 import { Loader2, Wallet2 } from "lucide-react";
 import { registerSchema } from "@/validations";
+import Image from "next/image";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -58,9 +59,8 @@ export default function RegisterPage() {
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {
     if (!isConnected) return setIsError("You need to connect your wallet");
-    setIsLoading(true);
 
-    const data = {
+    const formData = {
       name: values.name,
       email: values.email,
       password: values.password,
@@ -68,22 +68,24 @@ export default function RegisterPage() {
     };
 
     try {
-      const result: any = await registerUser(data);
+      setIsLoading(true);
+      const { data, error }: any = await registerUser(formData);
 
-      if (result?.data?.user !== null) {
-        router.push("/login");
-        toast("Account created successfully", {
-          description: "You are being redirected to the login",
+      if (error) {
+        toast("Something went wrong", {
+          description: error?.message,
         });
-        form.reset();
+        setIsLoading(false);
       } else {
-        toast.error(result?.error?.message);
-        console.log(result?.error?.message);
+        toast("Account created successfully", {
+          description: `Welcome to COiTON, ${data?.user?.user_metadata?.name}`,
+        });
+        router.push("/login");
+        form.reset();
       }
     } catch (error: any) {
       toast.error(error.message);
       console.log(error);
-    } finally {
       setIsLoading(false);
     }
   }
@@ -102,6 +104,15 @@ export default function RegisterPage() {
 
       <div className="w-full h-full flex items-center justify-center">
         <div className="w-full max-w-[350px] flex flex-col items-center">
+          <Image
+            src="/img/logo.png"
+            alt="home"
+            width={90}
+            height={90}
+            priority
+            className="mb-10"
+          />
+
           <h1 className="text-xl md:text-2xl font-bold">Create an account</h1>
           <p className="text-sm mt-1 mb-4 text-muted-foreground">
             Enter your email below to create your account
@@ -165,7 +176,8 @@ export default function RegisterPage() {
                 <Button disabled={isLoading} type="submit" className="w-full">
                   {isLoading ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-2" /> Registering...
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />{" "}
+                      Registering...
                     </>
                   ) : (
                     "Continue"

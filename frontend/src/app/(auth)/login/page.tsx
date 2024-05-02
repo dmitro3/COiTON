@@ -29,6 +29,7 @@ import { loginUser } from "@/auth";
 import { loginSchema } from "@/validations";
 import { toast } from "sonner";
 import { Loader2, Wallet2 } from "lucide-react";
+import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -57,30 +58,31 @@ export default function LoginPage() {
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     if (!isConnected) return setIsError("You need to connect your wallet");
-    setIsLoading(true);
 
-    const data = {
+    const formData = {
       email: values.email,
       password: values.password,
     };
 
     try {
-      const result: any = await loginUser(data);
+      setIsLoading(true);
+      const { data, error }: any = await loginUser(formData);
 
-      if (result?.data?.user !== null) {
-        router.push("/dashboard");
-        toast("Logged in successfully", {
+      if (error) {
+        toast("Something went wrong", {
+          description: error?.message,
+        });
+        setIsLoading(false);
+      } else {
+        toast(`Welcome back ${data?.user?.user_metadata?.name}`, {
           description: "You are being redirected to the dashboard",
         });
+        router.push("/dashboard");
         form.reset();
-      } else {
-        toast.error(result?.error?.message);
-        console.log(result?.error?.message);
       }
     } catch (error: any) {
       toast.error(error.message);
       console.log(error);
-    } finally {
       setIsLoading(false);
     }
   }
@@ -99,6 +101,15 @@ export default function LoginPage() {
 
       <div className="w-full h-full flex items-center justify-center">
         <div className="w-full max-w-[350px] flex flex-col items-center">
+          <Image
+            src="/img/logo.png"
+            alt="home"
+            width={90}
+            height={90}
+            priority
+            className="mb-10"
+          />
+
           <h1 className="text-xl md:text-2xl font-bold">Login to continue</h1>
           <p className="text-sm mt-1 mb-4 text-muted-foreground">
             Enter your email below to use UrbanExchange
@@ -144,7 +155,8 @@ export default function LoginPage() {
                 <Button disabled={isLoading} type="submit" className="w-full">
                   {isLoading ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-2" /> Please wait...
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Please
+                      wait...
                     </>
                   ) : (
                     "Continue"
