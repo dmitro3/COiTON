@@ -1,18 +1,18 @@
-DiamondCutFacet deployed: 0x266c8277Cbe445C64398c111813027e8C35A3bEA
-DiamondInit deployed: 0xfAce9c66861b2255357a7DA6eF499Ee56439ce45
-Deployed erc20 token at 0x8b9af1a43020FDFF874DD21C816d4da17cAc0f58
-Deployed erc721 token at 0x23Bf83329B193E68cE2Aad03af199c549fa3Ce2a
+DiamondCutFacet deployed: 0x60F81A52Ce4DC3724856089528FF67af93c2930F
+DiamondInit deployed: 0xB43F397174A8a53Ac3ED3a72Ba9FBDe9d8BD33EE
+Deployed erc20 token at 0xCd41BDC30581E5B08e788e258F093aDcFd7AE273
+Deployed erc721 token at 0x7637f5482014E7205E4c35AE036C0cac437F662A
 
 Deploying facets
-DiamondLoupeFacet deployed: 0x33d30dc6BF32862A38000551e224a7887879ADBd
-OwnershipFacet deployed: 0x0f697d0e60041acC1689393802D018Ac948fB004
-RealEstate deployed: 0x04B938a7fe8cD2e4A42758A4Fb05F98CD4E29495
-Trade deployed: 0xda45E29597770d44bac12440c0D641DCCE5B1552
-Deployed Dao to  0x6F266fE572bD172Cde7B1d5a663e081798Db2eC9
+DiamondLoupeFacet deployed: 0x78aCE2d7241E00C4bCe93b9407DFA7aC649E3f6d
+OwnershipFacet deployed: 0x6eCF61e210D6466D7Cc92F85E95Da191C063d94E
+RealEstate deployed: 0xFe9FeC90E3fD273579EEbE3cFE14Dd356B0d76a4
+Trade deployed: 0x6682104FA7e474DB3434a1aa8Bb7E9f7FD5A295E
+Deployed Dao to  0x949299c1a3a33E02D3138A08F27205E35c8D0C6c
 
 Diamond Cut: [
   {
-    facetAddress: '0x33d30dc6BF32862A38000551e224a7887879ADBd',
+    facetAddress: '0x78aCE2d7241E00C4bCe93b9407DFA7aC649E3f6d',
     action: 0,
     functionSelectors: [
       '0xcdffacc6',
@@ -23,12 +23,12 @@ Diamond Cut: [
     ]
   },
   {
-    facetAddress: '0x0f697d0e60041acC1689393802D018Ac948fB004',
+    facetAddress: '0x6eCF61e210D6466D7Cc92F85E95Da191C063d94E',
     action: 0,
     functionSelectors: [ '0x8da5cb5b', '0xf2fde38b' ]
   },
   {
-    facetAddress: '0x04B938a7fe8cD2e4A42758A4Fb05F98CD4E29495',
+    facetAddress: '0xFe9FeC90E3fD273579EEbE3cFE14Dd356B0d76a4',
     action: 0,
     functionSelectors: [
       '0xdfd1d91f', '0x8190cad6',
@@ -41,7 +41,7 @@ Diamond Cut: [
     ]
   },
   {
-    facetAddress: '0xda45E29597770d44bac12440c0D641DCCE5B1552',
+    facetAddress: '0x6682104FA7e474DB3434a1aa8Bb7E9f7FD5A295E',
     action: 0,
     functionSelectors: [
       '0xfe542ddb',
@@ -52,9 +52,9 @@ Diamond Cut: [
     ]
   }
 ]
-Diamond cut tx:  0x83aeca2154be470414e086b4e3d22902aa4d45358a9217289897c28ce8598fe2
+Diamond cut tx:  0xc123af9719c7ef0cd1a0b2deb7057e8c4cedd242ab70b55b863b84db65883eb9
 Completed diamond cut
 
 -------------------------------------
 
-Diamond deployed at: 0x2986fC101d70b917adda1c71945c70c86761D549
+Diamond deployed at: 0xb2A18338408d63cc3e90e4B2F8c764376359773c
