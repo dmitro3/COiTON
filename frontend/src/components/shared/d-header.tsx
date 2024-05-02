@@ -6,10 +6,10 @@ import MobileSidebar from "./mobile-sidebar";
 import { shortenAddress } from "@/lib/utils";
 import Image from "next/image";
 import { Skeleton } from "../ui/skeleton";
-import { AuthContext } from "@/context/authContext";
+import { useAuth } from "@/context/authContext";
 
 export default function DashboardHeader() {
-  const data = useContext(AuthContext);
+  const { isFetchingUser, credentials } = useAuth();
 
   return (
     <header className="sticky top-0 left-0 w-full py-2 bg-background z-50">
@@ -17,7 +17,7 @@ export default function DashboardHeader() {
         <MobileSidebar />
 
         <div className="flex">
-          {data?.isFetchingUser ? (
+          {isFetchingUser ? (
             <div className="flex items-center text-sm gap-3">
               <div className="flex flex-col items-end gap-1">
                 <Skeleton className="w-20 h-4 rounded-full" />
@@ -28,18 +28,18 @@ export default function DashboardHeader() {
           ) : (
             <div className="flex items-center text-sm gap-3">
               <div className="flex flex-col items-end">
-                {data?.credentials?.name}{" "}
+                {credentials?.name}{" "}
                 <span className="text-xs text-muted-foreground">
-                  {shortenAddress(data?.credentials?.address)}
+                  {shortenAddress(credentials?.address)}
                 </span>
               </div>
 
               <div className="w-10 h-10 rounded-full bg-secondary">
                 <Image
                   src={`data:image/svg+xml;utf8,${encodeURIComponent(
-                    data?.credentials?.avatar
+                    credentials?.avatar
                   )}`}
-                  alt={data?.credentials?.name || ""}
+                  alt={credentials?.name || ""}
                   width={40}
                   height={40}
                   priority

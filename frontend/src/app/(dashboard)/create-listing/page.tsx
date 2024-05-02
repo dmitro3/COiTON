@@ -23,10 +23,10 @@ import { Camera, Check, Loader2 } from "lucide-react";
 import { FileUploader } from "@/components/shared/file-uploader";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { AuthContext } from "@/context/authContext";
 import { onUpload } from "@/lib/utils";
 import { RENDER_ENDPOINT } from "@/hooks/useFetchBackend";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/context/authContext";
 
 export default function CreateListingPage() {
   const router = useRouter();
@@ -40,8 +40,7 @@ export default function CreateListingPage() {
     images: [],
     coverImage: "",
   };
-
-  const user = useContext(AuthContext);
+  const { credentials, isFetchingUser } = useAuth();
 
   const [files, setFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -65,8 +64,8 @@ export default function CreateListingPage() {
       if (fileUrls) {
         toast("Files uploaded successfully");
         const data: any = {
-          owner: user?.credentials?.address,
-          agentId: user?.credentials?.address,
+          owner: credentials?.address,
+          agentId: credentials?.address,
           region: `${values.state};${values.city};${values.address}`,
           state: values.state,
           postalCode: values.postalCode,
@@ -91,7 +90,8 @@ export default function CreateListingPage() {
 
         if (res.data.tx.success === true) {
           toast(res.data.tx.message, {
-            description: "You are being redirected to the dashboard\nWait for 24 hours for your listing to be approved",
+            description:
+              "You are being redirected to the dashboard\nWait for 24 hours for your listing to be approved",
           });
           router.push("/dashboard");
         } else {
@@ -113,7 +113,7 @@ export default function CreateListingPage() {
     }
   }
 
-  if (!user?.isFetchingUser && !user?.credentials) {
+  if (!isFetchingUser && !credentials) {
     return router.push("/login");
   }
 
@@ -138,7 +138,7 @@ export default function CreateListingPage() {
                     rows={8}
                     placeholder="Description"
                     className="bg-secondary/20"
-                    disabled={isUploading || user?.isFetchingUser}
+                    disabled={isUploading || isFetchingUser}
                     {...field}
                   />
                 </FormControl>
@@ -158,7 +158,7 @@ export default function CreateListingPage() {
                       placeholder="Price"
                       type="text"
                       {...field}
-                      disabled={isUploading || user?.isFetchingUser}
+                      disabled={isUploading || isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -176,7 +176,7 @@ export default function CreateListingPage() {
                       placeholder="Address"
                       type="text"
                       {...field}
-                      disabled={isUploading || user?.isFetchingUser}
+                      disabled={isUploading || isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -202,7 +202,7 @@ export default function CreateListingPage() {
               id="coverPhoto"
               hidden
               onChange={(e: any) => setCoverPhoto(e.target.files[0])}
-              disabled={isUploading || user?.isFetchingUser}
+              disabled={isUploading || isFetchingUser}
               className="w-full h-12 bg-secondary/20 hidden"
             />
             <FormField
@@ -215,7 +215,7 @@ export default function CreateListingPage() {
                       placeholder="City"
                       type="text"
                       {...field}
-                      disabled={isUploading || user?.isFetchingUser}
+                      disabled={isUploading || isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -236,7 +236,7 @@ export default function CreateListingPage() {
                       placeholder="State"
                       type="text"
                       {...field}
-                      disabled={isUploading || user?.isFetchingUser}
+                      disabled={isUploading || isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -254,7 +254,7 @@ export default function CreateListingPage() {
                       placeholder="Postal Code"
                       type="text"
                       {...field}
-                      disabled={isUploading || user?.isFetchingUser}
+                      disabled={isUploading || isFetchingUser}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -275,7 +275,7 @@ export default function CreateListingPage() {
                     rows={8}
                     placeholder="Features"
                     className="bg-secondary/20"
-                    disabled={isUploading || user?.isFetchingUser}
+                    disabled={isUploading || isFetchingUser}
                     {...field}
                   />
                 </FormControl>
@@ -298,12 +298,12 @@ export default function CreateListingPage() {
               maxFiles={8}
               maxSize={8 * 1024 * 1024}
               onValueChange={setFiles}
-              disabled={isUploading || user?.isFetchingUser}
+              disabled={isUploading || isFetchingUser}
             />
           </div>
 
           <Button
-            disabled={isUploading || user?.isFetchingUser}
+            disabled={isUploading || isFetchingUser}
             type="submit"
             className="h-12">
             {isUploading ? (
