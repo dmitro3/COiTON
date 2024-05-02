@@ -7,6 +7,7 @@ export const useFetchNews = () => {
 
   useEffect(() => {
     fetchNews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Fetch initial news on component mount
 
   const fetchNews = async () => {

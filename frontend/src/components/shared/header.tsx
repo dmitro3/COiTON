@@ -5,10 +5,7 @@ import MaxWrapper from "./wrapper";
 import { links, site } from "@/constants";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { Button, buttonVariants } from "../ui/button";
-import { AlignJustify, WalletIcon } from "lucide-react";
-import { SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { useContext, useEffect, useState } from "react";
+import { buttonVariants } from "../ui/button";
 import { useAuth } from "@/context/authContext";
 
 export default function Header() {

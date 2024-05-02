@@ -137,6 +137,7 @@ export const useApproveListing = (id: string) => {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { isLoading, isApproved };
