@@ -9,12 +9,12 @@ async function main() {
   await (
     await contract.createAdministration(
       data.admin,
-      "Plateau",
-      "Plateau"
+      "Kaduna State",
+      "Kaduna State"
     )
   ).wait();
   await (
-    await contract.addAgent("Plateau", {
+    await contract.addAgent("Kaduna State", {
       id: data.agent,
       name: "Javis",
       code: "code",

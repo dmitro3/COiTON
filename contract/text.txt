@@ -1,0 +1,60 @@
+DiamondCutFacet deployed: 0x266c8277Cbe445C64398c111813027e8C35A3bEA
+DiamondInit deployed: 0xfAce9c66861b2255357a7DA6eF499Ee56439ce45
+Deployed erc20 token at 0x8b9af1a43020FDFF874DD21C816d4da17cAc0f58
+Deployed erc721 token at 0x23Bf83329B193E68cE2Aad03af199c549fa3Ce2a
+
+Deploying facets
+DiamondLoupeFacet deployed: 0x33d30dc6BF32862A38000551e224a7887879ADBd
+OwnershipFacet deployed: 0x0f697d0e60041acC1689393802D018Ac948fB004
+RealEstate deployed: 0x04B938a7fe8cD2e4A42758A4Fb05F98CD4E29495
+Trade deployed: 0xda45E29597770d44bac12440c0D641DCCE5B1552
+Deployed Dao to  0x6F266fE572bD172Cde7B1d5a663e081798Db2eC9
+
+Diamond Cut: [
+  {
+    facetAddress: '0x33d30dc6BF32862A38000551e224a7887879ADBd',
+    action: 0,
+    functionSelectors: [
+      '0xcdffacc6',
+      '0x52ef6b2c',
+      '0xadfca15e',
+      '0x7a0ed627',
+      '0x01ffc9a7'
+    ]
+  },
+  {
+    facetAddress: '0x0f697d0e60041acC1689393802D018Ac948fB004',
+    action: 0,
+    functionSelectors: [ '0x8da5cb5b', '0xf2fde38b' ]
+  },
+  {
+    facetAddress: '0x04B938a7fe8cD2e4A42758A4Fb05F98CD4E29495',
+    action: 0,
+    functionSelectors: [
+      '0xdfd1d91f', '0x8190cad6',
+      '0x5b6beeb9', '0x107a274a',
+      '0xf1b2d6a3', '0xc7f758a8',
+      '0x6558bc59', '0x297983c0',
+      '0x8957178b', '0x6ba4a92b',
+      '0xdee29d13', '0xbaf9c494',
+      '0x4dffc5c3', '0x18fb5068'
+    ]
+  },
+  {
+    facetAddress: '0xda45E29597770d44bac12440c0D641DCCE5B1552',
+    action: 0,
+    functionSelectors: [
+      '0xfe542ddb',
+      '0xe78b04f3',
+      '0xc9dd39ce',
+      '0xa694fc3a',
+      '0x25d5971f'
+    ]
+  }
+]
+Diamond cut tx:  0x83aeca2154be470414e086b4e3d22902aa4d45358a9217289897c28ce8598fe2
+Completed diamond cut
+
+-------------------------------------
+
+Diamond deployed at: 0x2986fC101d70b917adda1c71945c70c86761D549
