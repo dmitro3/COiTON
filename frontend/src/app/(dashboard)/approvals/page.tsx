@@ -2,8 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getDaoContract, getProvider } from "@/connections";
 import { useFetchUnApprovedListings } from "@/hooks/useFetchBackend";
-import { getDaoContract, getProvider, shortenAddress } from "@/lib/utils";
+import { shortenAddress } from "@/lib/utils";
 import { useWeb3ModalProvider } from "@web3modal/ethers/react";
 import { Check, Loader2, X } from "lucide-react";
 import Image from "next/image";
