@@ -138,7 +138,7 @@ export default function Sidebar() {
           width={24}
           height={24}
           alt="brand"
-          className="w-8 h-8"
+          className="w-6 h-6"
         />
         <h5 className="block text-xl antialiased font-bold leading-snug tracking-normal">
           COiTION
