@@ -81,16 +81,8 @@ export const useFetchUnApprovedListings = () => {
 
     try {
       const tx = await contract.getUnApprovedAssigns("Kaduna");
-      const receipt = await tx.wait();
 
-      if (receipt.status) {
-        console.log(tx);
-
-        setListings(tx);
-        return;
-      } else {
-        return toast.error("Could not get UnApproved listings");
-      }
+      setListings(tx);
     } catch (error: any) {
       console.log(error);
 
