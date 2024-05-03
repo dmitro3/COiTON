@@ -32,21 +32,9 @@ contract RealEstate {
         l.erc721Token = _address;
     }
 
-    // function approveListing(
-    //     string memory id,
-    //     bytes32 hash,
-    //     address approver
-    // ) external {
-    //     LibAppStorage.ListingApproval storage _newListingApproval = l
-    //         .listingApproval[id];
-
-    //     if (_newListingApproval.approved) {
-    //         revert ERRORS.LISTING_ALREADY_APPROVED();
-    //     }
-    //     _newListingApproval.approved = true;
-    //     _newListingApproval.hash = hash;
-    //     _newListingApproval.approver = approver;
-    // }
+    function getErc20Token() external view returns (address) {
+        return l.erc20Token;
+    }
 
     // The queueListingForApproval function is designed to handle the initiation of a listing approval
     /// @param id : Unique identifier for the listing
@@ -62,6 +50,7 @@ contract RealEstate {
         if (tx.origin != l.owner) {
             revert ERRORS.UNAUTHORIZED();
         }
+
         LibAppStorage.ListingApproval storage _newListingApproval = l
             .listingApproval[id];
 

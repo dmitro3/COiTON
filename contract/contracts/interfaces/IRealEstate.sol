@@ -8,6 +8,8 @@ interface IRealEstate {
         address agent
     ) external;
 
+    function getErc20Token() external view returns (address);
+
     // function approveListing(
     //     string memory id,
     //     bytes32 hash,

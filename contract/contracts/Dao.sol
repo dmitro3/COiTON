@@ -2,6 +2,8 @@
 pragma solidity ^0.8.0;
 import "./interfaces/IRealEstate.sol";
 import "./libraries/Events.sol";
+import "./libraries/Errors.sol";
+import "./interfaces/IERC20.sol";
 
 /// @title  This contract serves as a DAO that validates and approves all property listings, potentially enabling a layered approval procedure..
 
@@ -59,12 +61,26 @@ contract Dao {
     /// @dev A mapping that keeps track of designated entities.
     mapping(string => Assign[]) assign;
 
+    mapping(address => uint) listingFee;
+
     /// The contructor set the initial value of a state variable in the contract,pointing to the real estate contract
     /// @param _realEstateContractAddress : This real estate contract address sets the initial address in the state variable to reference the real estate contract.
     constructor(address _realEstateContractAddress) {
         realEstateContractAddress = _realEstateContractAddress;
         owner = msg.sender;
         superior = msg.sender;
+    }
+
+    function stakeListingFee(address _staker) internal {
+        IIERC20 erc20Token = IIERC20(
+            IRealEstate(realEstateContractAddress).getErc20Token()
+        );
+        uint LISTING_AMOUNT = 20 * 10 ** 18;
+        if (erc20Token.allowance(_staker, address(this)) < LISTING_AMOUNT) {
+            revert ERRORS.NO_APPROVAL_TO_SPEND_TOKENS();
+        }
+        erc20Token.transferFrom(_staker, address(this), LISTING_AMOUNT);
+        listingFee[_staker] += LISTING_AMOUNT;
     }
 
     /// transferStateSuperior  is designed to update the administration information for a given state by assigning a new superior address.
@@ -213,6 +229,7 @@ contract Dao {
             }
             require(isValidAgent, "NOT_A_VALID_AGENT");
         }
+        stakeListingFee(_listing.agentId);
         {
             uint id = assign[_state].length;
 
@@ -265,6 +282,12 @@ contract Dao {
                 keccak256(abi.encode(listingId)),
             "CORRUPTED_DATA"
         );
+
+        IIERC20 erc20Token = IIERC20(
+            IRealEstate(realEstateContractAddress).getErc20Token()
+        );
+        uint LISTING_SHARE = 10 * 10 ** 18;
+        erc20Token.transfer(_administration.superior, LISTING_SHARE);
 
         _asign.approved = true;
 
