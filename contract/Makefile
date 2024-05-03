@@ -21,19 +21,19 @@
 
 
 deployLocal:
-	npx hardhat run scripts/deploy.js --network anvil
+	yarn hardhat run scripts/deploy.js --network anvil
 
 deployLive:
-	npx hardhat run scripts/deploy.js --network sepolia
+	yarn hardhat run scripts/deploy.js --network sepolia
 
 abigen:
 	node scripts/generateDiamondABI.js
 
 runDao:
-	npx hardhat run scripts/interractions/daoSettings.js --network anvil
+	yarn hardhat run scripts/interractions/daoSettings.js --network sepolia
 
 approveListing:
-	npx hardhat run scripts/interractions/approveListing.js --network anvil
+	yarn hardhat run scripts/interractions/approveListing.js --network anvil
 
 getListings:
-	npx hardhat run scripts/interractions/getListings.js --network anvil
+	yarn hardhat run scripts/interractions/getListings.js --network anvil
