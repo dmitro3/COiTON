@@ -36,7 +36,7 @@ export default function RootLayout({
             "min-h-screen bg-background font-sans antialiased flex flex-col",
             fontSans.variable
           )}>
-          <Toaster />
+          <Toaster richColors />
           <main className="flex-1">{children}</main>
         </body>
       </html>

@@ -71,7 +71,8 @@ export default function CreateListingPage() {
       const fileUrls = await onUpload(files);
 
       if (fileUrls) {
-        toast.dismiss("Files uploaded successfully");
+        toast.dismiss();
+        toast.success("Files uploaded successfully");
         const data: any = {
           owner: credentials?.address,
           agentId: credentials?.address,
@@ -98,7 +99,7 @@ export default function CreateListingPage() {
         const res = await response.json();
 
         if (res.data.tx.success === true) {
-          toast(res.data.tx.message, {
+          toast.success(res.data.tx.message, {
             description:
               "You are being redirected to the dashboard\nYour listing will be approved by the DAO within 24 hours",
           });
@@ -106,7 +107,7 @@ export default function CreateListingPage() {
           console.log(res);
           toast.dismiss();
         } else {
-          toast(res.data.tx.message, {
+          toast.error(res.data.tx.message, {
             description: "Your state has not been register in the DAO",
           });
           toast.dismiss();
@@ -115,7 +116,7 @@ export default function CreateListingPage() {
       }
     } catch (error: any) {
       console.error("Error:", error);
-      toast("Failed to create listing", {
+      toast.error("Failed to create listing", {
         description:
           error.message || "An error occurred while creating the listing",
       });

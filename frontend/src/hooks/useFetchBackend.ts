@@ -2,6 +2,7 @@
 
 import { getDaoContract, getDiamondContract, getProvider } from "@/connections";
 import { useWeb3ModalProvider } from "@web3modal/ethers/react";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
@@ -27,12 +28,12 @@ export const useFetchListings = () => {
       console.log(error);
 
       if (error.reason === "rejected") {
-        toast("Failed transaction", {
+        toast.error("Failed transaction", {
           description: "You rejected the transaction",
         });
       } else {
         console.log(error);
-        toast(error.code, {
+        toast.error(error.code, {
           description: error.message,
         });
       }
@@ -80,18 +81,26 @@ export const useFetchUnApprovedListings = () => {
 
     try {
       const tx = await contract.getUnApprovedAssigns("Kaduna");
+      const receipt = await tx.wait();
 
-      setListings(tx);
+      if (receipt.status) {
+        console.log(tx);
+
+        setListings(tx);
+        return;
+      } else {
+        return toast.error("Could not get UnApproved listings");
+      }
     } catch (error: any) {
       console.log(error);
 
       if (error.reason === "rejected") {
-        toast("Failed transaction", {
+        toast.error("Failed transaction", {
           description: "You rejected the transaction",
         });
       } else {
         console.log(error);
-        toast(error.code, {
+        toast.error(error.code, {
           description: error.message,
         });
       }
@@ -122,62 +131,4 @@ export const useFetchUnApprovedListings = () => {
   }, []);
 
   return { isLoading, listings };
-};
-
-export const useApproveListing = (id: string) => {
-  const { walletProvider }: any = useWeb3ModalProvider();
-
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isApproved, setIsApproved] = useState<boolean>(false);
-
-  async function fetchData() {
-    setIsLoading(true);
-
-    try {
-      const readWriteProvider = getProvider(walletProvider);
-      const signer = await readWriteProvider.getSigner(
-        process.env.NEXT_PUBLIC_ADMIN_ADDRESS
-      );
-      const contract = getDaoContract(signer);
-
-      const tx = await contract.approveListing(id);
-      const receipt = await tx.wait();
-
-      if (receipt.status) {
-        console.log(tx);
-
-        setIsApproved(true);
-        return toast.success("Listing approved successfully 🎉");
-      } else {
-        return toast.error("Failed to send transaction");
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    const fetchDataAndListen = async () => {
-      await fetchData();
-
-      const readWriteProvider = getProvider(walletProvider);
-      const signer = await readWriteProvider.getSigner();
-      const contract = getDaoContract(signer);
-
-      contract.on("ListingApproved", async (state, assignedId, listingId) => {
-        await fetchData();
-      });
-
-      return () => {
-        contract.removeAllListeners("DataUpdated");
-      };
-    };
-
-    fetchDataAndListen();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return { isLoading, isApproved };
 };

@@ -51,7 +51,7 @@ export default function ListingDetailsPage({
             const lt = transformListing(foundListing);
             setListingData(lt);
           } else {
-            toast("Listing not found");
+            toast.error("Listing not found");
             router.push("/dashboard");
           }
         } catch (error) {

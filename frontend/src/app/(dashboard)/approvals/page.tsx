@@ -14,10 +14,10 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function ApprovalsPage() {
+  const { listings, isLoading } = useFetchUnApprovedListings();
   const router = useRouter();
 
   const { walletProvider }: any = useWeb3ModalProvider();
-  const { listings, isLoading } = useFetchUnApprovedListings();
 
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isApproved, setIsApproved] = useState<boolean>(false);
@@ -35,7 +35,7 @@ export default function ApprovalsPage() {
       const tx = await contract.approveListing(state, index, id);
       console.log(tx);
 
-      toast("Transaction sent successfully", {
+      toast.success("Transaction sent successfully", {
         description: "You are being redirected to the listing",
       });
       router.push(`/listing/${id}`);

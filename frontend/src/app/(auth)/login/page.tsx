@@ -69,12 +69,12 @@ export default function LoginPage() {
       const { data, error }: any = await loginUser(formData);
 
       if (error) {
-        toast("Something went wrong", {
+        toast.error("Something went wrong", {
           description: error?.message,
         });
         setIsLoading(false);
       } else {
-        toast(`Welcome back ${data?.user?.user_metadata?.name}`, {
+        toast.success(`Welcome back ${data?.user?.user_metadata?.name}`, {
           description: "You are being redirected to the dashboard",
         });
         router.push("/dashboard");
