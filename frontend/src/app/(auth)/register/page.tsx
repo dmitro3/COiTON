@@ -72,12 +72,12 @@ export default function RegisterPage() {
       const { data, error }: any = await registerUser(formData);
 
       if (error) {
-        toast("Something went wrong", {
+        toast.error("Something went wrong", {
           description: error?.message,
         });
         setIsLoading(false);
       } else {
-        toast("Account created successfully", {
+        toast.success("Account created successfully", {
           description: `Welcome to COiTON, ${data?.user?.user_metadata?.name}`,
         });
         router.push("/login");
