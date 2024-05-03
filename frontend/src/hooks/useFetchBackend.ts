@@ -21,16 +21,6 @@ export const useFetchListings = () => {
     const contract = getDiamondContract(signer);
 
     try {
-      contract.on("CreatedListing", (owner, tokenId, price) => {
-        let data = {
-          owner,
-          price,
-          tokenId: tokenId.toNumber(),
-        };
-
-        console.log(data);
-        fetchData();
-      });
       const tx = await contract.getListings();
       setListings(tx);
     } catch (error: any) {
@@ -52,7 +42,23 @@ export const useFetchListings = () => {
   }
 
   useEffect(() => {
-    fetchData();
+    const fetchDataAndListen = async () => {
+      await fetchData();
+
+      const readWriteProvider = getProvider(walletProvider);
+      const signer = await readWriteProvider.getSigner();
+      const contract = getDiamondContract(signer);
+
+      contract.on("CreatedListing", async (owner, tokenId, price) => {
+        await fetchData();
+      });
+
+      return () => {
+        contract.removeAllListeners("CreatedListing");
+      };
+    };
+
+    fetchDataAndListen();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -73,7 +79,8 @@ export const useFetchUnApprovedListings = () => {
     const contract = getDaoContract(signer);
 
     try {
-      const tx = await contract.getUnApprovedAssigns("Kaduna State");
+      const tx = await contract.getUnApprovedAssigns("Kaduna");
+
       setListings(tx);
     } catch (error: any) {
       console.log(error);
@@ -94,7 +101,23 @@ export const useFetchUnApprovedListings = () => {
   }
 
   useEffect(() => {
-    fetchData();
+    const fetchDataAndListen = async () => {
+      await fetchData();
+
+      const readWriteProvider = getProvider(walletProvider);
+      const signer = await readWriteProvider.getSigner();
+      const contract = getDiamondContract(signer);
+
+      contract.on("CreatedListing", async (owner, tokenId, price) => {
+        await fetchData();
+      });
+
+      return () => {
+        contract.removeAllListeners("CreatedListing");
+      };
+    };
+
+    fetchDataAndListen();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -129,14 +152,30 @@ export const useApproveListing = (id: string) => {
         return toast.error("Failed to send transaction");
       }
     } catch (error) {
-      console.error(error); // Log any errors
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchData();
+    const fetchDataAndListen = async () => {
+      await fetchData();
+
+      const readWriteProvider = getProvider(walletProvider);
+      const signer = await readWriteProvider.getSigner();
+      const contract = getDaoContract(signer);
+
+      contract.on("ListingApproved", async (state, assignedId, listingId) => {
+        await fetchData();
+      });
+
+      return () => {
+        contract.removeAllListeners("DataUpdated");
+      };
+    };
+
+    fetchDataAndListen();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -28,6 +28,15 @@ import { RENDER_ENDPOINT } from "@/hooks/useFetchBackend";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/authContext";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { states } from "@/constants";
+
 export default function CreateListingPage() {
   const router = useRouter();
   const data: any = {
@@ -57,12 +66,12 @@ export default function CreateListingPage() {
     try {
       setIsUploading(true);
 
-      toast("Your files are being uploaded to Pinata");
+      toast.loading("Uploading files to IPFS...");
       const cover = await onUpload([coverPhoto]);
       const fileUrls = await onUpload(files);
 
       if (fileUrls) {
-        toast("Files uploaded successfully");
+        toast.dismiss("Files uploaded successfully");
         const data: any = {
           owner: credentials?.address,
           agentId: credentials?.address,
@@ -77,6 +86,7 @@ export default function CreateListingPage() {
 
         // values.features.split("\n")
 
+        toast.loading("Creating listing...");
         const response = await fetch(`${RENDER_ENDPOINT}/listings`, {
           method: "POST",
           body: JSON.stringify(data),
@@ -86,20 +96,21 @@ export default function CreateListingPage() {
         });
 
         const res = await response.json();
-        console.log(res.data.newListing);
 
         if (res.data.tx.success === true) {
           toast(res.data.tx.message, {
             description:
-              "You are being redirected to the dashboard\nWait for 24 hours for your listing to be approved",
+              "You are being redirected to the dashboard\nYour listing will be approved by the DAO within 24 hours",
           });
           router.push("/dashboard");
+          console.log(res);
+          toast.dismiss();
         } else {
           toast(res.data.tx.message, {
             description: "Your state has not been register in the DAO",
           });
+          toast.dismiss();
         }
-        console.log(res);
         // router.push(`/listing/${result?.data?.id}`);
       }
     } catch (error: any) {
@@ -232,13 +243,21 @@ export default function CreateListingPage() {
               render={({ field }: { field: any }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <Input
-                      placeholder="State"
-                      type="text"
-                      {...field}
-                      disabled={isUploading || isFetchingUser}
-                      className="w-full h-12 bg-secondary/20"
-                    />
+                    <Select
+                      name="state"
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}>
+                      <SelectTrigger className="w-full h-12 bg-secondary/20">
+                        <SelectValue placeholder="State" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {states.map((state: any) => (
+                          <SelectItem key={state} value={state}>
+                            {state}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
