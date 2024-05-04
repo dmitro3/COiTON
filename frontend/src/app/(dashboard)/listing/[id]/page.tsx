@@ -36,8 +36,6 @@ export default function ListingDetailsPage({
   const [listingData, setListingData] = useState<any>();
   const [selectedImage, setSelectedImage] = useState<string>("");
 
-  // features.split("\n")
-
   useEffect(() => {
     const fetchListingData = async () => {
       if (!isLoading) {
