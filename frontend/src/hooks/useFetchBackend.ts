@@ -80,7 +80,7 @@ export const useFetchUnApprovedListings = () => {
     const contract = getDaoContract(signer);
 
     try {
-      const tx = await contract.getUnApprovedAssigns("Kaduna");
+      const tx = await contract.getUnApprovedAssigns("Lagos");
 
       setListings(tx);
     } catch (error: any) {
