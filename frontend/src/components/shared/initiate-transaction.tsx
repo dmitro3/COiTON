@@ -10,41 +10,47 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "../ui/textarea";
 
-export const CreateProposal = () => {
+export const InitiatePurchaseTransaction = ({
+  agentId,
+}: {
+  agentId: string;
+}) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Creating Proposal</Button>
+        <Button>Initiate Transaction</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
-          <DialogTitle>Create a proposal</DialogTitle>
+          <DialogTitle>Initiate Purchase Transaction</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
+            Initiate a new purchase transaction
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="address" className="text-right">
-              Address
+              Agent
             </Label>
             <Input
               id="address"
               type="text"
-              value="0x000000000000000000000000000000000000000"
+              value={agentId}
+              disabled={!!agentId}
               className="col-span-3"
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="grid grid-cols-4 items-start gap-4">
             <Label htmlFor="amount" className="text-right">
-              Amount
+              Buyers
             </Label>
-            <Input
-              id="amount"
-              type="number"
-              value="500000"
-              className="col-span-3"
+            <Textarea
+              cols={8}
+              rows={8}
+              placeholder="Add the number of buyers"
+              className="bg-secondary/20 col-span-3"
             />
           </div>
         </div>
