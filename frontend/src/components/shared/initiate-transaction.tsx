@@ -33,6 +33,7 @@ export const InitiatePurchaseTransaction = ({
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
   const initiatePurchaseTransaction = async () => {
     try {
       const buyerAddress = inputRef.current?.value.trim();
