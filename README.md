@@ -58,7 +58,8 @@ COiTON offers users enhanced flexibility in trading various property indices tha
 The schema includes fields for ERC20 and ERC721 tokens, which serve as our payment and trading mechanisms respectively . The ERC20 token is essential for tokenizing the system, requiring users to possess this token to participate in governance. On the other hand, the ERC721 token represents the NFT, as previously mentioned, which facilitates the conversion of listed real estate into NFTs. This allows users the flexibility to trade these NFTs, and due to the nature of ERC721,  users can  buy and sell shares of a single real estate NFT.
 
 #### COiTON User Flow
-![Screenshot from 2024-05-01 19-12-01](https://github.com/WebSculptor/COiTON/assets/137540755/03cf972e-a592-41a9-b9da-b6d1dcde907c)
+![Screenshot from 2024-05-04 09-15-39](https://github.com/WebSculptor/COiTON/assets/137540755/4f5089a6-e16a-4f10-811c-d889b0cdf20e)
+
 
 The verification process for real estate is crucial to confirm the legitimacy of properties listed on COiTON. To facilitate this, a DAO has been integrated into the system, managed by the land and property administrations across various states and regions. This DAO acts as a multi-process approval mechanism for authenticating listed real estate. It enhances COiTON's security by mitigating potential vulnerabilities in the services it offers.
 
@@ -68,8 +69,7 @@ As a result, each DAO must be registered specifically for each state and region.
 Refer [HERE](https://miro.com/app/board/uXjVKSLpxGc=/?share_link_id=836656075422) for clear image
 
 #### COiTON Tokenomics
-
-![Screenshot from 2024-05-01 19-11-08](https://github.com/WebSculptor/COiTON/assets/137540755/51be134c-44c2-4199-8fcb-ce4028ed3842)
+![Screenshot from 2024-05-04 09-48-32](https://github.com/WebSculptor/COiTON/assets/137540755/024bb34f-e880-469d-b877-1de85d5be9a9)
 
 The COiTON Token is a stablecoin tied to the value of the USDT dollar, using an Algorithmic Supply Adjustment mechanism for stability. This method involves adjusting the token supply based on demand. When the stablecoin's price consistently exceeds the target value, more tokens may be issued to increase circulation. Conversely, if the price consistently falls below the target, tokens may be burned to reduce supply.
 
