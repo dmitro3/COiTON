@@ -16,12 +16,6 @@ export default function ListingDetailsPage({
 }: {
   params: { id: string };
 }) {
-  const router = useRouter();
-  const { listings, isLoading } = useFetchListings();
-  const [isFetchingListing, setIsFetchingListing] = useState(false);
-  const [listingData, setListingData] = useState<any>();
-  const [selectedImage, setSelectedImage] = useState<string>("");
-
   const transformListing = (listing: any) => ({
     id: listing[0],
     owner: listing[1],
@@ -36,7 +30,11 @@ export default function ListingDetailsPage({
     createdAt: Number(listing[9]),
   });
 
-  // features.split("\n")
+  const router = useRouter();
+  const { listings, isLoading } = useFetchListings();
+  const [isFetchingListing, setIsFetchingListing] = useState(false);
+  const [listingData, setListingData] = useState<any>();
+  const [selectedImage, setSelectedImage] = useState<string>("");
 
   useEffect(() => {
     const fetchListingData = async () => {
@@ -50,6 +48,7 @@ export default function ListingDetailsPage({
           if (foundListing) {
             const lt = transformListing(foundListing);
             setListingData(lt);
+            setSelectedImage(lt.images[0]);
           } else {
             toast.error("Listing not found");
             router.push("/dashboard");
@@ -77,11 +76,11 @@ export default function ListingDetailsPage({
   return (
     <div className="flex-1 flex flex-col gap-6 pb-6">
       <div className="aspect-[1.4] md:aspect-[1.8] lg:aspect-[2.5] xl:aspect-auto xl:h-[535px] max-w-[1558px] w-full mx-auto overflow-hidden relative">
-        <div className="w-full h-full bg-background/40 absolute inset-0 hidden xl:flex"></div>
         <div className="w-full h-full bg-secondary rounded-xl overflow-hidden mb-3">
           <Image
-            src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${selectedImage || listingData?.images[0]
-              }`}
+            src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${
+              selectedImage || listingData?.images[0]
+            }`}
             alt="Main Image"
             width={3840}
             height={2160}
@@ -135,7 +134,10 @@ export default function ListingDetailsPage({
           </p>
 
           <div className="flex items-center gap-4 mt-4">
-            <InitiatePurchaseTransaction estateId={listingData?.tokenId.toString()} agentId={listingData?.owner} />
+            <InitiatePurchaseTransaction
+              estateId={listingData?.tokenId.toString()}
+              agentId={listingData?.owner}
+            />
 
             <Button variant="secondary">View Market</Button>
           </div>

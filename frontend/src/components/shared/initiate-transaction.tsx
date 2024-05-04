@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,11 +16,14 @@ import { Textarea } from "../ui/textarea";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { getDiamondContract, getProvider } from "@/connections";
-import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers/react";
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from "@web3modal/ethers/react";
 
 export const InitiatePurchaseTransaction = ({
   agentId,
-  estateId
+  estateId,
 }: {
   agentId: string;
   estateId: string;
@@ -26,8 +31,9 @@ export const InitiatePurchaseTransaction = ({
   const { walletProvider }: any = useWeb3ModalProvider();
   const { address } = useWeb3ModalAccount();
 
-  const inputRef = useRef<HTMLTextAreaElement>(null)
-  const [loading, setLoading] = useState<boolean>(false)
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const initiatePurchaseTransaction = async () => {
     try {
       const buyerAddress = inputRef.current?.value.trim();
@@ -45,7 +51,11 @@ export const InitiatePurchaseTransaction = ({
       toast.loading("Uploading files to IPFS...");
       // console.log(estateId);
       // return;
-      const tx = await contract.initiatePurchaseAgreement(estateId, buyerAddress, [buyerAddress, address]);
+      const tx = await contract.initiatePurchaseAgreement(
+        estateId,
+        buyerAddress,
+        [buyerAddress, address]
+      );
 
       const tx_receipt = await tx.wait();
 
@@ -60,8 +70,7 @@ export const InitiatePurchaseTransaction = ({
       toast.dismiss();
       console.log(error);
     }
-  }
-
+  };
 
   return (
     <Dialog>
@@ -102,7 +111,9 @@ export const InitiatePurchaseTransaction = ({
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={initiatePurchaseTransaction} type="submit">Create</Button>
+          <Button onClick={initiatePurchaseTransaction} type="submit">
+            Create
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
