@@ -80,9 +80,8 @@ export default function ListingDetailsPage({
         <div className="w-full h-full bg-background/40 absolute inset-0 hidden xl:flex"></div>
         <div className="w-full h-full bg-secondary rounded-xl overflow-hidden mb-3">
           <Image
-            src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${
-              selectedImage || listingData?.images[0]
-            }`}
+            src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${selectedImage || listingData?.images[0]
+              }`}
             alt="Main Image"
             width={3840}
             height={2160}
@@ -136,7 +135,7 @@ export default function ListingDetailsPage({
           </p>
 
           <div className="flex items-center gap-4 mt-4">
-            <InitiatePurchaseTransaction agentId={listingData?.owner} />
+            <InitiatePurchaseTransaction estateId={listingData?.tokenId.toString()} agentId={listingData?.owner} />
 
             <Button variant="secondary">View Market</Button>
           </div>
