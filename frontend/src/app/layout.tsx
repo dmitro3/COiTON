@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans as FontSans } from "next/font/google";
+import { Lato as FontSans } from "next/font/google";
 
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,7 @@ import AuthContextProvider from "@/context/authContext";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
+  weight: ["100", "300", "400", "700", "900"],
 });
 
 export const metadata: Metadata = {

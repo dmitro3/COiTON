@@ -8,7 +8,7 @@ import { Bath, BedSingle, CheckCheck, MapPin } from "lucide-react";
 import TradingViewWidget from "@/components/shared/trading-view-widget";
 import { cn, formatDate } from "@/lib/utils";
 import Image from "next/image";
-import { CreateProposal } from "@/components/shared/create-proposal";
+import { InitiatePurchaseTransaction } from "@/components/shared/initiate-transaction";
 import { Button } from "@/components/ui/button";
 
 export default function ListingDetailsPage({
@@ -136,7 +136,7 @@ export default function ListingDetailsPage({
           </p>
 
           <div className="flex items-center gap-4 mt-4">
-            <CreateProposal />
+            <InitiatePurchaseTransaction agentId={listingData?.owner} />
 
             <Button variant="secondary">View Market</Button>
           </div>
