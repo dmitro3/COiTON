@@ -32,6 +32,9 @@ abigen:
 runDao:
 	yarn hardhat run scripts/interractions/daoSettings.js --network sepolia
 
+approve:
+	yarn hardhat run scripts/interractions/approve.js --network sepolia
+
 approveListing:
 	yarn hardhat run scripts/interractions/approveListing.js --network anvil
 
