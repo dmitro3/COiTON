@@ -75,7 +75,6 @@ contract RealEstate {
     // After storing the listing data an NFT will be minted to the agent or the house owner.
     function createListing(
         string memory id,
-        address owner,
         address agent,
         string memory region,
         uint24 postalCode,
@@ -84,10 +83,6 @@ contract RealEstate {
         string memory images,
         string memory coverImage
     ) external {
-        if (owner == address(0)) {
-            revert ERRORS.UNAUTHORIZED();
-        }
-
         LibAppStorage.ListingApproval storage _listingApproval = l
             .listingApproval[id];
 
@@ -102,7 +97,6 @@ contract RealEstate {
         bytes32 hash = keccak256(
             abi.encodePacked(
                 id,
-                owner,
                 agent,
                 region,
                 postalCode,
@@ -116,10 +110,10 @@ contract RealEstate {
             revert ERRORS.INVALID_LISTING_HASH();
         }
         uint listingId = l.listings.length + 1;
-        ICoitonNFT(l.erc721Token).mint(owner, listingId, coverImage);
+        ICoitonNFT(l.erc721Token).mint(agent, listingId, coverImage);
         LibAppStorage.Listing memory _newListing = LibAppStorage.Listing(
             id,
-            owner,
+            agent,
             region,
             postalCode,
             description,
@@ -135,7 +129,7 @@ contract RealEstate {
 
         l.listings.push(_newListing);
 
-        emit EVENTS.CreatedListing(owner, listingId, price);
+        emit EVENTS.CreatedListing(agent, listingId, price);
     }
 
     // This function allows external caller to submit a proposal to purchase a real estate property
@@ -296,6 +290,24 @@ contract RealEstate {
         uint agreementId
     ) external view returns (LibAppStorage.PurchaseAgreement memory) {
         return l.purchaseAgreement[agreementId];
+    }
+
+    function checkIfApprovedERC20Token(
+        uint estateId,
+        address _user
+    ) external view returns (bool) {
+        LibAppStorage.Listing memory listing = l.listing[estateId];
+        IIERC20 erc20Token = IIERC20(l.erc20Token);
+
+        return erc20Token.allowance(_user, address(this)) >= listing.price;
+    }
+
+    function checkIfApprovedERC721Token(
+        uint estateId
+    ) external view returns (bool) {
+        LibAppStorage.Listing memory listing = l.listing[estateId];
+        IERC721 erc721Token = IERC721(l.erc721Token);
+        return erc721Token.getApproved(listing.tokenId) == address(this);
     }
 
     // This function is designed to allow an authorized party to sign a purchase agreement for a specified real estate property on the platform.
