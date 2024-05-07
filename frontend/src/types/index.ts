@@ -50,3 +50,5 @@ interface SingleListingType {
   createdAt: string;
   updatedAt: string;
 }
+
+//
