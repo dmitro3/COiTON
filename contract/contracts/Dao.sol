@@ -71,6 +71,12 @@ contract Dao {
         superior = msg.sender;
     }
 
+    function getUserStake(address _user) external view returns (bool) {
+        uint LISTING_AMOUNT = 20 * 10 ** 18;
+
+        return listingFee[_user] >= LISTING_AMOUNT;
+    }
+
     function stakeListingFee(address _staker) internal {
         IIERC20 erc20Token = IIERC20(
             IRealEstate(realEstateContractAddress).getErc20Token()
@@ -247,6 +253,9 @@ contract Dao {
             hash,
             _administration.superior
         );
+
+        uint LISTING_AMOUNT = 20 * 10 ** 18;
+        listingFee[_listing.agentId] -= LISTING_AMOUNT;
     }
 
     /// The approveListing function is designed to finalize the approval of a real estate listing.

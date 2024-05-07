@@ -11,7 +11,6 @@ exports.SendListingTransaction = async (id, details) => {
       [
         "string",
         "address",
-        "address",
         "string",
         "uint24",
         "string",
@@ -20,7 +19,6 @@ exports.SendListingTransaction = async (id, details) => {
       ],
       [
         id,
-        details.owner,
         details.agentId,
         region,
         details.postalCode,
