@@ -24,9 +24,11 @@ import {
 export const InitiatePurchaseTransaction = ({
   agentId,
   estateId,
+  callback
 }: {
   agentId: string;
   estateId: string;
+  callback: (success: boolean, data: null | { buyer: string; signers: string[]; }) => void;
 }) => {
   const { walletProvider }: any = useWeb3ModalProvider();
   const { address } = useWeb3ModalAccount();
@@ -48,7 +50,7 @@ export const InitiatePurchaseTransaction = ({
         process.env.NEXT_PUBLIC_ADMIN_ADDRESS
       );
       const contract = getDiamondContract(signer);
-      toast.loading("Uploading files to IPFS...");
+      toast.loading("Processing transaction...");
       // console.log(estateId);
       // return;
       const tx = await contract.initiatePurchaseAgreement(
@@ -61,14 +63,20 @@ export const InitiatePurchaseTransaction = ({
 
       if (tx_receipt.status) {
         toast.success("SUCCESS");
+        callback(true, { buyer: buyerAddress, signers: [buyerAddress, address] })
       } else {
         toast.error(tx_receipt.reason ?? "OOPS!!! SOMETHING WENT WRONG");
+        callback(false, null)
+
       }
       setLoading(false);
       toast.dismiss();
     } catch (error) {
+
       toast.dismiss();
       console.log(error);
+      callback(false, null)
+
     }
   };
 
