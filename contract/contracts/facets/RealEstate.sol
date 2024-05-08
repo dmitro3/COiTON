@@ -431,7 +431,8 @@ contract RealEstate {
         ) {
             _purchaseAgreement.executed = true;
 
-            LibAppStorage.Listing memory listing = l.listing[estateId];
+            LibAppStorage.Listing storage listing = l.listing[estateId];
+
             IIERC20 erc20Token = IIERC20(l.erc20Token);
             IERC721 erc721Token = IERC721(l.erc721Token);
             if (
@@ -457,6 +458,13 @@ contract RealEstate {
                 _purchaseAgreement.buyer,
                 listing.tokenId
             );
+
+            LibAppStorage.Listing storage _listing = l.listings[
+                listing.tokenId - 1
+            ];
+            _listing.owner = _purchaseAgreement.buyer;
+
+            listing.owner = _purchaseAgreement.buyer;
 
             assert(
                 erc721Token.ownerOf(listing.tokenId) == _purchaseAgreement.buyer
