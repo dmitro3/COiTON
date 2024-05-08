@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 // @ts-ignore
@@ -23,8 +23,12 @@ import { Camera, Check, Loader2 } from "lucide-react";
 import { FileUploader } from "@/components/shared/file-uploader";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { onUpload } from "@/lib/utils";
-import { RENDER_ENDPOINT } from "@/hooks/useFetchBackend";
+import { cn, onUpload } from "@/lib/utils";
+import {
+  RENDER_ENDPOINT,
+  useCheckIfUserStaked,
+  useStake,
+} from "@/hooks/useFetchBackend";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/authContext";
 
@@ -36,6 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { states } from "@/constants";
+import { ApproveStake } from "@/components/shared/approve-stake";
 
 export default function CreateListingPage() {
   const router = useRouter();
@@ -49,7 +54,10 @@ export default function CreateListingPage() {
     images: [],
     coverImage: "",
   };
+
   const { credentials, isFetchingUser } = useAuth();
+  const { isLoading, checkIsStaked } = useCheckIfUserStaked();
+  const { handleStake, isLoading: isStaking } = useStake();
 
   const [files, setFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -65,6 +73,17 @@ export default function CreateListingPage() {
   async function onSubmit(values: z.infer<typeof listingSchema>) {
     try {
       setIsUploading(true);
+      let isStaked = await checkIsStaked();
+      let proceed = false;
+
+      if (!isStaked) {
+        proceed = await handleStake();
+      } else {
+        proceed = true;
+      }
+
+      if (!proceed) return;
+      console.log("Has staked", isStaked);
 
       toast.loading("Uploading files to IPFS...");
       const cover = await onUpload([coverPhoto]);
@@ -98,6 +117,8 @@ export default function CreateListingPage() {
 
         const res = await response.json();
 
+        console.log(res.data);
+
         if (res.data.tx.success === true) {
           toast.success(res.data.tx.message, {
             description:
@@ -105,12 +126,10 @@ export default function CreateListingPage() {
           });
           router.push("/dashboard");
           console.log(res);
-          toast.dismiss();
         } else {
           toast.error(res.data.tx.message, {
             description: "Your state has not been register in the DAO",
           });
-          toast.dismiss();
         }
         // router.push(`/listing/${result?.data?.id}`);
       }
@@ -122,6 +141,7 @@ export default function CreateListingPage() {
       });
     } finally {
       setIsUploading(false);
+      toast.dismiss();
     }
   }
 
@@ -150,7 +170,7 @@ export default function CreateListingPage() {
                     rows={8}
                     placeholder="Description"
                     className="bg-secondary/20"
-                    disabled={isUploading || isFetchingUser}
+                    disabled={isUploading || isFetchingUser || isStaking}
                     {...field}
                   />
                 </FormControl>
@@ -170,7 +190,7 @@ export default function CreateListingPage() {
                       placeholder="Price"
                       type="text"
                       {...field}
-                      disabled={isUploading || isFetchingUser}
+                      disabled={isUploading || isFetchingUser || isStaking}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -188,7 +208,7 @@ export default function CreateListingPage() {
                       placeholder="Address"
                       type="text"
                       {...field}
-                      disabled={isUploading || isFetchingUser}
+                      disabled={isUploading || isFetchingUser || isStaking}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -201,7 +221,13 @@ export default function CreateListingPage() {
           <div className="flex items-center flex-col md:flex-row gap-3 md:gap-4 w-full">
             <Label
               htmlFor="coverPhoto"
-              className="w-14 h-12 flex items-center justify-center text-foreground bg-secondary/20 border rounded cursor-pointer">
+              className={cn(
+                "w-14 h-12 flex items-center justify-center text-foreground bg-secondary/20 border rounded cursor-pointer",
+                {
+                  "opacity-50 cursor-default select-none":
+                    isUploading || isFetchingUser,
+                }
+              )}>
               {!coverPhoto ? (
                 <Camera className="w-5 h-5" />
               ) : (
@@ -214,7 +240,7 @@ export default function CreateListingPage() {
               id="coverPhoto"
               hidden
               onChange={(e: any) => setCoverPhoto(e.target.files[0])}
-              disabled={isUploading || isFetchingUser}
+              disabled={isUploading || isFetchingUser || isStaking}
               className="w-full h-12 bg-secondary/20 hidden"
             />
             <FormField
@@ -227,7 +253,7 @@ export default function CreateListingPage() {
                       placeholder="City"
                       type="text"
                       {...field}
-                      disabled={isUploading || isFetchingUser}
+                      disabled={isUploading || isFetchingUser || isStaking}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -247,7 +273,8 @@ export default function CreateListingPage() {
                     <Select
                       name="state"
                       onValueChange={field.onChange}
-                      defaultValue={field.value}>
+                      defaultValue={field.value}
+                      disabled={isUploading || isFetchingUser || isStaking}>
                       <SelectTrigger className="w-full h-12 bg-secondary/20">
                         <SelectValue placeholder="State" />
                       </SelectTrigger>
@@ -274,7 +301,7 @@ export default function CreateListingPage() {
                       placeholder="Postal Code"
                       type="text"
                       {...field}
-                      disabled={isUploading || isFetchingUser}
+                      disabled={isUploading || isFetchingUser || isStaking}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -295,7 +322,7 @@ export default function CreateListingPage() {
                     rows={8}
                     placeholder="Features"
                     className="bg-secondary/20"
-                    disabled={isUploading || isFetchingUser}
+                    disabled={isUploading || isFetchingUser || isStaking}
                     {...field}
                   />
                 </FormControl>
@@ -318,12 +345,12 @@ export default function CreateListingPage() {
               maxFiles={8}
               maxSize={8 * 1024 * 1024}
               onValueChange={setFiles}
-              disabled={isUploading || isFetchingUser}
+              disabled={isUploading || isFetchingUser || isStaking}
             />
           </div>
 
           <Button
-            disabled={isUploading || isFetchingUser}
+            disabled={isUploading || isFetchingUser || isStaking}
             type="submit"
             className="h-12">
             {isUploading ? (
