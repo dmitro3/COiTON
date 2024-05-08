@@ -319,7 +319,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex min-w-[240px] flex-col flex-1 gap-1 p-2 font-sans text-base font-normal text-blue-gray-700">
-        <div className="w-full h-full flex flex-col gap-2">
+        <div className="w-full h-full flex flex-col gap-1">
           {toRender.map((route) => (
             <Link
               key={route.name}
@@ -337,7 +337,7 @@ export default function Sidebar() {
           ))}
         </div>
 
-        <div className="pt-2 border-t w-full">
+        <div className="pt-2 border-t gap-1 w-full">
           <Link
             href="/settings"
             className={cn(

@@ -52,11 +52,9 @@ const tradings = [
 export default function TradingsPage() {
   return (
     <div className="flex-1 flex flex-col gap-4">
-      <h1 className="text-xl md:text-2xl capitalize font-bold">
-        Latest Trades
-      </h1>
+      <h1 className="text-xl md:text-2xl capitalize font-bold">Tradings</h1>
 
-      <div className="my-2">
+      <div className="my-2 rounded-xl bg-secondary/30 flex-1 py-4 px-6">
         <Table>
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>
