@@ -40,7 +40,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { states } from "@/constants";
-import { ApproveStake } from "@/components/shared/approve-stake";
 
 export default function CreateListingPage() {
   const router = useRouter();
@@ -77,7 +76,10 @@ export default function CreateListingPage() {
       let proceed = false;
 
       if (!isStaked) {
-        proceed = await handleApproveERC20((20e18).toString(), process.env.NEXT_PUBLIC_DAO_ADDRESS as string);
+        proceed = await handleApproveERC20(
+          (20e18).toString(),
+          process.env.NEXT_PUBLIC_DAO_ADDRESS as string
+        );
       } else {
         proceed = true;
       }
