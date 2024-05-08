@@ -284,6 +284,23 @@ contract RealEstate {
         );
     }
 
+    function getUserInitiatedPurchaseArgument(
+        address _user,
+        uint estateId
+    ) external view returns (LibAppStorage.PurchaseAgreement memory _return) {
+        for (uint i = 1; i < l.purchaseAgreementCount + 1; i++) {
+            LibAppStorage.PurchaseAgreement memory _purchaseAgreement = l
+                .purchaseAgreement[i];
+
+            if (
+                _purchaseAgreement.initiator == _user &&
+                _purchaseAgreement.estateId == estateId
+            ) {
+                _return = _purchaseAgreement;
+            }
+        }
+    }
+
     /// The function  is to get all the agreement purchase
     /// @param agreementId : Use to fetch all the agreement purchase from the array.
     function getPurchaseAgreement(

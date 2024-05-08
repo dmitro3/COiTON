@@ -10,6 +10,7 @@ import {
   useWeb3ModalAccount,
   useWeb3ModalProvider,
 } from "@web3modal/ethers/react";
+import { ethers } from "ethers";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -21,6 +22,44 @@ export const useFetchListings = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [listings, setListings] = useState<any>();
+
+  async function getUserInitiatedPurchaseArgument(estateId: string) {
+    // setIsLoading(true);
+
+    const readWriteProvider = getProvider(walletProvider);
+    const signer = await readWriteProvider.getSigner();
+    const contract = getDiamondContract(signer);
+
+    try {
+      const result = await contract.getUserInitiatedPurchaseArgument(signer.address, estateId);
+
+      // console.log({ result })
+      if (ethers.ZeroAddress === result[1]) {
+        return { success: false, data: {} }
+
+      }
+      return { success: true, data: result };
+      // const tx = await contract.getListings();
+      // setListings(tx);
+    } catch (error: any) {
+      console.log(error);
+
+      if (error.reason === "rejected") {
+        toast.error("Failed transaction", {
+          description: "You rejected the transaction",
+        });
+      } else {
+        console.log(error);
+        toast.error(error.code, {
+          description: error.message,
+        });
+      }
+      return { success: false, data: {} }
+    } finally {
+      // setIsLoading(false);
+    }
+  }
+
 
   async function fetchData() {
     setIsLoading(true);
@@ -71,7 +110,7 @@ export const useFetchListings = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { isLoading, listings };
+  return { isLoading, listings, getUserInitiatedPurchaseArgument };
 };
 
 export const useFetchUnApprovedListings = () => {
@@ -88,7 +127,7 @@ export const useFetchUnApprovedListings = () => {
     const contract = getDaoContract(signer);
 
     try {
-      const tx = await contract.getUnApprovedAssigns("Lagos");
+      const tx = await contract.getUnApprovedAssigns("Plateau");
 
       setListings(tx);
     } catch (error: any) {
