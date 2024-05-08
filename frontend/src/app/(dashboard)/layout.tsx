@@ -9,7 +9,7 @@ export default function DashboardLayout({
 }>) {
   return (
     <div className="flex w-full h-full">
-      <div className="max-w-[22rem] w-full h-svh hidden sticky top-0 left-0 lg:flex">
+      <div className="max-w-[22rem] w-full h-svh hidden sticky top-0 left-0 lg:flex p-3">
         <Sidebar />
       </div>
 
