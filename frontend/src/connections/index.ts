@@ -3,6 +3,7 @@ import {
   DAO_CONTRACT_ABI,
   DIAMOND_CONTRACT_ABI,
   ERC20_CONTRACT_ABI,
+  ERC721_CONTRACT_ABI
 } from "@/json";
 
 export const getDiamondContract = (providerOrSigner: any) =>
@@ -23,6 +24,13 @@ export const getERC20Contract = (providerOrSigner: any) =>
   new ethers.Contract(
     process.env.NEXT_PUBLIC_ERC20_ADDRESS as string,
     ERC20_CONTRACT_ABI,
+    providerOrSigner
+  );
+
+export const getERC721Contract = (providerOrSigner: any) =>
+  new ethers.Contract(
+    process.env.NEXT_PUBLIC_ERC721_ADDRESS as string,
+    ERC721_CONTRACT_ABI,
     providerOrSigner
   );
 

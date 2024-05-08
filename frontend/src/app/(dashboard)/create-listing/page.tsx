@@ -57,7 +57,7 @@ export default function CreateListingPage() {
 
   const { credentials, isFetchingUser } = useAuth();
   const { isLoading, checkIsStaked } = useCheckIfUserStaked();
-  const { handleStake, isLoading: isStaking } = useStake();
+  const { handleApproveERC20, isLoading: isStaking } = useStake();
 
   const [files, setFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -77,7 +77,7 @@ export default function CreateListingPage() {
       let proceed = false;
 
       if (!isStaked) {
-        proceed = await handleStake();
+        proceed = await handleApproveERC20((20e18).toString(), process.env.NEXT_PUBLIC_DAO_ADDRESS as string);
       } else {
         proceed = true;
       }

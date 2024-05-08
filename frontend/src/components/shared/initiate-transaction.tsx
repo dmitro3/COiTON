@@ -119,7 +119,7 @@ export const InitiatePurchaseTransaction = ({
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={initiatePurchaseTransaction} type="submit">
+          <Button disabled={loading} onClick={initiatePurchaseTransaction} type="submit">
             Create
           </Button>
         </DialogFooter>

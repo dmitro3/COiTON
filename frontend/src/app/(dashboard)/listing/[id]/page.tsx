@@ -3,13 +3,14 @@
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useFetchListings } from "@/hooks/useFetchBackend";
+import { useFetchListings, useStake } from "@/hooks/useFetchBackend";
 import { Bath, BedSingle, CheckCheck, MapPin } from "lucide-react";
 import TradingViewWidget from "@/components/shared/trading-view-widget";
 import { cn, formatDate } from "@/lib/utils";
 import Image from "next/image";
 import { InitiatePurchaseTransaction } from "@/components/shared/initiate-transaction";
 import { Button } from "@/components/ui/button";
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 
 export default function ListingDetailsPage({
   params,
@@ -31,11 +32,15 @@ export default function ListingDetailsPage({
   });
 
   const router = useRouter();
-  const { listings, isLoading, getUserInitiatedPurchaseArgument } = useFetchListings();
+  const { listings, isLoading, getUserInitiatedPurchaseArgument, getEstateSigner, signPurchaseAgreement } = useFetchListings();
+  const { handleApproveERC20, handleApproveERC721 } = useStake();
+  const { address } = useWeb3ModalAccount()
+  console.log(address);
   const [isFetchingListing, setIsFetchingListing] = useState(false);
   const [listingData, setListingData] = useState<any>();
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [purchaseAgreement, setPurchaseAgreement] = useState<any>(null);
+  const [purchaseSigner, setPurchaseSigner] = useState<any>(null);
 
   useEffect(() => {
     const fetchListingData = async () => {
@@ -50,6 +55,7 @@ export default function ListingDetailsPage({
             const lt = transformListing(foundListing);
             setListingData(lt);
             setPurchaseAgreement(await getUserInitiatedPurchaseArgument(lt.tokenId.toString()));
+            setPurchaseSigner(await getEstateSigner(lt.tokenId.toString()));
             setSelectedImage(lt.images[0]);
           } else {
             toast.error("Listing not found");
@@ -75,7 +81,8 @@ export default function ListingDetailsPage({
     return <p>Loading...</p>;
   }
 
-  // console.log(purchaseAgreement.data[1])
+
+  // console.log(purchaseSigner)
 
   return (
     <div className="flex-1 flex flex-col gap-6 pb-6">
@@ -146,6 +153,12 @@ export default function ListingDetailsPage({
               estateId={listingData?.tokenId.toString()}
               agentId={listingData?.owner}
             /> : null}
+
+            {purchaseSigner && purchaseSigner.success && Object.keys(purchaseSigner.data).length != 0 && !purchaseSigner.data[1] ? <Button onClick={async () => {
+              await signPurchaseAgreement(listingData?.tokenId.toString(), purchaseSigner.data[0][2], listingData?.price.toString(), (approval) => handleApproveERC20(approval, process.env.NEXT_PUBLIC_DIAMOND_ADDRESS as string), (approval) => handleApproveERC721(approval, process.env.NEXT_PUBLIC_DIAMOND_ADDRESS as string))
+            }} type="submit">
+              Sign Purchase Agreement
+            </Button> : null}
 
             <Button variant="secondary">View Market</Button>
           </div>

@@ -1,10 +1,10 @@
 const { ethers } = require("hardhat");
 async function main() {
   const contractFactory = await ethers.getContractFactory("CoitonERC20");
-  const contract = contractFactory.attach("0x900358D41F9E819d64fE6804780D13e55e004415");
-  const ACCOUNT = "0xB6B0746f8137Db1E788597CFcD818e2B3bfF6324";
+  const contract = contractFactory.attach("0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9");
+  const ACCOUNT = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
   await (await contract.mintTo(ACCOUNT, 20e18.toString())).wait();
-  await (await contract.approve("0x9e741a7ef15d0e2C622F44Dd9cFE85faEF3cc740", 20e18.toString())).wait();
+  // await (await contract.approve("0x70997970C51812dc3A010C7d01b50e0d17dc79C8", 20e18.toString())).wait();
 
 }
 

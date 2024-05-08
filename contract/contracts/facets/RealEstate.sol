@@ -284,6 +284,85 @@ contract RealEstate {
         );
     }
 
+    function getPurchaseAgreementSigners(
+        address _user
+    )
+        external
+        view
+        returns (LibAppStorage.PurchaseAgreement[] memory, bool[] memory)
+    {
+        uint count;
+
+        for (uint i = 1; i < l.purchaseAgreementCount + 1; i++) {
+            LibAppStorage.PurchaseAgreement memory _purchaseAgreement = l
+                .purchaseAgreement[i];
+
+            for (uint j = 0; j < _purchaseAgreement.validSigners.length; j++) {
+                if (_purchaseAgreement.validSigners[j] == _user) {
+                    count += 1;
+                }
+            }
+        }
+
+        LibAppStorage.PurchaseAgreement[]
+            memory _returnAgreement = new LibAppStorage.PurchaseAgreement[](
+                count
+            );
+        bool[] memory _returnHasSigned = new bool[](count);
+
+        uint index;
+
+        for (uint i = 1; i < l.purchaseAgreementCount + 1; i++) {
+            LibAppStorage.PurchaseAgreement memory _purchaseAgreement = l
+                .purchaseAgreement[i];
+
+            for (uint j = 0; j < _purchaseAgreement.validSigners.length; j++) {
+                if (_purchaseAgreement.validSigners[j] == _user) {
+                    _returnAgreement[index] = _purchaseAgreement;
+                    _returnHasSigned[index] = l.hasSignedPurchaseAgreement[
+                        _purchaseAgreement.estateId
+                    ][msg.sender];
+
+                    index++;
+                }
+            }
+        }
+
+        return (_returnAgreement, _returnHasSigned);
+    }
+
+    function getEstateSigner(
+        address _user,
+        uint estateId
+    )
+        external
+        view
+        returns (
+            LibAppStorage.PurchaseAgreement memory returnPurchaseAgreement_,
+            bool hasSigned_
+        )
+    {
+        for (uint i = 1; i < l.purchaseAgreementCount + 1; i++) {
+            LibAppStorage.PurchaseAgreement memory _purchaseAgreement = l
+                .purchaseAgreement[i];
+
+            if (_purchaseAgreement.estateId == estateId) {
+                for (
+                    uint j = 0;
+                    j < _purchaseAgreement.validSigners.length;
+                    j++
+                ) {
+                    if (_purchaseAgreement.validSigners[j] == _user) {
+                        returnPurchaseAgreement_ = _purchaseAgreement;
+                        hasSigned_ = l.hasSignedPurchaseAgreement[
+                            _purchaseAgreement.estateId
+                        ][_user];
+                    }
+                }
+            }
+        }
+    }
+
     function getUserInitiatedPurchaseArgument(
         address _user,
         uint estateId
