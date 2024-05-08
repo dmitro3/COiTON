@@ -33,7 +33,7 @@ runDao:
 	yarn hardhat run scripts/interractions/daoSettings.js --network anvil
 
 approve:
-	yarn hardhat run scripts/interractions/approve.js --network sepolia
+	yarn hardhat run scripts/interractions/approve.js --network anvil
 
 approveListing:
 	yarn hardhat run scripts/interractions/approveListing.js --network anvil
