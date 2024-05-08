@@ -302,7 +302,6 @@ contract Dao {
 
         IRealEstate(realEstateContractAddress).createListing(
             _asign.listing.id,
-            _asign.listing.owner,
             _asign.listing.agentId,
             _asign.listing.region,
             _asign.listing.postalCode,
