@@ -18,7 +18,6 @@ interface IRealEstate {
 
     function createListing(
         string memory id,
-        address owner,
         address agent,
         string memory region,
         uint24 postalCode,
