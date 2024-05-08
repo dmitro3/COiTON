@@ -78,7 +78,7 @@ The COiTON Token is a stablecoin tied to the value of the USDT dollar, using an 
 
 
 #### Refer :point_down:
-  [Here](https://docs.google.com/document/d/16zT6QBD0OLYLt4DStwxQAO-kORfeXYmqucrKSnFvW3k/edit) for project documentation
+  [Here](https://onanike.gitbook.io/coiton-real-estate-trading-platform/) for project documentation
    
 
 ## Team
