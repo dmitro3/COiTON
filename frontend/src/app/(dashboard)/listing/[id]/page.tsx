@@ -40,8 +40,8 @@ export default function ListingDetailsPage({
     signPurchaseAgreement,
   } = useFetchListings();
   const { handleApproveERC20, handleApproveERC721 } = useStake();
-  const { address } = useWeb3ModalAccount();
-  console.log(address);
+  // const { address } = useWeb3ModalAccount();
+  // console.log(address);
   const [isFetchingListing, setIsFetchingListing] = useState(false);
   const [listingData, setListingData] = useState<any>();
   const [selectedImage, setSelectedImage] = useState<string>("");
@@ -96,9 +96,8 @@ export default function ListingDetailsPage({
       <div className="aspect-[1.4] md:aspect-[1.8] lg:aspect-[2.5] xl:aspect-auto xl:h-[535px] max-w-[1558px] w-full mx-auto overflow-hidden relative">
         <div className="w-full h-full bg-secondary rounded-xl overflow-hidden mb-3">
           <Image
-            src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${
-              selectedImage || listingData?.images[0]
-            }`}
+            src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${selectedImage || listingData?.images[0]
+              }`}
             alt="Main Image"
             width={3840}
             height={2160}
@@ -165,9 +164,9 @@ export default function ListingDetailsPage({
             ) : null}
 
             {purchaseSigner &&
-            purchaseSigner.success &&
-            Object.keys(purchaseSigner.data).length != 0 &&
-            !purchaseSigner.data[1] ? (
+              purchaseSigner.success &&
+              Object.keys(purchaseSigner.data).length != 0 &&
+              !purchaseSigner.data[1] ? (
               <Button
                 onClick={async () => {
                   await signPurchaseAgreement(
