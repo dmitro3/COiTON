@@ -2,11 +2,17 @@
 pragma solidity ^0.8.0;
 
 interface IRealEstate {
-    function queListingForApproval(
+    // function queListingForApproval(
+    //     string memory id,
+    //     bytes32 hash,
+    //     address agent
+    // ) external;
+
+     function queListingForApproval(
         string memory id,
         bytes32 hash,
-        address agent
-    ) external;
+        address approver
+    ) external ;
 
     // function approveListing(
     //     string memory id,

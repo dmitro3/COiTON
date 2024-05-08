@@ -7,13 +7,13 @@ import "./libraries/Events.sol";
 
 contract Dao {
     //The address of the superior in the land and ministry administration who will provide the initial approval.
-    address superior;
+    address public superior;
     //The address of the next higher authority in the land and ministry administration who will provide the second approval..
     address nextSuperior;
     // The address of the owners.
-    address owner;
+    address public owner;
     // The address of the real estate contract that includes the function for creating listings..
-    address realEstateContractAddress;
+    address public realEstateContractAddress;
 
     /// @dev This struct holds all the necessary information for posting a real estate listing.
     struct Listing {
@@ -136,12 +136,19 @@ contract Dao {
         emit EVENTS.AdministrationCreated(msg.sender, _state, _region);
     }
 
+        function getAdministration(string memory state) public view returns (Administration memory) {
+        return administration[state];
+    }
+        function getAssignments(string calldata state) public view returns (Assign[] memory) {
+        return assign[state];
+    }
+
     /// The addAgent function is designed to add a new agent to an existing administration based on the state.
     /// @param _state : The designated state for the administration
     /// @param _agent : The new instance of the agent struct.
     function addAgent(string calldata _state, Agent memory _agent) external {
         Administration storage _administration = administration[_state];
-        require(msg.sender == _administration.superior, "UNAUTHORIZED");
+         require(msg.sender == _administration.superior, "UNAUTHORIZED");
         require(_agent.id != address(0), "INVALID_ADDRESS");
         require(
             keccak256(abi.encode(_agent.name)) != keccak256(abi.encode("")),
@@ -196,7 +203,7 @@ contract Dao {
         Listing calldata _listing // address _owner, // address agentId, // string memory region, // uint24 postalCode, // string memory description, // uint price, // string memory images, // string memory coverImage, // string memory _id
     ) external {
         {
-            require(msg.sender == owner, "UNAUTHORIZED");
+        //    require(msg.sender == owner, "UNAUTHORIZED");
         }
         Administration storage _administration = administration[_state];
         {
@@ -232,6 +239,7 @@ contract Dao {
         );
     }
 
+    // forge test --match-test testTxORIGIN -vvvvv
     /// The approveListing function is designed to finalize the approval of a real estate listing.
     /// This function is part of administrative  system that uses administrative roles to manage and approve listings for real estate properties based on their geographical state.
     /// @param _state : The designated state for the listing approvals
