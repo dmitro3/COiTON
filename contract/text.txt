@@ -1,18 +1,18 @@
-DiamondCutFacet deployed: 0x4d50337294476B3586B4d900F673F99429D7BeA2
-DiamondInit deployed: 0x77453202aEc488D5Ca95A345Bc1223D92DB6dD90
-Deployed erc20 token at 0x900358D41F9E819d64fE6804780D13e55e004415
-Deployed erc721 token at 0xec48b373327D0Ea7636C217652372f94BbEf9981
+DiamondCutFacet deployed: 0x2010ff040b04E5b0731ea91584083360839d1A16
+DiamondInit deployed: 0x74499360DAED07C0247F1F149706edA2E34D8245
+Deployed erc20 token at 0xf7B271d7101363862c358630BE32f12B6E3C4a61
+Deployed erc721 token at 0xF796912f8e1F7aa7B8cbE48Ef3accEaA58C4069D
 
 Deploying facets
-DiamondLoupeFacet deployed: 0x4E0d77C71017154009A662ce59736Fc6335cc8B3
-OwnershipFacet deployed: 0x4A39B6eEd4f84b61311AfD54a16331E612a9332C
-RealEstate deployed: 0x84a0630d3e391CD1D135506A4dCCC7120A34282c
-Trade deployed: 0x18d3A5f0C731bBBDBFeD076B28Fd9eD74c14C8d9
-Deployed Dao to  0x476b35EF9a2f387F16853d26b88bD90eCe157a16
+DiamondLoupeFacet deployed: 0xB37e06c9f7369E2fa0a53c60F8B899A41E3CF43f
+OwnershipFacet deployed: 0x47a4Ba0d6eB0d9d541a525262103c205C79C1166
+RealEstate deployed: 0xF449b88730E26CC593C470871178821e2C3d9701
+Trade deployed: 0x0eF636b70460F12885AeE6F8c508d6ae17b3D60E
+Deployed Dao to  0xAD1f000E359285DF799792563D3F122d43a174Cb
 
 Diamond Cut: [
   {
-    facetAddress: '0x4E0d77C71017154009A662ce59736Fc6335cc8B3',
+    facetAddress: '0xB37e06c9f7369E2fa0a53c60F8B899A41E3CF43f',
     action: 0,
     functionSelectors: [
       '0xcdffacc6',
@@ -23,15 +23,16 @@ Diamond Cut: [
     ]
   },
   {
-    facetAddress: '0x4A39B6eEd4f84b61311AfD54a16331E612a9332C',
+    facetAddress: '0x47a4Ba0d6eB0d9d541a525262103c205C79C1166',
     action: 0,
     functionSelectors: [ '0x8da5cb5b', '0xf2fde38b' ]
   },
   {
-    facetAddress: '0x84a0630d3e391CD1D135506A4dCCC7120A34282c',
+    facetAddress: '0xF449b88730E26CC593C470871178821e2C3d9701',
     action: 0,
     functionSelectors: [
-      '0xdfd1d91f', '0x8190cad6',
+      '0x496de38b', '0xdd5f4ba0',
+      '0xdfd1d91f', '0xa12a16a1',
       '0xfeb1824b', '0x5b6beeb9',
       '0x107a274a', '0xf1b2d6a3',
       '0xc7f758a8', '0x6558bc59',
@@ -42,7 +43,7 @@ Diamond Cut: [
     ]
   },
   {
-    facetAddress: '0x18d3A5f0C731bBBDBFeD076B28Fd9eD74c14C8d9',
+    facetAddress: '0x0eF636b70460F12885AeE6F8c508d6ae17b3D60E',
     action: 0,
     functionSelectors: [
       '0xfe542ddb',
@@ -53,9 +54,9 @@ Diamond Cut: [
     ]
   }
 ]
-Diamond cut tx:  0x0f9ae99cfb74607569879c96c6c1e5b276429703bceccfa6fc59129775e6239b
+Diamond cut tx:  0x0ecd2dcd872393286eb297821acbceb9fb69444c26ef75e890e05f5b87134b92
 Completed diamond cut
 
 -------------------------------------
 
-Diamond deployed at: 0x9e741a7ef15d0e2C622F44Dd9cFE85faEF3cc740
+Diamond deployed at: 0x44FB0F89cC41AEc0A72812dF5ca77a5f9c74302E

@@ -33,7 +33,7 @@ export default function ApprovalsPage() {
       setIsApproving(true);
 
       const tx = await contract.approveListing(state, index, id);
-      console.log(tx);
+      console.log("tx", tx);
 
       toast.success("Transaction sent successfully", {
         description: "You are being redirected to the listing",
@@ -41,8 +41,11 @@ export default function ApprovalsPage() {
       router.push(`/listing/${id}`);
 
       setIsApproved(true);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("errd", error);
+      toast.error("Something Went wrong", {
+        description: error.message,
+      });
     } finally {
       setIsApproving(false);
     }
@@ -89,8 +92,6 @@ export default function ApprovalsPage() {
               coverImage: listing[0][7],
               id: listing[0][8],
             };
-
-            console.log(`Listing ${_key + 1}:`, listing[2]);
 
             return (
               <div className="flex flex-col gap-2" key={_key}>

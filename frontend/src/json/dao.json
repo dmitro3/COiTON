@@ -204,6 +204,15 @@
   },
   {
     "type": "function",
+    "name": "getUserStake",
+    "inputs": [
+      { "name": "_user", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "transferStateSuperior",
     "inputs": [
       { "name": "state", "type": "string", "internalType": "string" },
@@ -295,5 +304,6 @@
       }
     ],
     "anonymous": false
-  }
+  },
+  { "type": "error", "name": "NO_APPROVAL_TO_SPEND_TOKENS", "inputs": [] }
 ]

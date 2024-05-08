@@ -1,7 +1,15 @@
 "use client";
 
-import { getDaoContract, getDiamondContract, getProvider } from "@/connections";
-import { useWeb3ModalProvider } from "@web3modal/ethers/react";
+import {
+  getDaoContract,
+  getDiamondContract,
+  getERC20Contract,
+  getProvider,
+} from "@/connections";
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from "@web3modal/ethers/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -123,4 +131,78 @@ export const useFetchUnApprovedListings = () => {
   }, []);
 
   return { isLoading, listings };
+};
+
+export const useCheckIfUserStaked = () => {
+  const { walletProvider }: any = useWeb3ModalProvider();
+  const { address } = useWeb3ModalAccount();
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  async function checkIsStaked() {
+    setIsLoading(true);
+    const readWriteProvider = getProvider(walletProvider);
+    const signer = await readWriteProvider.getSigner();
+    const contract = getERC20Contract(signer);
+
+    // console.log({ allowance });
+    // const contract = getDaoContract(signer);
+
+    try {
+      // const tx = await contract.getUserStake(address);
+      const allowance = await contract.allowance(
+        signer.address,
+        process.env.NEXT_PUBLIC_DAO_ADDRESS
+      );
+      return Number(allowance.toString()) >= 20e18;
+    } catch (error: any) {
+      console.log(error);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return { isLoading, checkIsStaked };
+};
+
+export const useStake = () => {
+  const { walletProvider }: any = useWeb3ModalProvider();
+  const { address } = useWeb3ModalAccount();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleStake = async () => {
+    setIsLoading(true);
+
+    toast.loading("Approving transaction...");
+
+    const readWriteProvider = getProvider(walletProvider);
+    const signer = await readWriteProvider.getSigner();
+    const contract = getERC20Contract(signer);
+
+    try {
+      const tx = await contract.approve(
+        process.env.NEXT_PUBLIC_DAO_ADDRESS,
+        (20e18).toString()
+      );
+      const result = await tx.wait();
+
+      if (result.status === 0) {
+        toast.error("Transaction failed");
+        return false;
+      } else {
+        toast.success("Transaction approved successfully");
+        return true;
+      }
+    } catch (error: any) {
+      console.log(error);
+      return false;
+    } finally {
+      setIsLoading(false);
+      toast.dismiss();
+    }
+  };
+
+  return { handleStake, isLoading };
 };
