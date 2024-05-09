@@ -26,7 +26,7 @@ export default function ListingDetailsPage({
     features: listing[4].split(";")[1].split("\n"),
     price: Number(listing[5]),
     images: listing[6].split(";"),
-    tokenId: listing[7],
+    tokenId: Number(listing[7]),
     coverImage: listing[8],
     createdAt: Number(listing[9]),
   });
@@ -89,8 +89,6 @@ export default function ListingDetailsPage({
     return <p>Loading...</p>;
   }
 
-  // console.log(purchaseSigner)
-
   return (
     <div className="flex-1 flex flex-col gap-6 pb-6">
       <div className="aspect-[1.4] md:aspect-[1.8] lg:aspect-[2.5] xl:aspect-auto xl:h-[535px] max-w-[1558px] w-full mx-auto overflow-hidden relative">
@@ -118,8 +116,7 @@ export default function ListingDetailsPage({
                   "brightness-100 border-2 border-primary":
                     selectedImage === image,
                 }
-              )}
-            >
+              )}>
               <Image
                 src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${image}`}
                 alt={`Image ${index}`}
@@ -186,8 +183,7 @@ export default function ListingDetailsPage({
                       )
                   );
                 }}
-                type="submit"
-              >
+                type="submit">
                 Sign Purchase Agreement
               </Button>
             ) : null}
@@ -196,8 +192,8 @@ export default function ListingDetailsPage({
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="p-4 md:p-6 bg-secondary/20 flex-1 rounded border sm:border-0">
+        <div className="p-4 md:p-6 bg-secondary/20 w-full flex-1 rounded border sm:border-0">
+          <div className="flex flex-col">
             <h2 className="text-base md:text-lg font-bold mb-2 md:mb-4">
               Description
             </h2>
@@ -206,7 +202,7 @@ export default function ListingDetailsPage({
             </pre>
           </div>
 
-          <div className="p-4 md:p-6 bg-secondary/20 max-w-full lg:max-w-[450px] flex-1 rounded border sm:border-0">
+          <div className="flex flex-col mt-6">
             <h2 className="text-base md:text-lg font-bold mb-2 md:mb-4">
               Overview
             </h2>
@@ -228,56 +224,20 @@ export default function ListingDetailsPage({
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="p-4 md:p-6 bg-secondary/20 rounded border sm:border-0 w-full">
-            <h2 className="text-base md:text-lg font-bold mb-2 md:mb-4">
-              Details
-            </h2>
+        <div className="p-4 md:p-6 bg-secondary/20 rounded border sm:border-0 w-full">
+          <h2 className="text-base md:text-lg font-bold mb-2 md:mb-4">
+            Features
+          </h2>
 
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <span className="font-bold">Property Id:</span>
-                <p className="flex-1 text-sm md:text-base">61721</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-2 gap-3">
+            {listingData?.features?.map((feature: string, _key: number) => (
+              <div
+                className="flex items-start gap-2 text-sm md:text-base text-muted-foreground"
+                key={_key}>
+                <CheckCheck className="w-5 h-5 text-primary" />
+                <p className="flex-1 text-sm">{feature}</p>
               </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <span className="font-bold">Price:</span>
-                <p className="flex-1 text-sm md:text-base">₦ 280,000,000</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <span className="font-bold">Bedrooms:</span>
-                <p className="flex-1 text-sm md:text-base">5</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <span className="font-bold">Bathrooms:</span>
-                <p className="flex-1 text-sm md:text-base">5</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <span className="font-bold">Living Rooms:</span>
-                <p className="flex-1 text-sm md:text-base">2</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-                <span className="font-bold">Garages:</span>
-                <p className="flex-1 text-sm md:text-base">7</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-4 md:p-6 bg-secondary/20 rounded border sm:border-0 w-full">
-            <h2 className="text-base md:text-lg font-bold mb-2 md:mb-4">
-              Features
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-2 gap-3">
-              {listingData?.features?.map((feature: string, _key: number) => (
-                <div
-                  className="flex items-center gap-2 text-sm md:text-base text-muted-foreground"
-                  key={_key}
-                >
-                  <CheckCheck className="w-5 h-5 text-primary" />
-                  <p className="flex-1 text-sm md:text-base">{feature}</p>
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
 

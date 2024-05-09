@@ -247,7 +247,7 @@ export const useFetchUnApprovedListings = () => {
     const contract = getDaoContract(signer);
 
     try {
-      const tx = await contract.getUnApprovedAssigns("Plateau");
+      const tx = await contract.getUnApprovedAssigns("Lagos");
 
       setListings(tx);
     } catch (error: any) {
