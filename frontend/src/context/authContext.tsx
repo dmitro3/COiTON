@@ -44,7 +44,12 @@ export default function AuthContextProvider({
             id: data?.user?.id,
           });
         } else if (!data?.user) {
-          if (pathname === "/") return;
+          if (
+            pathname === "/" ||
+            pathname === "/login" ||
+            pathname === "/register"
+          )
+            return;
           router.push("/login");
         }
       } catch (error) {
