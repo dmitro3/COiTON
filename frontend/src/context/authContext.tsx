@@ -41,7 +41,9 @@ export default function AuthContextProvider({
             avatar: data?.user?.user_metadata?.avatar,
             id: data?.user?.id,
           });
-        } else return;
+        } else if (!data?.user) {
+          router.push("/login");
+        }
       } catch (error) {
         setIsError("Error fetching user");
         console.error("Error fetching user:", error);
