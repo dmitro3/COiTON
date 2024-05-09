@@ -19,9 +19,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logoutUser } from "@/auth";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useDisconnect } from "@web3modal/ethers/react";
-import Link from "next/link";
 
 export function Menu() {
   const router = useRouter();

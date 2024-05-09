@@ -7,8 +7,7 @@ export default function ListingCard({ listing }: { listing: any }) {
   return (
     <Link
       href={`/listing/${listing.id}`}
-      className="bg-secondary/30 hover:bg-secondary/50 w-full rounded-xl overflow-hidden transition"
-    >
+      className="bg-secondary/30 hover:bg-secondary/50 w-full rounded-xl overflow-hidden transition">
       <div className="w-full aspect-[1.4] md:aspect-[1.5] bg-card group overflow-hidden">
         <Image
           src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${listing.coverImage}`}

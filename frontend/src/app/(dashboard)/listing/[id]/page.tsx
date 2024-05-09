@@ -79,7 +79,14 @@ export default function ListingDetailsPage({
     };
 
     fetchListingData();
-  }, [isLoading, listings, params.id, router]);
+  }, [
+    getEstateSigner,
+    getUserInitiatedPurchaseArgument,
+    isLoading,
+    listings,
+    params.id,
+    router,
+  ]);
 
   const handleImageClick = (image: string) => {
     setSelectedImage(image);

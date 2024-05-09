@@ -1,8 +1,6 @@
 import { createAvatar } from "@dicebear/core";
 import { pixelArt } from "@dicebear/collection";
 import { supabase } from "@/constants";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
 import { toast } from "sonner";
 
 export const registerUser = async ({
@@ -70,7 +68,6 @@ export const loginUser = async ({
 export const logoutUser = async () => {
   try {
     const result = await supabase.auth.signOut();
-
     return result;
   } catch (error) {
     console.log(error);

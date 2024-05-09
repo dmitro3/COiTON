@@ -27,6 +27,7 @@ interface AuthContextType {
   credentials: UserType | null;
   isFetchingUser: boolean;
   isError: string | null;
+  setCredentials?: any;
 }
 
 interface ListingType {
