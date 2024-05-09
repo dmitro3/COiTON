@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { Web3ModalProvider } from "./web3modal";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { supabase } from "@/constants";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
@@ -23,6 +23,8 @@ export default function AuthContextProvider({
   children: ReactNode;
 }) {
   const { address } = useWeb3ModalAccount();
+
+  const pathname = usePathname();
   const router = useRouter();
 
   const [credentials, setCredentials] = useState<UserType | null>(null);
@@ -42,6 +44,7 @@ export default function AuthContextProvider({
             id: data?.user?.id,
           });
         } else if (!data?.user) {
+          if (pathname === "/") return;
           router.push("/login");
         }
       } catch (error) {
@@ -53,10 +56,11 @@ export default function AuthContextProvider({
     };
 
     fetchUser();
-  }, [router, address]);
+  }, [router, address, credentials, isError, pathname]);
 
   return (
-    <AuthContext.Provider value={{ credentials, isFetchingUser, isError }}>
+    <AuthContext.Provider
+      value={{ credentials, isFetchingUser, isError, setCredentials }}>
       <Web3ModalProvider>{children}</Web3ModalProvider>
     </AuthContext.Provider>
   );
