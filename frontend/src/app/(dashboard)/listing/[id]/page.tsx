@@ -3,25 +3,20 @@
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useFetchListings } from "@/hooks/useFetchBackend";
+import { useFetchListings, useStake } from "@/hooks/useFetchBackend";
 import { Bath, BedSingle, CheckCheck, MapPin } from "lucide-react";
 import TradingViewWidget from "@/components/shared/trading-view-widget";
 import { cn, formatDate } from "@/lib/utils";
 import Image from "next/image";
-import { CreateProposal } from "@/components/shared/create-proposal";
+import { InitiatePurchaseTransaction } from "@/components/shared/initiate-transaction";
 import { Button } from "@/components/ui/button";
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 
 export default function ListingDetailsPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const router = useRouter();
-  const { listings, isLoading } = useFetchListings();
-  const [isFetchingListing, setIsFetchingListing] = useState(false);
-  const [listingData, setListingData] = useState<any>();
-  const [selectedImage, setSelectedImage] = useState<string>("");
-
   const transformListing = (listing: any) => ({
     id: listing[0],
     owner: listing[1],
@@ -36,7 +31,22 @@ export default function ListingDetailsPage({
     createdAt: Number(listing[9]),
   });
 
-  // features.split("\n")
+  const router = useRouter();
+  const {
+    listings,
+    isLoading,
+    getUserInitiatedPurchaseArgument,
+    getEstateSigner,
+    signPurchaseAgreement,
+  } = useFetchListings();
+  const { handleApproveERC20, handleApproveERC721 } = useStake();
+  const { address } = useWeb3ModalAccount();
+  console.log(address);
+  const [isFetchingListing, setIsFetchingListing] = useState(false);
+  const [listingData, setListingData] = useState<any>();
+  const [selectedImage, setSelectedImage] = useState<string>("");
+  const [purchaseAgreement, setPurchaseAgreement] = useState<any>(null);
+  const [purchaseSigner, setPurchaseSigner] = useState<any>(null);
 
   useEffect(() => {
     const fetchListingData = async () => {
@@ -50,8 +60,13 @@ export default function ListingDetailsPage({
           if (foundListing) {
             const lt = transformListing(foundListing);
             setListingData(lt);
+            setPurchaseAgreement(
+              await getUserInitiatedPurchaseArgument(lt.tokenId.toString())
+            );
+            setPurchaseSigner(await getEstateSigner(lt.tokenId.toString()));
+            setSelectedImage(lt.images[0]);
           } else {
-            toast("Listing not found");
+            toast.error("Listing not found");
             router.push("/dashboard");
           }
         } catch (error) {
@@ -74,10 +89,11 @@ export default function ListingDetailsPage({
     return <p>Loading...</p>;
   }
 
+  // console.log(purchaseSigner)
+
   return (
     <div className="flex-1 flex flex-col gap-6 pb-6">
       <div className="aspect-[1.4] md:aspect-[1.8] lg:aspect-[2.5] xl:aspect-auto xl:h-[535px] max-w-[1558px] w-full mx-auto overflow-hidden relative">
-        <div className="w-full h-full bg-background/40 absolute inset-0 hidden xl:flex"></div>
         <div className="w-full h-full bg-secondary rounded-xl overflow-hidden mb-3">
           <Image
             src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${
@@ -132,11 +148,48 @@ export default function ListingDetailsPage({
           </h1>
           <p className="text-sm md:text-base flex items-center gap-2">
             <MapPin className="w-4 h-4" />
-            {listingData?.address}
+            {listingData?.region.split(";").join(", ")}.
           </p>
 
           <div className="flex items-center gap-4 mt-4">
-            <CreateProposal />
+            {!purchaseAgreement || !purchaseAgreement.success ? (
+              <InitiatePurchaseTransaction
+                callback={(success: boolean, data) => {
+                  if (success) {
+                    setPurchaseAgreement({ success: true, data });
+                  }
+                }}
+                estateId={listingData?.tokenId.toString()}
+                agentId={listingData?.owner}
+              />
+            ) : null}
+
+            {purchaseSigner &&
+            purchaseSigner.success &&
+            Object.keys(purchaseSigner.data).length != 0 &&
+            !purchaseSigner.data[1] ? (
+              <Button
+                onClick={async () => {
+                  await signPurchaseAgreement(
+                    listingData?.tokenId.toString(),
+                    purchaseSigner.data[0][2],
+                    listingData?.price.toString(),
+                    (approval) =>
+                      handleApproveERC20(
+                        approval,
+                        process.env.NEXT_PUBLIC_DIAMOND_ADDRESS as string
+                      ),
+                    (approval) =>
+                      handleApproveERC721(
+                        approval,
+                        process.env.NEXT_PUBLIC_DIAMOND_ADDRESS as string
+                      )
+                  );
+                }}
+                type="submit">
+                Sign Purchase Agreement
+              </Button>
+            ) : null}
 
             <Button variant="secondary">View Market</Button>
           </div>

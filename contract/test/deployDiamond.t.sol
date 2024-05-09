@@ -112,17 +112,7 @@ contract DiamondDeployer is Test, IDiamondCut {
         switchSigner(A);
         vm.expectRevert(abi.encodeWithSelector(ERRORS.UNAUTHORIZED.selector));
 
-        boundEstate.createListing(
-            "1",
-            address(0),
-            B,
-            "lagos",
-            1,
-            "Ikorodu street",
-            0,
-            "",
-            ""
-        );
+        boundEstate.createListing("1", address(0), "lagos", 1, "Ikorodu street", 0, "", "");
     }
 
     function testProposeBuy() public {
@@ -194,42 +184,6 @@ contract DiamondDeployer is Test, IDiamondCut {
         boundEstate.signPurchaseAgreement(1);
     }
 
-    function testSignPurchaseAgreementStateChangeTrue() public {
-        switchSigner(A);
-        coitonERC20.mintTo(B, 5 * 10 ** 18);
-        string memory hash_id = "UUIDV4";
-        bytes32 hash = keccak256(
-            abi.encodePacked(B, country, state, city, estateAddress, postalCode, description, price, images, "cover")
-        );
-        // boundEstate.approveListing(hash_id, hash, B);
-
-        switchSigner(B);
-
-        boundEstate.createListing(
-            "1",
-            0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1,
-            B,
-            "lagos",
-            1,
-            "Ikorodu street",
-            0,
-            "",
-            ""
-        );
-
-        coitonERC20.approve(address(boundEstate), price);
-        coitonNFT.approve(address(boundEstate), 1);
-        boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
-        switchSigner(address(0xC));
-        boundEstate.signPurchaseAgreement(1);
-
-        switchSigner(address(0xD));
-        boundEstate.signPurchaseAgreement(1);
-
-        LibAppStorage.PurchaseAgreement memory new_listing = boundEstate.getPurchaseAgreement(1);
-        assertEq(new_listing.executed, true);
-    }
-
     function testlengthOfSigners() public {
         switchSigner(B);
         boundEstate.initiatePurchaseAgreement(1, B, mockSigners);
@@ -246,21 +200,6 @@ contract DiamondDeployer is Test, IDiamondCut {
         vm.expectRevert(abi.encodeWithSelector(ERRORS.EXHAUSTED_TOKEN_SHARES.selector));
         boundTrade.buyNFTTokenShares(tokenId, sharesToExceed);
     }
-
-    // function testINSUFFICIENT_BALANCE() public {
-    //     switchSigner(A);
-    //     uint id = 10;
-    //     uint8 shares = 2;
-    //        uint bal =  l.stake[A];
-    //      LibAppStorage.Market storage tokenMarket = l.market[id];
-    //    uint tokenValue = boundTrade.calculateTokenValueInShares(shares, tokenMarket.currentPrice);
-    //     // vm.expectRevert(
-    //     //     abi.encodeWithSelector(ERRORS.INSUFFICIENT_BALANCE.selector)
-    //     // );
-
-    //     boundTrade.buyNFTTokenShares(id, shares);
-    //     assertGt(tokenValue, bal);
-    // }
 
     function testbuyNFTTokenShares() public {
         switchSigner(A);
@@ -280,26 +219,6 @@ contract DiamondDeployer is Test, IDiamondCut {
         uint8 userShare = 2;
         boundTrade.sellNFTTokenShares(2, userShare);
     }
-
-    // function testCreatedListNOTAPPROVED() public {
-    //     switchSigner(A);
-    //     vm.expectRevert(
-    //         abi.encodeWithSelector(ERRORS.LISTING_NOT_APPROVED.selector)
-    //     );
-    //     boundEstate.createListing(
-    //         "1",
-    //         A,
-    //         // "nigeria",
-    //         "lagos",
-    //         "ikorodu",
-    //         "estateAddress",
-    //         0,
-    //         "description",
-    //         10,
-    //         "",
-    //         ""
-    //     );
-    // }
 
     string id = "1";
     address owner = A;
@@ -509,324 +428,217 @@ contract DiamondDeployer is Test, IDiamondCut {
     }
 
     function testcreateAdministrationState() public {
-
-         switchSigner(A);
+        switchSigner(A);
         Dao.Administration memory administration = dao.getAdministration("1");
 
         vm.expectRevert("UNAUTHORIZED");
         dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
     }
 
-        function testcreateAdministrationINVALID_ADDRESS() public {
+    function testcreateAdministrationINVALID_ADDRESS() public {
         Dao.Administration memory administration = dao.getAdministration("1");
-         vm.expectRevert("INVALID_ADDRESS");
+        vm.expectRevert("INVALID_ADDRESS");
         dao.createAdministration(address(0), "1", "1");
     }
 
-        function testcreateAdministrationStateAsserts() public {
+    function testcreateAdministrationStateAsserts() public {
         Dao.Administration memory administration = dao.getAdministration("1");
         dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
-         Dao.Administration memory _administration = dao.getAdministration("1");
+        Dao.Administration memory _administration = dao.getAdministration("1");
 
         assertEq(_administration.state, "1");
         assertEq(_administration.region, "1");
     }
 
-       function testcreateAdministratiSTATFIELD() public {
+    function testcreateAdministratiSTATFIELD() public {
         Dao.Administration memory administration = dao.getAdministration("1");
-         vm.expectRevert("INVALID_STATE_FIELD");
+        vm.expectRevert("INVALID_STATE_FIELD");
         dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "", "1");
-
     }
 
-           function testcreateAdministratiREGIONFIELD() public {
+    function testcreateAdministratiREGIONFIELD() public {
         Dao.Administration memory administration = dao.getAdministration("1");
-         vm.expectRevert("INVALID_REGION_FIELD");
+        vm.expectRevert("INVALID_REGION_FIELD");
         dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "");
-
     }
 
-            Dao.Listing listing = Dao.Listing({
-    owner: A, 
-    agentId: B, 
-    region: "Country",
-    postalCode: 12345,
-    description: "Description",
-    price: 100,
-    images: "Images",
-    coverImage: "Cover Image",
-    id: "Listing ID"
-});
-    function testdelegatecallorigin() public {
+    Dao.Listing listing = Dao.Listing({
+        owner: A,
+        agentId: B,
+        region: "Country",
+        postalCode: 12345,
+        description: "Description",
+        price: 100,
+        images: "Images",
+        coverImage: "Cover Image",
+        id: "Listing ID"
+    });
 
-                bytes32 hash = keccak256(
-            abi.encodePacked(
-                B,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images,
-                "cover"
-            )
+    function testdelegatecallorigin() public {
+        bytes32 hash = keccak256(
+            abi.encodePacked(B, country, state, city, estateAddress, postalCode, description, price, images, "cover")
         );
         address ownerAddress = dao.owner();
 
-
         A = ownerAddress;
         switchSigner(A);
-          vm.expectRevert("STATE_NOT_REGISTERED");
+        vm.expectRevert("STATE_NOT_REGISTERED");
         dao.delegateListingForApproval("1", hash, listing);
     }
 
-        function testdelegateNOT_A_VALID_AGENT() public {
-
-                bytes32 hash = keccak256(
-            abi.encodePacked(
-                B,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images,
-                "cover"
-            )
+    function testdelegateNOT_A_VALID_AGENT() public {
+        bytes32 hash = keccak256(
+            abi.encodePacked(B, country, state, city, estateAddress, postalCode, description, price, images, "cover")
         );
         Dao.Administration memory administration = dao.getAdministration("1");
         dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
-     vm.expectRevert("NOT_A_VALID_AGENT");
+        vm.expectRevert("NOT_A_VALID_AGENT");
         dao.delegateListingForApproval("1", hash, listing);
     }
 
     function testdelegateINVALID_NAME_FIELD() public {
-    Dao.Agent memory agent = Dao.Agent({
-    id: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, 
-    name: "",
-    code: "AgentCode",
-    region: "AgentRegion",
-    bio: "AgentBio",
-    deleted: true 
-});
+        Dao.Agent memory agent = Dao.Agent({
+            id: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1,
+            name: "",
+            code: "AgentCode",
+            region: "AgentRegion",
+            bio: "AgentBio",
+            deleted: true
+        });
 
-                bytes32 hash = keccak256(
-            abi.encodePacked(
-                B,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images,
-                "cover"
-            )
-        ); 
-   
+        bytes32 hash = keccak256(
+            abi.encodePacked(B, country, state, city, estateAddress, postalCode, description, price, images, "cover")
+        );
+
         Dao.Administration memory administration = dao.getAdministration("1");
 
-       
-     
         dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
-   
-          switchSigner(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
-          vm.expectRevert("INVALID_NAME_FIELD");
-      dao.addAgent("1", agent);
 
+        switchSigner(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
+        vm.expectRevert("INVALID_NAME_FIELD");
+        dao.addAgent("1", agent);
     }
 
-        function testAddAgentINVALID_CODE_FIELD() public {
-    Dao.Agent memory agent = Dao.Agent({
-    id: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, 
-    name: "Agent",
-    code: "",
-    region: "AgentRegion",
-    bio: "AgentBio",
-    deleted: true 
-});
+    function testAddAgentINVALID_CODE_FIELD() public {
+        Dao.Agent memory agent = Dao.Agent({
+            id: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1,
+            name: "Agent",
+            code: "",
+            region: "AgentRegion",
+            bio: "AgentBio",
+            deleted: true
+        });
 
-                bytes32 hash = keccak256(
-            abi.encodePacked(
-                B,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images,
-                "cover"
-            )
-        ); 
-   
+        bytes32 hash = keccak256(
+            abi.encodePacked(B, country, state, city, estateAddress, postalCode, description, price, images, "cover")
+        );
+
         Dao.Administration memory administration = dao.getAdministration("1");
 
-       
-     
         dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
-   
-          switchSigner(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
-          vm.expectRevert("INVALID_CODE_FIELD");
-      dao.addAgent("1", agent);
 
+        switchSigner(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
+        vm.expectRevert("INVALID_CODE_FIELD");
+        dao.addAgent("1", agent);
     }
 
-            function testAddAgentINVALID_REGION_FIELD() public {
-    Dao.Agent memory agent = Dao.Agent({
-    id: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, 
-    name: "Agent",
-    code: "gentcode",
-    region: "",
-    bio: "AgentBio",
-    deleted: true 
-});
+    function testAddAgentINVALID_REGION_FIELD() public {
+        Dao.Agent memory agent = Dao.Agent({
+            id: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1,
+            name: "Agent",
+            code: "gentcode",
+            region: "",
+            bio: "AgentBio",
+            deleted: true
+        });
 
-                bytes32 hash = keccak256(
-            abi.encodePacked(
-                B,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images,
-                "cover"
-            )
-        ); 
-   
+        bytes32 hash = keccak256(
+            abi.encodePacked(B, country, state, city, estateAddress, postalCode, description, price, images, "cover")
+        );
+
         Dao.Administration memory administration = dao.getAdministration("1");
 
-       
-     
         dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
-   
-          switchSigner(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
-          vm.expectRevert("INVALID_REGION_FIELD");
-      dao.addAgent("1", agent);
 
+        switchSigner(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
+        vm.expectRevert("INVALID_REGION_FIELD");
+        dao.addAgent("1", agent);
     }
 
-                function testAddAgentINVALID_BIO_FIELD() public {
-    Dao.Agent memory agent = Dao.Agent({
-    id: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, 
-    name: "Agent",
-    code: "Agentcode",
-    region: "AgentRegion",
-    bio: "",
-    deleted: true 
-});
+    function testAddAgentINVALID_BIO_FIELD() public {
+        Dao.Agent memory agent = Dao.Agent({
+            id: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1,
+            name: "Agent",
+            code: "Agentcode",
+            region: "AgentRegion",
+            bio: "",
+            deleted: true
+        });
 
-                bytes32 hash = keccak256(
-            abi.encodePacked(
-                B,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images,
-                "cover"
-            )
-        ); 
-   
+        bytes32 hash = keccak256(
+            abi.encodePacked(B, country, state, city, estateAddress, postalCode, description, price, images, "cover")
+        );
+
         Dao.Administration memory administration = dao.getAdministration("1");
 
-       
-     
         dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
-   
-          switchSigner(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
-          vm.expectRevert("INVALID_BIO_FIELD");
-      dao.addAgent("1", agent);
 
+        switchSigner(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
+        vm.expectRevert("INVALID_BIO_FIELD");
+        dao.addAgent("1", agent);
     }
-
-
 
     function testAddAgentID() public {
+        Dao.Agent memory agent = Dao.Agent({
+            id: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1,
+            name: "AgentName",
+            code: "AgentCode",
+            region: "AgentRegion",
+            bio: "AgentBio",
+            deleted: true
+        });
 
-    Dao.Agent memory agent = Dao.Agent({
-    id: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, 
-    name: "AgentName",
-    code: "AgentCode",
-    region: "AgentRegion",
-    bio: "AgentBio",
-    deleted: true 
-});
-
-   
-       
-          dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
-     switchSigner(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
-    dao.addAgent("1", agent);
-      Dao.Administration memory administration = dao.getAdministration("1");
-    assertEq(administration.agents[0].id, 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
-
+        dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
+        switchSigner(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
+        dao.addAgent("1", agent);
+        Dao.Administration memory administration = dao.getAdministration("1");
+        assertEq(administration.agents[0].id, 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
     }
 
     function testTxORIGIN() public {
-    Dao.Agent memory agent = Dao.Agent({
-    id: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, 
-    name: "Agent",
-    code: "Agentcode",
-    region: "AgentRegion",
-    bio: "Agantem",
-    deleted: true 
-});
+        Dao.Agent memory agent = Dao.Agent({
+            id: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1,
+            name: "Agent",
+            code: "Agentcode",
+            region: "AgentRegion",
+            bio: "Agantem",
+            deleted: true
+        });
 
-    Dao.Listing memory listing = Dao.Listing({
-    owner: A, 
-    agentId: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, 
-    region: "Country",
-    postalCode: 12345,
-    description: "Description",
-    price: 100,
-    images: "Images",
-    coverImage: "Cover Image",
-    id: "1"
-});
+        Dao.Listing memory _listing = Dao.Listing({
+            owner: A,
+            agentId: 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1,
+            region: "Country",
+            postalCode: 12345,
+            description: "Description",
+            price: 100,
+            images: "Images",
+            coverImage: "Cover Image",
+            id: "1"
+        });
 
-                bytes32 hash = keccak256(
-            abi.encodePacked(
-                B,
-                country,
-                state,
-                city,
-                estateAddress,
-                postalCode,
-                description,
-                price,
-                images,
-                "cover"
-            )
-        ); 
-   
+        bytes32 hash = keccak256(
+            abi.encodePacked(B, country, state, city, estateAddress, postalCode, description, price, images, "cover")
+        );
+
         Dao.Administration memory administration = dao.getAdministration("1");
-  dao = new Dao(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
-       
-     
-        dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
-   
-          switchSigner(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
-      dao.addAgent("1", agent);
-//    // vm.stopPrank();
-//     //switchSigner(A);
-//      IRealEstate realEstate = IRealEstate(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
-//     realEstate.queListingForApproval("1", hash, 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
-      dao.delegateListingForApproval("1", hash, listing);
-      //boundEstate.queListingForApproval("1", hash, 0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
+        dao = new Dao(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
 
+        dao.createAdministration(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1, "1", "1");
+
+        switchSigner(0x107Ff7900F4dA6BFa4eB41dBD6f2953ffb41b2B1);
+        dao.addAgent("1", agent);
+        dao.delegateListingForApproval("1", hash, _listing);
     }
 
     function generateSelectors(string memory _facetName) internal returns (bytes4[] memory selectors) {

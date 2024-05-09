@@ -3,26 +3,69 @@ const data = require("./data.json");
 async function main() {
   const contractFactory = await ethers.getContractFactory("Dao");
   const contract = contractFactory.attach(data.contractAddress);
-  // const LISTING_ID = "1950a253-f25e-4e2d-beb2-469c3456ad7f";
+  const states = ["Abia",
+    "Adamawa",
+    "Akwa Ibom",
+    "Anambra",
+    "Bauchi",
+    "Bayelsa",
+    "Benue",
+    "Borno",
+    "Cross River",
+    "Delta",
+    "Ebonyi",
+    "Edo",
+    "Ekiti",
+    "Enugu",
+    "FCT (Federal Capital Territory)",
+    "Gombe",
+    "Imo",
+    "Jigawa",
+    "Kaduna",
+    "Kano",
+    "Katsina",
+    "Kebbi",
+    "Kogi",
+    "Kwara",
+    "Lagos",
+    "Nasarawa",
+    "Niger",
+    "Ogun",
+    "Ondo",
+    "Osun",
+    "Oyo",
+    "Plateau",
+    "Rivers",
+    "Sokoto",
+    "Taraba",
+    "Yobe",
+    "Zamfara"];
 
-  // const prank = await ethers.getSigner(data.admin);
-  await (
-    await contract.createAdministration(
-      data.admin,
-      "Kaduna State",
-      "Kaduna State"
-    )
-  ).wait();
-  await (
-    await contract.addAgent("Kaduna State", {
-      id: data.agent,
-      name: "Javis",
-      code: "code",
-      region: "region",
-      bio: "bio",
-      deleted: false,
-    })
-  ).wait();
+
+
+  for (__state of states) {
+
+    await (
+      await contract.createAdministration(
+        data.admin,
+        __state,
+        __state
+      )
+    ).wait();
+    await (
+      await contract.addAgent(__state, {
+        id: data.agent,
+        name: "Javis",
+        code: "code",
+        region: "region",
+        bio: "bio",
+        deleted: false,
+      })
+    ).wait();
+    console.log("Registered", __state);
+  }
+
+
   // await (await contract.connect(prank).approveListing("lagos", 1, LISTING_ID)).wait()
 }
 

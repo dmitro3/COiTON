@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 // @ts-ignore
@@ -23,10 +23,23 @@ import { Camera, Check, Loader2 } from "lucide-react";
 import { FileUploader } from "@/components/shared/file-uploader";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { AuthContext } from "@/context/authContext";
-import { onUpload } from "@/lib/utils";
-import { RENDER_ENDPOINT } from "@/hooks/useFetchBackend";
+import { cn, onUpload } from "@/lib/utils";
+import {
+  RENDER_ENDPOINT,
+  useCheckIfUserStaked,
+  useStake,
+} from "@/hooks/useFetchBackend";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/context/authContext";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { states } from "@/constants";
 
 export default function CreateListingPage() {
   const router = useRouter();
@@ -41,7 +54,9 @@ export default function CreateListingPage() {
     coverImage: "",
   };
 
-  const user = useContext(AuthContext);
+  const { credentials, isFetchingUser } = useAuth();
+  const { isLoading, checkIsStaked } = useCheckIfUserStaked();
+  const { handleApproveERC20, isLoading: isStaking } = useStake();
 
   const [files, setFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -57,16 +72,31 @@ export default function CreateListingPage() {
   async function onSubmit(values: z.infer<typeof listingSchema>) {
     try {
       setIsUploading(true);
+      let isStaked = await checkIsStaked();
+      let proceed = false;
 
-      toast("Your files are being uploaded to Pinata");
+      if (!isStaked) {
+        proceed = await handleApproveERC20(
+          (20e18).toString(),
+          process.env.NEXT_PUBLIC_DAO_ADDRESS as string
+        );
+      } else {
+        proceed = true;
+      }
+
+      if (!proceed) return;
+      console.log("Has staked", isStaked);
+
+      toast.loading("Uploading files to IPFS...");
       const cover = await onUpload([coverPhoto]);
       const fileUrls = await onUpload(files);
 
       if (fileUrls) {
-        toast("Files uploaded successfully");
+        toast.dismiss();
+        toast.success("Files uploaded successfully");
         const data: any = {
-          owner: user?.credentials?.address,
-          agentId: user?.credentials?.address,
+          owner: credentials?.address,
+          agentId: credentials?.address,
           region: `${values.state};${values.city};${values.address}`,
           state: values.state,
           postalCode: values.postalCode,
@@ -78,6 +108,7 @@ export default function CreateListingPage() {
 
         // values.features.split("\n")
 
+        toast.loading("Creating listing...");
         const response = await fetch(`${RENDER_ENDPOINT}/listings`, {
           method: "POST",
           body: JSON.stringify(data),
@@ -87,33 +118,36 @@ export default function CreateListingPage() {
         });
 
         const res = await response.json();
-        console.log(res.data.newListing);
+
+        console.log(res.data);
 
         if (res.data.tx.success === true) {
-          toast(res.data.tx.message, {
-            description: "You are being redirected to the listing details",
+          toast.success(res.data.tx.message, {
+            description:
+              "You are being redirected to the dashboard\nYour listing will be approved by the DAO within 24 hours",
           });
           router.push("/dashboard");
+          console.log(res);
         } else {
-          toast(res.data.tx.message, {
-            description: "You are being redirected to the listing details",
+          toast.error(res.data.tx.message, {
+            description: "Your state has not been register in the DAO",
           });
         }
-        console.log(res);
         // router.push(`/listing/${result?.data?.id}`);
       }
     } catch (error: any) {
       console.error("Error:", error);
-      toast("Failed to create listing", {
+      toast.error("Failed to create listing", {
         description:
           error.message || "An error occurred while creating the listing",
       });
     } finally {
       setIsUploading(false);
+      toast.dismiss();
     }
   }
 
-  if (!user?.isFetchingUser && !user?.credentials) {
+  if (!isFetchingUser && !credentials) {
     return router.push("/login");
   }
 
@@ -138,7 +172,7 @@ export default function CreateListingPage() {
                     rows={8}
                     placeholder="Description"
                     className="bg-secondary/20"
-                    disabled={isUploading || user?.isFetchingUser}
+                    disabled={isUploading || isFetchingUser || isStaking}
                     {...field}
                   />
                 </FormControl>
@@ -158,7 +192,7 @@ export default function CreateListingPage() {
                       placeholder="Price"
                       type="text"
                       {...field}
-                      disabled={isUploading || user?.isFetchingUser}
+                      disabled={isUploading || isFetchingUser || isStaking}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -176,7 +210,7 @@ export default function CreateListingPage() {
                       placeholder="Address"
                       type="text"
                       {...field}
-                      disabled={isUploading || user?.isFetchingUser}
+                      disabled={isUploading || isFetchingUser || isStaking}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -189,7 +223,13 @@ export default function CreateListingPage() {
           <div className="flex items-center flex-col md:flex-row gap-3 md:gap-4 w-full">
             <Label
               htmlFor="coverPhoto"
-              className="w-14 h-12 flex items-center justify-center text-foreground bg-secondary/20 border rounded cursor-pointer">
+              className={cn(
+                "w-14 h-12 flex items-center justify-center text-foreground bg-secondary/20 border rounded cursor-pointer",
+                {
+                  "opacity-50 cursor-default select-none":
+                    isUploading || isFetchingUser,
+                }
+              )}>
               {!coverPhoto ? (
                 <Camera className="w-5 h-5" />
               ) : (
@@ -202,7 +242,7 @@ export default function CreateListingPage() {
               id="coverPhoto"
               hidden
               onChange={(e: any) => setCoverPhoto(e.target.files[0])}
-              disabled={isUploading || user?.isFetchingUser}
+              disabled={isUploading || isFetchingUser || isStaking}
               className="w-full h-12 bg-secondary/20 hidden"
             />
             <FormField
@@ -215,7 +255,7 @@ export default function CreateListingPage() {
                       placeholder="City"
                       type="text"
                       {...field}
-                      disabled={isUploading || user?.isFetchingUser}
+                      disabled={isUploading || isFetchingUser || isStaking}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -232,13 +272,22 @@ export default function CreateListingPage() {
               render={({ field }: { field: any }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <Input
-                      placeholder="State"
-                      type="text"
-                      {...field}
-                      disabled={isUploading || user?.isFetchingUser}
-                      className="w-full h-12 bg-secondary/20"
-                    />
+                    <Select
+                      name="state"
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={isUploading || isFetchingUser || isStaking}>
+                      <SelectTrigger className="w-full h-12 bg-secondary/20">
+                        <SelectValue placeholder="State" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {states.map((state: any) => (
+                          <SelectItem key={state} value={state}>
+                            {state}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -254,7 +303,7 @@ export default function CreateListingPage() {
                       placeholder="Postal Code"
                       type="text"
                       {...field}
-                      disabled={isUploading || user?.isFetchingUser}
+                      disabled={isUploading || isFetchingUser || isStaking}
                       className="w-full h-12 bg-secondary/20"
                     />
                   </FormControl>
@@ -275,7 +324,7 @@ export default function CreateListingPage() {
                     rows={8}
                     placeholder="Features"
                     className="bg-secondary/20"
-                    disabled={isUploading || user?.isFetchingUser}
+                    disabled={isUploading || isFetchingUser || isStaking}
                     {...field}
                   />
                 </FormControl>
@@ -298,12 +347,12 @@ export default function CreateListingPage() {
               maxFiles={8}
               maxSize={8 * 1024 * 1024}
               onValueChange={setFiles}
-              disabled={isUploading || user?.isFetchingUser}
+              disabled={isUploading || isFetchingUser || isStaking}
             />
           </div>
 
           <Button
-            disabled={isUploading || user?.isFetchingUser}
+            disabled={isUploading || isFetchingUser || isStaking}
             type="submit"
             className="h-12">
             {isUploading ? (

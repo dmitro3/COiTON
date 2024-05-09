@@ -8,11 +8,9 @@ interface IRealEstate {
     //     address agent
     // ) external;
 
-     function queListingForApproval(
-        string memory id,
-        bytes32 hash,
-        address approver
-    ) external ;
+    function queListingForApproval(string memory id, bytes32 hash, address approver) external;
+
+    function getErc20Token() external view returns (address);
 
     // function approveListing(
     //     string memory id,
@@ -22,7 +20,6 @@ interface IRealEstate {
 
     function createListing(
         string memory id,
-        address owner,
         address agent,
         string memory region,
         uint24 postalCode,

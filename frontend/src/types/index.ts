@@ -11,11 +11,11 @@ interface SiteConfigProps {
 }
 
 interface UserType {
-  name: string;
-  address: string;
-  email: string;
-  avatar: string;
-  id: string | undefined;
+  name?: any;
+  address?: any;
+  email?: any;
+  avatar?: any;
+  id?: any;
 }
 
 interface ChartType {
@@ -24,9 +24,9 @@ interface ChartType {
 }
 
 interface AuthContextType {
-  credentials?: UserType | any;
-  isFetchingUser?: boolean | any;
-  isError?: string;
+  credentials: UserType | null;
+  isFetchingUser: boolean;
+  isError: string | null;
 }
 
 interface ListingType {

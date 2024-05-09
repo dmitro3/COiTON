@@ -1,6 +1,9 @@
 import { createAvatar } from "@dicebear/core";
 import { pixelArt } from "@dicebear/collection";
 import { supabase } from "@/constants";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { toast } from "sonner";
 
 export const registerUser = async ({
   name,
@@ -32,7 +35,10 @@ export const registerUser = async ({
     });
 
     return result;
-  } catch (error) {
+  } catch (error: any) {
+    toast.error("Something went wrong", {
+      description: error?.message,
+    });
     console.log(error);
     return error;
   }
@@ -52,7 +58,10 @@ export const loginUser = async ({
     });
 
     return result;
-  } catch (error) {
+  } catch (error: any) {
+    toast.error("Something went wrong", {
+      description: error?.message,
+    });
     console.log(error);
     return error;
   }
