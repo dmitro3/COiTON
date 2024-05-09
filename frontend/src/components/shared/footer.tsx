@@ -18,12 +18,13 @@ export default function Footer() {
           <div className="flex flex-col w-full lg:w-[450px] gap-2">
             <Link href="/" className="w-max -ml-2">
               <Image
-                src="/logo.png"
+                src="/img/logo.png"
                 alt="logo"
-                width={80}
-                height={80}
+                width={40}
+                height={40}
                 priority
                 quality={100}
+                className="w-10 h-10"
               />
             </Link>
 
@@ -86,6 +87,7 @@ export default function Footer() {
                 className="w-full h-full shadow-none border-none text-sm font-medium"
                 placeholder="Enter your email"
                 type="email"
+                disabled
               />
               <p className="font-bold text-sm">Subscribe</p>
             </div>
