@@ -50,3 +50,13 @@ interface SingleListingType {
   createdAt: string;
   updatedAt: string;
 }
+interface AgreementType {
+  id: number;
+  initiator: string;
+  buyer: string;
+  estateId: number;
+  signersCount: number;
+  executed: boolean;
+  validSigners: string[];
+  signed: boolean;
+}

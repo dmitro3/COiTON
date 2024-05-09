@@ -32,12 +32,14 @@ export const useFetchListings = () => {
     const contract = getDiamondContract(signer);
 
     try {
-      const result = await contract.getUserInitiatedPurchaseArgument(signer.address, estateId);
+      const result = await contract.getUserInitiatedPurchaseArgument(
+        signer.address,
+        estateId
+      );
 
       // console.log({ result })
       if (ethers.ZeroAddress === result[1]) {
-        return { success: false, data: {} }
-
+        return { success: false, data: {} };
       }
       return { success: true, data: result };
       // const tx = await contract.getListings();
@@ -55,7 +57,7 @@ export const useFetchListings = () => {
           description: error.message,
         });
       }
-      return { success: false, data: {} }
+      return { success: false, data: {} };
     } finally {
       // setIsLoading(false);
     }
@@ -73,8 +75,7 @@ export const useFetchListings = () => {
 
       // console.log({ result })
       if (ethers.ZeroAddress === result[0][1]) {
-        return { success: false, data: {} }
-
+        return { success: false, data: {} };
       }
       return { success: true, data: result };
       // const tx = await contract.getListings();
@@ -92,14 +93,19 @@ export const useFetchListings = () => {
           description: error.message,
         });
       }
-      return { success: false, data: {} }
+      return { success: false, data: {} };
     } finally {
       // setIsLoading(false);
     }
   }
 
-
-  async function signPurchaseAgreement(estateId: string, buyer: string, price: string, handleStake: (amount: string) => Promise<boolean>, handleStakeERC721: (tokenId: string) => Promise<boolean>) {
+  async function signPurchaseAgreement(
+    estateId: string,
+    buyer: string,
+    price: string,
+    handleStake: (amount: string) => Promise<boolean>,
+    handleStakeERC721: (tokenId: string) => Promise<boolean>
+  ) {
     // setIsLoading(true);
 
     const readWriteProvider = getProvider(walletProvider);
@@ -107,24 +113,27 @@ export const useFetchListings = () => {
     const contract = getDiamondContract(signer);
     // console.log({ buyer })
     try {
-
       let proceed = false;
 
       if (signer.address.toString() === buyer) {
-        const hasApprovedERC20Token = await contract.checkIfApprovedERC20Token(estateId, signer.address);
+        const hasApprovedERC20Token = await contract.checkIfApprovedERC20Token(
+          estateId,
+          signer.address
+        );
 
         if (hasApprovedERC20Token) {
-          proceed = true
+          proceed = true;
         } else {
           proceed = await handleStake(price);
         }
       } else {
-        const hasApprovedERC721Token = await contract.checkIfApprovedERC721Token(estateId);
+        const hasApprovedERC721Token =
+          await contract.checkIfApprovedERC721Token(estateId);
 
         if (hasApprovedERC721Token) {
-          proceed = true
+          proceed = true;
         } else {
-          proceed = await handleStakeERC721(estateId)
+          proceed = await handleStakeERC721(estateId);
         }
       }
       if (!proceed) return;
@@ -136,18 +145,17 @@ export const useFetchListings = () => {
       if (receipt.status) {
         toast.success("Signature successful");
       } else {
-        toast.error("OOPS!!! Something went wrong!!")
+        toast.error("OOPS!!! Something went wrong!!");
       }
 
       toast.dismiss();
-
 
       // return { success: true, data: result };
       // const tx = await contract.getListings();
       // setListings(tx);
     } catch (error: any) {
       toast.dismiss();
-      toast.error(error.reason ?? "Something went wrong")
+      toast.error(error.reason ?? "Something went wrong");
       console.log(error);
 
       // if (error.reason === "rejected") {
@@ -165,8 +173,6 @@ export const useFetchListings = () => {
       // setIsLoading(false);
     }
   }
-
-
 
   async function fetchData() {
     setIsLoading(true);
@@ -216,7 +222,13 @@ export const useFetchListings = () => {
     fetchDataAndListen();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return { isLoading, listings, getUserInitiatedPurchaseArgument, getEstateSigner, signPurchaseAgreement };
+  return {
+    isLoading,
+    listings,
+    getUserInitiatedPurchaseArgument,
+    getEstateSigner,
+    signPurchaseAgreement,
+  };
 };
 
 export const useFetchUnApprovedListings = () => {
@@ -360,10 +372,7 @@ export const useStake = () => {
     const contract = getERC721Contract(signer);
 
     try {
-      const tx = await contract.approve(
-        receipient,
-        tokenId
-      );
+      const tx = await contract.approve(receipient, tokenId);
       const result = await tx.wait();
 
       if (result.status === 0) {
@@ -383,4 +392,89 @@ export const useStake = () => {
   };
 
   return { handleApproveERC20, handleApproveERC721, isLoading };
+};
+
+export const useFetchAllAgreements = () => {
+  const { walletProvider } = useWeb3ModalProvider();
+  const [allAgreements, setAllAgreements] = useState<AgreementType[]>([]);
+  const [isError, setIsError] = useState("");
+
+  const [isFetchingAgreements, setIsFetchingAgreements] =
+    useState<boolean>(false);
+
+  const fetchData = async () => {
+    setIsFetchingAgreements(true);
+
+    const readWriteProvider = getProvider(walletProvider);
+    const signer = await readWriteProvider.getSigner();
+    const contract = getDiamondContract(signer);
+
+    try {
+      const tx = await contract.getPurchaseAgreementSigners(signer.address);
+      const dt = {
+        agr: tx[0],
+        hasSigned: tx[1],
+      };
+
+      const data = dt.agr.map((d: any) => {
+        const bb = {
+          id: Number(d[0]),
+          initiator: d[1],
+          buyer: d[2],
+          estateId: Number(d[3]),
+          signersCount: Number(d[4]),
+          executed: d[5],
+          validSigners: d[6],
+        };
+
+        return bb;
+      });
+      const signed = dt.hasSigned.map((d: any) => d);
+
+      const allAgreements = data
+        ?.reverse()
+        ?.map((item: any, index: number) => ({
+          ...item,
+          // linking signed status with corresponding data item based on its index
+          signed: signed[index],
+        }));
+
+      setAllAgreements(allAgreements);
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.code, {
+        description: error.message,
+      });
+
+      setIsError(error.message);
+    } finally {
+      setIsFetchingAgreements(false);
+    }
+  };
+
+  useEffect(() => {
+    const listenForEvents = async () => {
+      await fetchData();
+
+      const readWriteProvider = getProvider(walletProvider);
+      const signer = await readWriteProvider.getSigner();
+      const contract = getDiamondContract(signer);
+
+      contract.on(
+        "PurchaseAgreementInitialization",
+        async (estateId, initiator, signers) => {
+          await fetchData();
+        }
+      );
+
+      return () => {
+        contract.removeAllListeners("PurchaseAgreementInitialization");
+      };
+    };
+
+    listenForEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return { allAgreements, isFetchingAgreements, isError };
 };

@@ -96,8 +96,9 @@ export default function ListingDetailsPage({
       <div className="aspect-[1.4] md:aspect-[1.8] lg:aspect-[2.5] xl:aspect-auto xl:h-[535px] max-w-[1558px] w-full mx-auto overflow-hidden relative">
         <div className="w-full h-full bg-secondary rounded-xl overflow-hidden mb-3">
           <Image
-            src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${selectedImage || listingData?.images[0]
-              }`}
+            src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${
+              selectedImage || listingData?.images[0]
+            }`}
             alt="Main Image"
             width={3840}
             height={2160}
@@ -117,7 +118,8 @@ export default function ListingDetailsPage({
                   "brightness-100 border-2 border-primary":
                     selectedImage === image,
                 }
-              )}>
+              )}
+            >
               <Image
                 src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${image}`}
                 alt={`Image ${index}`}
@@ -137,13 +139,12 @@ export default function ListingDetailsPage({
           <h1 className="text-3xl md:text-4xl font-bold">
             5 bedroom duplex vgc.
           </h1>
-          <p className="text-sm md:text-base">
-            5 Bedrooms Detached Duplex offer for Sales in VGC, Lekki, Nigeria
-            for ₦ 280,000,000 : 61721
+          <p className="text-sm md:text-base truncate max-w-[500px] w-full">
+            {listingData?.description}
           </p>
 
           <h1 className="text-xl md:text-2xl font-bold text-primary">
-            ₦ {listingData?.price}
+            ₦ {listingData?.price?.toLocaleString()}
           </h1>
           <p className="text-sm md:text-base flex items-center gap-2">
             <MapPin className="w-4 h-4" />
@@ -164,9 +165,9 @@ export default function ListingDetailsPage({
             ) : null}
 
             {purchaseSigner &&
-              purchaseSigner.success &&
-              Object.keys(purchaseSigner.data).length != 0 &&
-              !purchaseSigner.data[1] ? (
+            purchaseSigner.success &&
+            Object.keys(purchaseSigner.data).length != 0 &&
+            !purchaseSigner.data[1] ? (
               <Button
                 onClick={async () => {
                   await signPurchaseAgreement(
@@ -185,7 +186,8 @@ export default function ListingDetailsPage({
                       )
                   );
                 }}
-                type="submit">
+                type="submit"
+              >
                 Sign Purchase Agreement
               </Button>
             ) : null}
@@ -269,7 +271,8 @@ export default function ListingDetailsPage({
               {listingData?.features?.map((feature: string, _key: number) => (
                 <div
                   className="flex items-center gap-2 text-sm md:text-base text-muted-foreground"
-                  key={_key}>
+                  key={_key}
+                >
                   <CheckCheck className="w-5 h-5 text-primary" />
                   <p className="flex-1 text-sm md:text-base">{feature}</p>
                 </div>
