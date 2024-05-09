@@ -11,6 +11,7 @@ import { Web3ModalProvider } from "./web3modal";
 import { useRouter } from "next/navigation";
 
 import { supabase } from "@/constants";
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 
 // Create a default value for the context
 
@@ -21,6 +22,7 @@ export default function AuthContextProvider({
 }: {
   children: ReactNode;
 }) {
+  const { address } = useWeb3ModalAccount();
   const router = useRouter();
 
   const [credentials, setCredentials] = useState<UserType | null>(null);
@@ -49,7 +51,7 @@ export default function AuthContextProvider({
     };
 
     fetchUser();
-  }, [router]);
+  }, [router, address]);
 
   return (
     <AuthContext.Provider value={{ credentials, isFetchingUser, isError }}>
