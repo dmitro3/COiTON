@@ -18,7 +18,7 @@ import { toast } from "sonner";
 
 export const RENDER_ENDPOINT = process.env.NEXT_PUBLIC_RENDER_ENDPOINT;
 
-export const useFetchListings = () => {
+export const useFetchListings = (shouldFetchData: boolean) => {
   const { walletProvider }: any = useWeb3ModalProvider();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -203,6 +203,8 @@ export const useFetchListings = () => {
   }
 
   useEffect(() => {
+    if (!shouldFetchData) return;
+    console.log("++++++++++++=================================>>>>");
     const fetchDataAndListen = async () => {
       await fetchData();
 
@@ -410,10 +412,26 @@ export const useFetchAllAgreements = () => {
     const contract = getDiamondContract(signer);
 
     try {
+      const transformListing = (listing: any) => ({
+        id: listing[0],
+        owner: listing[1],
+        region: listing[2],
+        postalCode: Number(listing[3]),
+        description: listing[4].split(";")[0],
+        features: listing[4].split(";")[1].split("\n"),
+        price: Number(listing[5]),
+        images: listing[6].split(";"),
+        tokenId: listing[7],
+        coverImage: listing[8],
+        createdAt: Number(listing[9]),
+      });
+
       const tx = await contract.getPurchaseAgreementSigners(signer.address);
+      // console.log(tx[0][0].executed);
       const dt = {
         agr: tx[0],
         hasSigned: tx[1],
+        listings: tx[2],
       };
 
       const data = dt.agr.map((d: any) => {
@@ -429,6 +447,8 @@ export const useFetchAllAgreements = () => {
 
         return bb;
       });
+      const listings = dt.listings.map(transformListing);
+
       const signed = dt.hasSigned.map((d: any) => d);
 
       const allAgreements = data
@@ -437,6 +457,7 @@ export const useFetchAllAgreements = () => {
           ...item,
           // linking signed status with corresponding data item based on its index
           signed: signed[index],
+          listing: listings[index],
         }));
 
       setAllAgreements(allAgreements);

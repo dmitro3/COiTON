@@ -29,6 +29,27 @@ contract Trade {
         }
     }
 
+    function getMarket()
+        external
+        view
+        returns (LibAppStorage.MarketReturn[] memory)
+    {
+        LibAppStorage.MarketReturn[]
+            memory return_ = new LibAppStorage.MarketReturn[](
+                l.listings.length
+            );
+        uint index;
+        for (uint i = 1; i < l.listings.length + 1; i++) {
+            return_[index] = LibAppStorage.MarketReturn({
+                market: l.market[i],
+                listing: l.listing[i]
+            });
+            index++;
+        }
+
+        return return_;
+    }
+
     // The function allows users to buy shares of real estate NFT on the trading platform
     //@Param tokenId: Identify the certain NFT purchase
     //@param shares: The percentage of shares of the NFT that the user wishes to buy.

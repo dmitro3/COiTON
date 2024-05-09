@@ -66,6 +66,11 @@ library LibAppStorage {
         string description;
     }
 
+    struct MarketReturn {
+        Market market;
+        Listing listing;
+    }
+
     struct Market {
         uint tokenId;
         uint currentPrice;

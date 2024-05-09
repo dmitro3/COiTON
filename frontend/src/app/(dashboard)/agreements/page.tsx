@@ -1,15 +1,23 @@
 "use client";
 
-import { useFetchAllAgreements } from "@/hooks/useFetchBackend";
+import { Button } from "@/components/ui/button";
+import {
+  useFetchAllAgreements,
+  useFetchListings,
+  useStake,
+} from "@/hooks/useFetchBackend";
 import { shortenAddress } from "@/lib/utils";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { Copy } from "lucide-react";
 
 export default function AgreementsPage() {
   const { address } = useWeb3ModalAccount();
-
+  const { signPurchaseAgreement } = useFetchListings(false);
+  const { handleApproveERC20, handleApproveERC721 } = useStake();
   const { isFetchingAgreements, allAgreements, isError } =
     useFetchAllAgreements();
+
+  // console.log(allAgreements);
 
   return (
     <div className="flex-1 flex flex-col gap-4">
@@ -101,6 +109,31 @@ export default function AgreementsPage() {
                     ))}
                   </div>
                 </div>
+                {!agr.signed ? (
+                  <Button
+                    onClick={async () => {
+                      await signPurchaseAgreement(
+                        agr?.estateId.toString(),
+                        agr.buyer,
+                        agr?.listing.price.toString(),
+                        (approval) =>
+                          handleApproveERC20(
+                            approval,
+                            process.env.NEXT_PUBLIC_DIAMOND_ADDRESS as string
+                          ),
+                        (approval) =>
+                          handleApproveERC721(
+                            approval,
+                            process.env.NEXT_PUBLIC_DIAMOND_ADDRESS as string
+                          )
+                      );
+                    }}
+                  >
+                    Sign
+                  </Button>
+                ) : null}
+
+                {agr.executed ? <h2>Executed</h2> : null}
               </div>
             ))
           )}

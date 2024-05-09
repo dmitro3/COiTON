@@ -126,6 +126,9 @@ contract RealEstate {
         _listingApproval.approved = true;
         _listingApproval.created = true;
         l.listing[listingId] = _newListing;
+        LibAppStorage.Market storage _market = l.market[listingId];
+
+        _market.currentPrice = price;
 
         l.listings.push(_newListing);
 
@@ -289,7 +292,11 @@ contract RealEstate {
     )
         external
         view
-        returns (LibAppStorage.PurchaseAgreement[] memory, bool[] memory)
+        returns (
+            LibAppStorage.PurchaseAgreement[] memory,
+            bool[] memory,
+            LibAppStorage.Listing[] memory
+        )
     {
         uint count;
 
@@ -308,6 +315,8 @@ contract RealEstate {
             memory _returnAgreement = new LibAppStorage.PurchaseAgreement[](
                 count
             );
+        LibAppStorage.Listing[]
+            memory _returnListing = new LibAppStorage.Listing[](count);
         bool[] memory _returnHasSigned = new bool[](count);
 
         uint index;
@@ -319,6 +328,9 @@ contract RealEstate {
             for (uint j = 0; j < _purchaseAgreement.validSigners.length; j++) {
                 if (_purchaseAgreement.validSigners[j] == _user) {
                     _returnAgreement[index] = _purchaseAgreement;
+                    _returnListing[index] = l.listing[
+                        _purchaseAgreement.estateId
+                    ];
                     _returnHasSigned[index] = l.hasSignedPurchaseAgreement[
                         _purchaseAgreement.estateId
                     ][msg.sender];
@@ -328,7 +340,7 @@ contract RealEstate {
             }
         }
 
-        return (_returnAgreement, _returnHasSigned);
+        return (_returnAgreement, _returnHasSigned, _returnListing);
     }
 
     function getEstateSigner(
