@@ -11,7 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function LandingPage() {
-  const { isLoading, listings } = useFetchListings();
+  const { isLoading, listings } = useFetchListings(true);
 
   return (
     <div className="flex-1">
