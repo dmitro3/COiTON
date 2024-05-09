@@ -17,7 +17,7 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: site.title,
+  title: site.name,
   description: site.description,
   icons: {
     icon: "./favicon.ico",
@@ -36,7 +36,8 @@ export default function RootLayout({
           className={cn(
             "min-h-screen bg-background font-sans antialiased flex flex-col",
             fontSans.variable
-          )}>
+          )}
+        >
           <Toaster richColors />
           <main className="flex-1">{children}</main>
         </body>
