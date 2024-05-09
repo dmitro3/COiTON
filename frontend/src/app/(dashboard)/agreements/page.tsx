@@ -17,8 +17,6 @@ export default function AgreementsPage() {
   const { isFetchingAgreements, allAgreements, isError } =
     useFetchAllAgreements();
 
-  // console.log(allAgreements);
-
   return (
     <div className="flex-1 flex flex-col gap-4">
       <h1 className="text-xl md:text-2xl capitalize font-bold">Agreements</h1>
@@ -26,8 +24,7 @@ export default function AgreementsPage() {
       <div className="my-2">
         <div className="bg-transparent md:bg-secondary/20 md:border px-0 md:px-6 rounded-xl">
           <p className="pb-8 md:py-6 text-primary font-bold border-b">
-            [ A complete list of all agreements from{" "}
-            {shortenAddress(`${address}`)} ]
+            [ List of all agreements by {shortenAddress(`${address}`)} ]
           </p>
 
           {isFetchingAgreements ? (
@@ -38,13 +35,15 @@ export default function AgreementsPage() {
             <div className="py-4">
               <p>{isError}</p>
             </div>
+          ) : allAgreements && allAgreements.length === 0 ? (
+            <div className="py-4">
+              <p>No agreements found, you need to initiate an agreement.</p>
+            </div>
           ) : (
-            allAgreements &&
             allAgreements?.map((agr) => (
               <div
                 className="py-4 md:py-6 flex flex-col gap-4 border-b last:border-b-0"
-                key={agr.id}
-              >
+                key={agr.id}>
                 <div className="flex items-start md:items-center flex-col md:flex-row">
                   <div className="max-w-[250px] w-full">
                     <p className="text-foreground font-semibold md:font-normal md:text-muted-foreground text-base">
@@ -102,8 +101,7 @@ export default function AgreementsPage() {
                     {agr.validSigners?.map((signer, _key) => (
                       <p
                         className="flex-1 font-bold flex items-center gap-3 text-sm md:text-base text-primary"
-                        key={_key + 1}
-                      >
+                        key={_key + 1}>
                         {signer}
                       </p>
                     ))}
@@ -127,8 +125,7 @@ export default function AgreementsPage() {
                             process.env.NEXT_PUBLIC_DIAMOND_ADDRESS as string
                           )
                       );
-                    }}
-                  >
+                    }}>
                     Sign
                   </Button>
                 ) : null}
