@@ -11,7 +11,7 @@ module.exports = {
   solidity: "0.8.24",
 
   networks: {
-    sepolia: {
+    op: {
       url: RPC_URL,
       accounts: [PRIVATE_KEY],
     },
