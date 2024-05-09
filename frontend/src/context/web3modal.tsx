@@ -67,7 +67,7 @@ createWeb3Modal({
     // localhost,
     // liskSepolia
   ],
-  projectId: "35fadd8ea93791ac21f87e7fa5c5d0ec",
+  projectId: "0a4f797ca31c020f3cb7579960b64b36",
   enableOnramp: true,
   enableAnalytics: false,
 });
