@@ -87,7 +87,7 @@ library LibAppStorage {
 
     struct Layout {
         address owner;
-        // address diamondAddress;
+        address diamondAddress;
         address erc20Token;
         address erc721Token;
         mapping(uint => Market) market;

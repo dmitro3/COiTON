@@ -33,6 +33,7 @@ contract Diamond {
         });
         LibDiamond.diamondCut(cut, address(0), "");
         l.owner = EOAowner;
+        l.diamondAddress = address(this);
     }
 
     function setToken(address _tokenA, address _tokenB) external {
