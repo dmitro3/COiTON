@@ -565,10 +565,14 @@ export const useFetchTradingMarket = () => {
       contract.on("BuyShares", async () => {
         await fetchData();
       });
+      contract.on("SellShares", async () => {
+        await fetchData();
+      });
 
       return () => {
         contract.removeAllListeners("CreatedListing");
         contract.removeAllListeners("BuyShares");
+        contract.removeAllListeners("SellShares");
       };
     };
 
@@ -598,7 +602,6 @@ export const useFetchTradingMarket = () => {
           signer.address,
           process.env.NEXT_PUBLIC_DIAMOND_ADDRESS
         );
-        alert(SHARE_PRICE);
 
         if (Number(checkAllowance.toString()) < SHARE_PRICE) {
           const approve = await handleStake(
@@ -639,5 +642,31 @@ export const useFetchTradingMarket = () => {
     }
   }
 
-  return { market, isFetchingData, isError, buyShares };
+  async function sellShares(estateId: string, shares: string) {
+    const readWriteProvider = getProvider(walletProvider);
+    const signer = await readWriteProvider.getSigner();
+    const contract = getDiamondContract(signer);
+    try {
+      toast.loading("Processing transaction...");
+
+      const tx = await contract.sellNFTTokenShares(estateId, shares);
+      const receipt = await tx.wait();
+
+      if (receipt.status) {
+        toast.success("Sell successful");
+      } else {
+        toast.error("OOPS!!! Something went wrong!!");
+      }
+
+      toast.dismiss();
+    } catch (error: any) {
+      toast.dismiss();
+      toast.error(error.reason ?? "Something went wrong");
+      console.log(error);
+    } finally {
+      // setIsLoading(false);
+    }
+  }
+
+  return { market, isFetchingData, isError, buyShares, sellShares };
 };
