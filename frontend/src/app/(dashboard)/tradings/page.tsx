@@ -26,45 +26,48 @@ import {
 import { Label } from "@radix-ui/react-label";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-
-const tradings = [
-  {
-    token: "CTN",
-    buy: "$150",
-    sell: "$250.00",
-    amount: "10",
-  },
-  {
-    token: "CTN",
-    buy: "$150",
-    sell: "$250.00",
-    amount: "10",
-  },
-  {
-    token: "CTN",
-    buy: "$150",
-    sell: "$250.00",
-    amount: "10",
-  },
-  {
-    token: "CTN",
-    buy: "$150",
-    sell: "$250.00",
-    amount: "10",
-  },
-  {
-    token: "CTN",
-    buy: "$150",
-    sell: "$250.00",
-    amount: "10",
-  },
-  {
-    token: "CTN",
-    buy: "$150",
-    sell: "$250.00",
-    amount: "10",
-  },
-];
+enum ACTION_TYPE {
+  BUY,
+  Sell,
+}
+// const tradings = [
+//   {
+//     token: "CTN",
+//     buy: "$150",
+//     sell: "$250.00",
+//     amount: "10",
+//   },
+//   {
+//     token: "CTN",
+//     buy: "$150",
+//     sell: "$250.00",
+//     amount: "10",
+//   },
+//   {
+//     token: "CTN",
+//     buy: "$150",
+//     sell: "$250.00",
+//     amount: "10",
+//   },
+//   {
+//     token: "CTN",
+//     buy: "$150",
+//     sell: "$250.00",
+//     amount: "10",
+//   },
+//   {
+//     token: "CTN",
+//     buy: "$150",
+//     sell: "$250.00",
+//     amount: "10",
+//   },
+//   {
+//     token: "CTN",
+//     buy: "$150",
+//     sell: "$250.00",
+//     amount: "10",
+//   },
+// ];
 
 const Comp = ({
   open,
@@ -110,8 +113,9 @@ const Comp = ({
 
 export default function TradingsPage() {
   const { handleApproveERC20 } = useStake();
-  const { isFetchingData, market, isError, buyShares } =
+  const { isFetchingData, market, isError, buyShares, sellShares } =
     useFetchTradingMarket();
+  const [currentAction, setCurrentAction] = useState<null | ACTION_TYPE>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTokenIndex, setSelectedTokenIndex] = useState<null | number>(
     null
@@ -126,36 +130,47 @@ export default function TradingsPage() {
           if (!_val) {
             setIsOpen(false);
             setSelectedTokenIndex(null);
+            setCurrentAction(null);
           }
         }}
         onSubmit={async () => {
           const shareValue = Number(inputRef.current?.value.trim());
           if (isNaN(shareValue)) return;
           if (shareValue > 100) return;
-          if (selectedTokenIndex === null) {
+          if (selectedTokenIndex === null || currentAction === null) {
             setIsOpen(false);
+            setCurrentAction(null);
+            setSelectedTokenIndex(null);
             return;
           }
-          if (
-            shareValue >
-            100 - Number(market[selectedTokenIndex].market.consumedShares)
-          ) {
-            toast.warning("Cannot exceed available shares");
-            return;
+          if (currentAction === ACTION_TYPE.BUY) {
+            if (
+              shareValue >
+              100 - Number(market[selectedTokenIndex].market.consumedShares)
+            ) {
+              toast.warning("Cannot exceed available shares");
+              return;
+            }
+            await buyShares(
+              market[selectedTokenIndex].listing.tokenId,
+              shareValue.toString(),
+              market[selectedTokenIndex].market.currentPrice,
+              (_val: string) =>
+                handleApproveERC20(
+                  _val,
+                  process.env.NEXT_PUBLIC_DIAMOND_ADDRESS as string
+                )
+            );
+          } else {
+            await sellShares(
+              market[selectedTokenIndex].listing.tokenId,
+              shareValue.toString()
+            );
           }
-          await buyShares(
-            market[selectedTokenIndex].listing.tokenId,
-            shareValue.toString(),
-            market[selectedTokenIndex].market.currentPrice,
-            (_val: string) =>
-              handleApproveERC20(
-                _val,
-                process.env.NEXT_PUBLIC_DIAMOND_ADDRESS as string
-              )
-          );
 
           setIsOpen(false);
           setSelectedTokenIndex(null);
+          setCurrentAction(null);
         }}
       />
       <h1 className="text-xl md:text-2xl capitalize font-bold">Tradings</h1>
@@ -192,11 +207,20 @@ export default function TradingsPage() {
                     onClick={() => {
                       setIsOpen(true);
                       setSelectedTokenIndex(_id);
+                      setCurrentAction(ACTION_TYPE.BUY);
                     }}
                   >
                     Buy
                   </button>
-                  <p>Sell</p>
+                  <button
+                    onClick={() => {
+                      setIsOpen(true);
+                      setSelectedTokenIndex(_id);
+                      setCurrentAction(ACTION_TYPE.Sell);
+                    }}
+                  >
+                    Sell
+                  </button>
                 </TableCell>
               </TableRow>
             ))}
