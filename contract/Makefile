@@ -30,7 +30,7 @@ abigen:
 	node scripts/generateDiamondABI.js
 
 runDao:
-	yarn hardhat run scripts/interractions/daoSettings.js --network anvil
+	yarn hardhat run scripts/interractions/daoSettings.js --network op
 
 approve:
 	yarn hardhat run scripts/interractions/approve.js --network anvil
