@@ -11,14 +11,25 @@ contract Trade {
 
     function stake(uint amount) external {
         if (
-            IIERC20(l.erc20Token).allowance(msg.sender, address(this)) < amount
+            IIERC20(l.erc20Token).allowance(
+                msg.sender,
+                address(l.diamondAddress)
+            ) < amount
         ) {
             revert ERRORS.NO_APPROVAL_TO_SPEND_TOKENS();
         }
         /// check if contract has allowance to spend erc20 tokens
         l.stake[msg.sender] += amount;
-        IIERC20(l.erc20Token).transferFrom(msg.sender, address(this), amount);
+        IIERC20(l.erc20Token).transferFrom(
+            msg.sender,
+            address(l.diamondAddress),
+            amount
+        );
         emit EVENTS.Stake(msg.sender, amount);
+    }
+
+    function checkStake(address _user) external view returns (uint) {
+        return l.stake[_user];
     }
 
     function withdrawStake(uint amount) external {
@@ -27,6 +38,27 @@ contract Trade {
         } else {
             revert ERRORS.INSUFFICIENT_BALANCE();
         }
+    }
+
+    function getMarket()
+        external
+        view
+        returns (LibAppStorage.MarketReturn[] memory)
+    {
+        LibAppStorage.MarketReturn[]
+            memory return_ = new LibAppStorage.MarketReturn[](
+                l.listings.length
+            );
+        uint index;
+        for (uint i = 1; i < l.listings.length + 1; i++) {
+            return_[index] = LibAppStorage.MarketReturn({
+                market: l.market[i],
+                listing: l.listing[i]
+            });
+            index++;
+        }
+
+        return return_;
     }
 
     // The function allows users to buy shares of real estate NFT on the trading platform

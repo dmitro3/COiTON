@@ -18,7 +18,7 @@ import { toast } from "sonner";
 
 export const RENDER_ENDPOINT = process.env.NEXT_PUBLIC_RENDER_ENDPOINT;
 
-export const useFetchListings = () => {
+export const useFetchListings = (shouldFetchData: boolean) => {
   const { walletProvider }: any = useWeb3ModalProvider();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -203,6 +203,8 @@ export const useFetchListings = () => {
   }
 
   useEffect(() => {
+    if (!shouldFetchData) return;
+    console.log("++++++++++++=================================>>>>");
     const fetchDataAndListen = async () => {
       await fetchData();
 
@@ -410,10 +412,26 @@ export const useFetchAllAgreements = () => {
     const contract = getDiamondContract(signer);
 
     try {
+      const transformListing = (listing: any) => ({
+        id: listing[0],
+        owner: listing[1],
+        region: listing[2],
+        postalCode: Number(listing[3]),
+        description: listing[4].split(";")[0],
+        features: listing[4].split(";")[1].split("\n"),
+        price: Number(listing[5]),
+        images: listing[6].split(";"),
+        tokenId: listing[7],
+        coverImage: listing[8],
+        createdAt: Number(listing[9]),
+      });
+
       const tx = await contract.getPurchaseAgreementSigners(signer.address);
+      // console.log(tx[0][0].executed);
       const dt = {
         agr: tx[0],
         hasSigned: tx[1],
+        listings: tx[2],
       };
 
       const data = dt.agr.map((d: any) => {
@@ -429,6 +447,8 @@ export const useFetchAllAgreements = () => {
 
         return bb;
       });
+      const listings = dt.listings.map(transformListing);
+
       const signed = dt.hasSigned.map((d: any) => d);
 
       const allAgreements = data
@@ -437,6 +457,7 @@ export const useFetchAllAgreements = () => {
           ...item,
           // linking signed status with corresponding data item based on its index
           signed: signed[index],
+          listing: listings[index],
         }));
 
       setAllAgreements(allAgreements);
@@ -477,4 +498,146 @@ export const useFetchAllAgreements = () => {
   }, []);
 
   return { allAgreements, isFetchingAgreements, isError };
+};
+
+export const useFetchTradingMarket = () => {
+  const { walletProvider } = useWeb3ModalProvider();
+  const [market, setMarket] = useState<any[]>([]);
+  const [isError, setIsError] = useState("");
+
+  const [isFetchingData, setIsFetchingData] = useState<boolean>(false);
+
+  const fetchData = async () => {
+    setIsFetchingData(true);
+
+    const readWriteProvider = getProvider(walletProvider);
+    const signer = await readWriteProvider.getSigner();
+    const contract = getDiamondContract(signer);
+
+    try {
+      const tx = await contract.getMarket();
+
+      const processed = tx.map((mp: any) => ({
+        market: {
+          tokenId: mp[0].tokenId.toString(),
+          currentPrice: mp[0].currentPrice.toString(),
+          consumedShares: mp[0].consumedShares.toString(),
+          stakeHolders: mp[0].stakeHolders,
+        },
+        listing: {
+          id: mp[1].id,
+          owner: mp[1].owner,
+          region: mp[1].region,
+          postalCode: mp[1].postalCode.toString(),
+          description: mp[1].description,
+          price: mp[1].price.toString(),
+          images: mp[1].images,
+          tokenId: mp[1].tokenId.toString(),
+          coverImage: mp[1].coverImage,
+          createdAt: mp[1].createdAt.toString(),
+        },
+      }));
+      setMarket(processed);
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.code, {
+        description: error.message,
+      });
+
+      setIsError(error.message);
+    } finally {
+      setIsFetchingData(false);
+    }
+  };
+
+  useEffect(() => {
+    const listenForEvents = async () => {
+      await fetchData();
+
+      const readWriteProvider = getProvider(walletProvider);
+      const signer = await readWriteProvider.getSigner();
+      const contract = getDiamondContract(signer);
+
+      contract.on("CreatedListing", async () => {
+        await fetchData();
+      });
+
+      contract.on("BuyShares", async () => {
+        await fetchData();
+      });
+
+      return () => {
+        contract.removeAllListeners("CreatedListing");
+        contract.removeAllListeners("BuyShares");
+      };
+    };
+
+    listenForEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function buyShares(
+    estateId: string,
+    shares: string,
+    price: string,
+    handleStake: (amount: string) => Promise<boolean>
+  ) {
+    const readWriteProvider = getProvider(walletProvider);
+    const signer = await readWriteProvider.getSigner();
+    const contract = getDiamondContract(signer);
+    const erc20 = getERC20Contract(signer);
+    try {
+      let proceed = false;
+      const SHARE_PRICE = Math.round((Number(price) * Number(shares)) / 100);
+      const hasStake = await contract.checkStake(signer.address);
+
+      if (Number(hasStake.toString()) >= SHARE_PRICE) {
+        proceed = true;
+      } else {
+        const checkAllowance = await erc20.allowance(
+          signer.address,
+          process.env.NEXT_PUBLIC_DIAMOND_ADDRESS
+        );
+        alert(SHARE_PRICE);
+
+        if (Number(checkAllowance.toString()) < SHARE_PRICE) {
+          const approve = await handleStake(
+            (SHARE_PRICE - Number(checkAllowance.toString())).toString()
+          );
+
+          if (approve) {
+            const stakeToken = await (await contract.stake(SHARE_PRICE)).wait();
+            proceed = !!stakeToken.status;
+          } else {
+            proceed = false;
+          }
+        } else {
+          const stakeToken = await (await contract.stake(SHARE_PRICE)).wait();
+          proceed = !!stakeToken.status;
+        }
+      }
+
+      if (!proceed) return;
+      toast.loading("Processing transaction...");
+
+      const tx = await contract.buyNFTTokenShares(estateId, shares);
+      const receipt = await tx.wait();
+
+      if (receipt.status) {
+        toast.success("Buy successful");
+      } else {
+        toast.error("OOPS!!! Something went wrong!!");
+      }
+
+      toast.dismiss();
+    } catch (error: any) {
+      toast.dismiss();
+      toast.error(error.reason ?? "Something went wrong");
+      console.log(error);
+    } finally {
+      // setIsLoading(false);
+    }
+  }
+
+  return { market, isFetchingData, isError, buyShares };
 };

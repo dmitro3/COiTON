@@ -66,6 +66,11 @@ library LibAppStorage {
         string description;
     }
 
+    struct MarketReturn {
+        Market market;
+        Listing listing;
+    }
+
     struct Market {
         uint tokenId;
         uint currentPrice;
@@ -82,7 +87,7 @@ library LibAppStorage {
 
     struct Layout {
         address owner;
-        // address diamondAddress;
+        address diamondAddress;
         address erc20Token;
         address erc721Token;
         mapping(uint => Market) market;

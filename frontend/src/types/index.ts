@@ -59,4 +59,5 @@ interface AgreementType {
   executed: boolean;
   validSigners: string[];
   signed: boolean;
+  listing: any;
 }

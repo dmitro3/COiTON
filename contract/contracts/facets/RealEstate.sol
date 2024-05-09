@@ -126,6 +126,10 @@ contract RealEstate {
         _listingApproval.approved = true;
         _listingApproval.created = true;
         l.listing[listingId] = _newListing;
+        LibAppStorage.Market storage _market = l.market[listingId];
+
+        _market.currentPrice = price;
+        _market.tokenId = listingId;
 
         l.listings.push(_newListing);
 
@@ -289,7 +293,11 @@ contract RealEstate {
     )
         external
         view
-        returns (LibAppStorage.PurchaseAgreement[] memory, bool[] memory)
+        returns (
+            LibAppStorage.PurchaseAgreement[] memory,
+            bool[] memory,
+            LibAppStorage.Listing[] memory
+        )
     {
         uint count;
 
@@ -308,6 +316,8 @@ contract RealEstate {
             memory _returnAgreement = new LibAppStorage.PurchaseAgreement[](
                 count
             );
+        LibAppStorage.Listing[]
+            memory _returnListing = new LibAppStorage.Listing[](count);
         bool[] memory _returnHasSigned = new bool[](count);
 
         uint index;
@@ -319,6 +329,9 @@ contract RealEstate {
             for (uint j = 0; j < _purchaseAgreement.validSigners.length; j++) {
                 if (_purchaseAgreement.validSigners[j] == _user) {
                     _returnAgreement[index] = _purchaseAgreement;
+                    _returnListing[index] = l.listing[
+                        _purchaseAgreement.estateId
+                    ];
                     _returnHasSigned[index] = l.hasSignedPurchaseAgreement[
                         _purchaseAgreement.estateId
                     ][msg.sender];
@@ -328,7 +341,7 @@ contract RealEstate {
             }
         }
 
-        return (_returnAgreement, _returnHasSigned);
+        return (_returnAgreement, _returnHasSigned, _returnListing);
     }
 
     function getEstateSigner(
@@ -395,7 +408,9 @@ contract RealEstate {
         LibAppStorage.Listing memory listing = l.listing[estateId];
         IIERC20 erc20Token = IIERC20(l.erc20Token);
 
-        return erc20Token.allowance(_user, address(this)) >= listing.price;
+        return
+            erc20Token.allowance(_user, address(l.diamondAddress)) >=
+            listing.price;
     }
 
     function checkIfApprovedERC721Token(
@@ -403,7 +418,9 @@ contract RealEstate {
     ) external view returns (bool) {
         LibAppStorage.Listing memory listing = l.listing[estateId];
         IERC721 erc721Token = IERC721(l.erc721Token);
-        return erc721Token.getApproved(listing.tokenId) == address(this);
+        return
+            erc721Token.getApproved(listing.tokenId) ==
+            address(l.diamondAddress);
     }
 
     // This function is designed to allow an authorized party to sign a purchase agreement for a specified real estate property on the platform.
@@ -436,19 +453,24 @@ contract RealEstate {
             IIERC20 erc20Token = IIERC20(l.erc20Token);
             IERC721 erc721Token = IERC721(l.erc721Token);
             if (
-                erc20Token.allowance(_purchaseAgreement.buyer, address(this)) <
-                listing.price
+                erc20Token.allowance(
+                    _purchaseAgreement.buyer,
+                    address(l.diamondAddress)
+                ) < listing.price
             ) {
                 revert ERRORS.NO_APPROVAL_TO_SPEND_TOKENS();
             } else {
                 erc20Token.transferFrom(
                     _purchaseAgreement.buyer,
-                    address(this),
+                    address(l.diamondAddress),
                     listing.price
                 );
             }
 
-            if (erc721Token.getApproved(listing.tokenId) != address(this)) {
+            if (
+                erc721Token.getApproved(listing.tokenId) !=
+                address(l.diamondAddress)
+            ) {
                 revert ERRORS.NO_APPROVAL_TO_SPEND_TOKENS();
             }
 

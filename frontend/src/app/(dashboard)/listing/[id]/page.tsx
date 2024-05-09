@@ -38,7 +38,7 @@ export default function ListingDetailsPage({
     getUserInitiatedPurchaseArgument,
     getEstateSigner,
     signPurchaseAgreement,
-  } = useFetchListings();
+  } = useFetchListings(true);
   const { handleApproveERC20, handleApproveERC721 } = useStake();
   // const { address } = useWeb3ModalAccount();
   // console.log(address);

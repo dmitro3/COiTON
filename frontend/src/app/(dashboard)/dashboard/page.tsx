@@ -8,7 +8,7 @@ import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardPage() {
-  const { isLoading, listings } = useFetchListings();
+  const { isLoading, listings } = useFetchListings(true);
 
   return (
     <div className="flex-1 flex flex-col gap-4">
@@ -19,7 +19,8 @@ export default function DashboardPage() {
 
         <Link
           href="/create-listing"
-          className={buttonVariants({ variant: "outline" })}>
+          className={buttonVariants({ variant: "outline" })}
+        >
           Add Property
         </Link>
       </div>
@@ -32,7 +33,8 @@ export default function DashboardPage() {
         ) : !listings || listings.length === 0 ? (
           <Link
             href="/create-listing"
-            className="bg-secondary/30 hover:bg-secondary/40 w-full rounded-xl h-auto aspect-[1] sm:aspect-auto sm:h-[416px] transition flex items-center justify-center flex-col">
+            className="bg-secondary/30 hover:bg-secondary/40 w-full rounded-xl h-auto aspect-[1] sm:aspect-auto sm:h-[416px] transition flex items-center justify-center flex-col"
+          >
             <div className="w-20 h-20 rounded-full border-2 border-dashed flex items-center justify-center">
               <PlusIcon className="w-10 h-10" />
             </div>
