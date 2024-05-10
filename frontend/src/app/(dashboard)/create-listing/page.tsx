@@ -40,6 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { states } from "@/constants";
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 
 export default function CreateListingPage() {
   const router = useRouter();
@@ -57,11 +58,11 @@ export default function CreateListingPage() {
   const { credentials, isFetchingUser } = useAuth();
   const { isLoading, checkIsStaked } = useCheckIfUserStaked();
   const { handleApproveERC20, isLoading: isStaking } = useStake();
-
+  const { address } = useWeb3ModalAccount();
   const [files, setFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [coverPhoto, setCoverPhoto] = useState<any>();
-
+  // console.log(address);
   // 1. Define your form.
   const form = useForm<z.infer<typeof listingSchema>>({
     resolver: zodResolver(listingSchema),
@@ -95,8 +96,8 @@ export default function CreateListingPage() {
         toast.dismiss();
         toast.success("Files uploaded successfully");
         const data: any = {
-          owner: credentials?.address,
-          agentId: credentials?.address,
+          owner: address?.toString(),
+          agentId: address?.toString(),
           region: `${values.state};${values.city};${values.address}`,
           state: values.state,
           postalCode: values.postalCode,
@@ -160,7 +161,8 @@ export default function CreateListingPage() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-3 md:gap-4 mt-4 mb-6 max-w-2xl w-full">
+          className="flex flex-col gap-3 md:gap-4 mt-4 mb-6 max-w-2xl w-full"
+        >
           <FormField
             control={form.control}
             name="description"
@@ -229,7 +231,8 @@ export default function CreateListingPage() {
                   "opacity-50 cursor-default select-none":
                     isUploading || isFetchingUser,
                 }
-              )}>
+              )}
+            >
               {!coverPhoto ? (
                 <Camera className="w-5 h-5" />
               ) : (
@@ -276,7 +279,8 @@ export default function CreateListingPage() {
                       name="state"
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      disabled={isUploading || isFetchingUser || isStaking}>
+                      disabled={isUploading || isFetchingUser || isStaking}
+                    >
                       <SelectTrigger className="w-full h-12 bg-secondary/20">
                         <SelectValue placeholder="State" />
                       </SelectTrigger>
@@ -354,7 +358,8 @@ export default function CreateListingPage() {
           <Button
             disabled={isUploading || isFetchingUser || isStaking}
             type="submit"
-            className="h-12">
+            className="h-12"
+          >
             {isUploading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

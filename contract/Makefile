@@ -24,7 +24,7 @@ deployLocal:
 	yarn hardhat run scripts/deploy.js --network anvil
 
 deployLive:
-	yarn hardhat run scripts/deploy.js --network sepolia
+	yarn hardhat run scripts/deploy.js --network op
 
 abigen:
 	node scripts/generateDiamondABI.js
