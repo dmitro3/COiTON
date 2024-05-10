@@ -26,11 +26,10 @@ export const useFetchListings = (shouldFetchData: boolean) => {
 
   async function getUserInitiatedPurchaseArgument(estateId: string) {
     // setIsLoading(true);
-
     const readWriteProvider = getProvider(walletProvider);
     const signer = await readWriteProvider.getSigner();
     const contract = getDiamondContract(signer);
-
+    // console.log("+==========================>>>>> ", estateId);
     try {
       const result = await contract.getUserInitiatedPurchaseArgument(
         signer.address,
@@ -176,7 +175,7 @@ export const useFetchListings = (shouldFetchData: boolean) => {
 
   async function fetchData() {
     setIsLoading(true);
-
+    if (!walletProvider) return;
     const readWriteProvider = getProvider(walletProvider);
     const signer = await readWriteProvider.getSigner();
     const contract = getDiamondContract(signer);
@@ -204,10 +203,13 @@ export const useFetchListings = (shouldFetchData: boolean) => {
 
   useEffect(() => {
     if (!shouldFetchData) return;
-    console.log("++++++++++++=================================>>>>");
+    // console.log(
+    //   "++++++++++++=================================>>>>",
+    //   walletProvider
+    // );
     const fetchDataAndListen = async () => {
       await fetchData();
-
+      if (!walletProvider) return;
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
       const contract = getDiamondContract(signer);
@@ -223,7 +225,7 @@ export const useFetchListings = (shouldFetchData: boolean) => {
 
     fetchDataAndListen();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [walletProvider]);
   return {
     isLoading,
     listings,
@@ -269,6 +271,7 @@ export const useFetchUnApprovedListings = () => {
   }
 
   useEffect(() => {
+    if (!walletProvider) return;
     const fetchDataAndListen = async () => {
       await fetchData();
 
@@ -287,7 +290,7 @@ export const useFetchUnApprovedListings = () => {
 
     fetchDataAndListen();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [walletProvider]);
 
   return { isLoading, listings };
 };
@@ -474,6 +477,7 @@ export const useFetchAllAgreements = () => {
   };
 
   useEffect(() => {
+    if (!walletProvider) return;
     const listenForEvents = async () => {
       await fetchData();
 
@@ -495,7 +499,7 @@ export const useFetchAllAgreements = () => {
 
     listenForEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [walletProvider]);
 
   return { allAgreements, isFetchingAgreements, isError };
 };
@@ -509,7 +513,7 @@ export const useFetchTradingMarket = () => {
 
   const fetchData = async () => {
     setIsFetchingData(true);
-
+    if (!walletProvider) return;
     const readWriteProvider = getProvider(walletProvider);
     const signer = await readWriteProvider.getSigner();
     const contract = getDiamondContract(signer);
@@ -553,7 +557,7 @@ export const useFetchTradingMarket = () => {
   useEffect(() => {
     const listenForEvents = async () => {
       await fetchData();
-
+      if (!walletProvider) return;
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
       const contract = getDiamondContract(signer);
@@ -578,7 +582,7 @@ export const useFetchTradingMarket = () => {
 
     listenForEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [walletProvider]);
 
   async function buyShares(
     estateId: string,
