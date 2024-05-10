@@ -80,9 +80,9 @@ export default function ListingDetailsPage({
 
     fetchListingData();
   }, [
-    getEstateSigner,
-    getUserInitiatedPurchaseArgument,
-    isLoading,
+    // getEstateSigner,
+    // getUserInitiatedPurchaseArgument,
+    // isLoading,
     listings,
     params.id,
     router,
@@ -123,7 +123,8 @@ export default function ListingDetailsPage({
                   "brightness-100 border-2 border-primary":
                     selectedImage === image,
                 }
-              )}>
+              )}
+            >
               <Image
                 src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${image}`}
                 alt={`Image ${index}`}
@@ -190,7 +191,8 @@ export default function ListingDetailsPage({
                       )
                   );
                 }}
-                type="submit">
+                type="submit"
+              >
                 Sign Purchase Agreement
               </Button>
             ) : null}
@@ -240,7 +242,8 @@ export default function ListingDetailsPage({
             {listingData?.features?.map((feature: string, _key: number) => (
               <div
                 className="flex items-start gap-2 text-sm md:text-base text-muted-foreground"
-                key={_key}>
+                key={_key}
+              >
                 <CheckCheck className="w-5 h-5 text-primary" />
                 <p className="flex-1 text-sm">{feature}</p>
               </div>
