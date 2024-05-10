@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 
 // export const SEPOLIA_CHAIN_ID: number = 11155111;
 export const OPTIMISM_CHAIN_ID: number = 11155420;
-// export const LISK_CHAIN_ID: number = 4202;
+export const LISK_CHAIN_ID: number = 4202;
 // export const ANVIL_CHAIN_ID: number = 31337;
 
 // const ethereumSepolia = {
@@ -36,14 +36,14 @@ const optimismSepolia = {
 //   // websocket: wss://opt-sepolia.g.alchemy.com/v2/
 // };
 
-// const liskSepolia = {
-//   chainId: LISK_CHAIN_ID,
-//   name: "Lisk Sepolia Testnet",
-//   currency: "ETH",
-//   explorerUrl: "https://liskscan.com/",
-//   rpcUrl: "http://127.0.0.1:8545",
-//   // websocket: wss://opt-sepolia.g.alchemy.com/v2/
-// };
+const liskSepolia = {
+  chainId: LISK_CHAIN_ID,
+  name: "Lisk Sepolia Testnet",
+  currency: "ETH",
+  explorerUrl: "https://sepolia-blockscout.lisk.com",
+  rpcUrl: "https://rpc.sepolia-api.lisk.com",
+  // websocket: wss://opt-sepolia.g.alchemy.com/v2/
+};
 
 const metadata = {
   name: site.name,
@@ -63,9 +63,9 @@ createWeb3Modal({
   ethersConfig,
   chains: [
     // ethereumSepolia,
-    optimismSepolia,
+    // optimismSepolia,
     // localhost,
-    // liskSepolia
+    liskSepolia,
   ],
   projectId: "35fadd8ea93791ac21f87e7fa5c5d0ec",
   enableOnramp: true,
