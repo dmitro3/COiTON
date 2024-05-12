@@ -423,6 +423,34 @@ contract RealEstate {
             address(l.diamondAddress);
     }
 
+    function getUserListings(
+        address _user
+    ) external view returns (LibAppStorage.Listing[] memory) {
+        uint count;
+
+        for (uint i = 1; i < l.listings.length + 1; i++) {
+            LibAppStorage.Listing memory _listing = l.listing[i];
+
+            if (_listing.owner == _user) {
+                count++;
+            }
+        }
+        LibAppStorage.Listing[] memory return_ = new LibAppStorage.Listing[](
+            count
+        );
+        uint index;
+        for (uint i = 1; i < l.listings.length + 1; i++) {
+            LibAppStorage.Listing memory _listing = l.listing[i];
+
+            if (_listing.owner == _user) {
+                return_[index] = _listing;
+                index++;
+            }
+        }
+
+        return return_;
+    }
+
     // This function is designed to allow an authorized party to sign a purchase agreement for a specified real estate property on the platform.
     //@Param estateId: Identify the specific purchase agreement related to a real estate property.
     //After all the aggrement has been settled the transfer of our token is sent buyer
