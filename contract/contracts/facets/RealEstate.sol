@@ -187,52 +187,52 @@ contract RealEstate {
     }
 
     /// This functions takes in the important information for the listing estate and hash it
-    /// @param owner : the owner's address in the hash helps bind the hash specifically to the owner,
+    // / @param owner : the owner's address in the hash helps bind the hash specifically to the owner,
     //                ensuring that the same data owned by different addresses results in different hashes.
-    /// @param country : The country where the property is located.
-    /// @param state :The state or region within the country where the property is located
-    /// @param city  : The city where the property is located
-    /// @param estateAddress : The specific street address of the property.
-    /// @param postalCode  : The postal code of the property's location.
-    /// @param description : description of the property
-    /// @param price : The listing price of the property
-    /// @param images : Image of the listed house
-    /// @param coverImage : The image that will act as an NFT in the trading platform
-    function computeHash(
-        address owner,
-        string memory country,
-        string memory state,
-        string memory city,
-        string memory estateAddress,
-        uint24 postalCode,
-        string memory description,
-        uint256 price,
-        string memory images,
-        string memory coverImage
-    ) public pure returns (bytes32) {
-        return
-            keccak256(
-                abi.encodePacked(
-                    owner,
-                    country,
-                    state,
-                    city,
-                    estateAddress,
-                    postalCode,
-                    description,
-                    price,
-                    images,
-                    coverImage
-                )
-            );
-    }
+    // / @param country : The country where the property is located.
+    // / @param state :The state or region within the country where the property is located
+    // / @param city  : The city where the property is located
+    // / @param estateAddress : The specific street address of the property.
+    // / @param postalCode  : The postal code of the property's location.
+    // / @param description : description of the property
+    // / @param price : The listing price of the property
+    // / @param images : Image of the listed house
+    // / @param coverImage : The image that will act as an NFT in the trading platform
+    // function computeHash(
+    //     address owner,
+    //     string memory country,
+    //     string memory state,
+    //     string memory city,
+    //     string memory estateAddress,
+    //     uint24 postalCode,
+    //     string memory description,
+    //     uint256 price,
+    //     string memory images,
+    //     string memory coverImage
+    // ) public pure returns (bytes32) {
+    //     return
+    //         keccak256(
+    //             abi.encodePacked(
+    //                 owner,
+    //                 country,
+    //                 state,
+    //                 city,
+    //                 estateAddress,
+    //                 postalCode,
+    //                 description,
+    //                 price,
+    //                 images,
+    //                 coverImage
+    //             )
+    //         );
+    // }
 
-    function isValidSigner(
-        uint agreementId,
-        address signer
-    ) external view returns (bool) {
-        return l.isValidSigner[agreementId][signer];
-    }
+    // function isValidSigner(
+    //     uint agreementId,
+    //     address signer
+    // ) external view returns (bool) {
+    //     return l.isValidSigner[agreementId][signer];
+    // }
 
     //This function is used to start a purchase agreement process for a specific real estate property on the platform
     //@Param estateId: The identifier for the estate being purchased.
