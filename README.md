@@ -1,4 +1,4 @@
-# COLLABORATIVE ONCHAIN INVESTMENT AND TRADING OF NEIGBORHOODS ([COiTON](https://coiton.vercel.app/))
+# COLLABORATIVE ONCHAIN INVESTMENT AND TRADING OF NEIGHBORHOODS ([COiTON](https://coiton.vercel.app/))
 ### A Decentralized Real Estate and Indices Trading Platform.
 
                                    CCCCCCC    OOOOOOO      oo   TTTTTTT    OOOOOOO     N       N
@@ -19,7 +19,7 @@
                         /////////////////////////////////////////////|     |      NFT'S!!!  |  \
                      /////////////////////////////////////////////|        |                |   \
                   ///////////////////////////////////////////////////////////////////////////////\
-                       [      COLLABORATIVE ONCHAIN INVESTMENT AND TRADING OF NEIGBORHOODS     ]
+                       [      COLLABORATIVE ON-CHAIN INVESTMENT AND TRADING OF NEIGHBORHOODS     ]
                        [[[[[[[[]]]]]]]                   (COiTON)                              ]
                        [             ]       BUY AND SELL REAL ESTATE ASSETS                   ]
                        [             ]       TRADE REAL ESTATE INDICES       [[[[[[[[]]]]]]]]  ]
@@ -55,7 +55,7 @@ COiTON offers users enhanced flexibility in trading various property indices tha
 #### COiTON: The structure
 ![Screenshot from 2024-04-20 15-37-06](https://github.com/WebSculptor/decentralized-real-estate-trading-platform/assets/137540755/ba5823d1-2702-4895-9868-c7ca415e7d13)
 
-The schema includes fields for ERC20 and ERC721 tokens, which serve as our payment and trading mechanisms respectively . The ERC20 token is essential for tokenizing the system, requiring users to possess this token to participate in governance. On the other hand, the ERC721 token represents the NFT, as previously mentioned, which facilitates the conversion of listed real estate into NFTs. This allows users the flexibility to trade these NFTs, and due to the nature of ERC721,  users can  buy and sell shares of a single real estate NFT.
+The schema includes fields for ERC20 and ERC721 tokens, which serve as our payment and trading mechanisms respectively. The ERC20 token is essential for tokenizing the system, requiring users to possess this token to participate in governance. On the other hand, the ERC721 token represents the NFT, as previously mentioned, which facilitates the conversion of listed real estate into NFTs. This allows users the flexibility to trade these NFTs, and due to the nature of ERC721,  users can  buy and sell shares of a single real estate NFT.
 
 #### COiTON User Flow
 ![Screenshot from 2024-05-04 09-15-39](https://github.com/WebSculptor/COiTON/assets/137540755/4f5089a6-e16a-4f10-811c-d889b0cdf20e)
@@ -63,7 +63,7 @@ The schema includes fields for ERC20 and ERC721 tokens, which serve as our payme
 
 The verification process for real estate is crucial to confirm the legitimacy of properties listed on COiTON. To facilitate this, a DAO has been integrated into the system, managed by the land and property administrations across various states and regions. This DAO acts as a multi-process approval mechanism for authenticating listed real estate. It enhances COiTON's security by mitigating potential vulnerabilities in the services it offers.
 
-As a result, each DAO must be registered specifically for each state and region. This necessity arises because different states have their own unique land and property regulations. By having separate DAO for different states, COiTON can accommodate the varied requirements of listed properties from different regions, ensuring a flexible and secure platform.
+As a result, each DAO must be registered specifically for each state and region. This necessity arises because different states have their own unique land and property regulations. By having separate DAOs for different states, COiTON can accommodate the varied requirements of listed properties from different regions, ensuring a flexible and secure platform.
 
 
 Refer [HERE](https://miro.com/app/board/uXjVKSLpxGc=/?share_link_id=836656075422) for clear image
