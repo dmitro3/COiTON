@@ -19,7 +19,7 @@
                         /////////////////////////////////////////////|     |      NFT'S!!!  |  \
                      /////////////////////////////////////////////|        |                |   \
                   ///////////////////////////////////////////////////////////////////////////////\
-                       [      COLLABORATIVE ON-CHAIN INVESTMENT AND TRADING OF NEIGHBORHOODS     ]
+                       [      COLLABORATIVE ON-CHAIN INVESTMENT AND TRADING OF NEIGHBORHOODS   ]
                        [[[[[[[[]]]]]]]                   (COiTON)                              ]
                        [             ]       BUY AND SELL REAL ESTATE ASSETS                   ]
                        [             ]       TRADE REAL ESTATE INDICES       [[[[[[[[]]]]]]]]  ]
