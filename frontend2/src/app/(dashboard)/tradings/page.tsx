@@ -22,10 +22,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@radix-ui/react-label";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { useContractContext } from "@/providers/contract";
 import { useRouter } from "next/navigation";
 import MaxWrapper from "@/components/shared/max-wrapper";
 import { shortenAddress } from "@/lib/utils";
