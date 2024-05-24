@@ -75,7 +75,7 @@ createWeb3Modal({
     localhost,
     // liskSepolia,
   ],
-  projectId: projectId,
+  projectId: "0a4f797ca31c020f3cb7579960b64b36",
   enableOnramp: true,
   enableAnalytics: false,
   themeVariables: {
