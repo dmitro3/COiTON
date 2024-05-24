@@ -8,14 +8,14 @@ import {
 } from "@web3modal/ethers/react";
 import { ReactNode } from "react";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
 export const SEPOLIA_CHAIN_ID: number = 11155111;
 export const OPTIMISM_CHAIN_ID: number = 11155420;
 export const LISK_CHAIN_ID: number = 4202;
 export const ANVIL_CHAIN_ID: number = 31337;
-
-export const projectId = process.env.NEXT_PUBLIC_W3M_PROJECT_ID;
-
-if (!projectId) throw new Error("Project ID is not defined");
 
 const ethereumSepolia = {
   chainId: SEPOLIA_CHAIN_ID,
@@ -70,18 +70,14 @@ const ethersConfig = defaultConfig({
 createWeb3Modal({
   ethersConfig,
   chains: [
-    // ethereumSepolia,
+    ethereumSepolia,
     // optimismSepolia,
-    localhost,
+    // localhost,
     // liskSepolia,
   ],
   projectId: "0a4f797ca31c020f3cb7579960b64b36",
   enableOnramp: true,
-  enableAnalytics: false,
-  themeVariables: {
-    "--w3m-accent": "#019D91",
-    "--w3m-font-size-master": "0.8",
-  },
+  enableAnalytics: true,
 });
 
 export function Web3ModalProvider({ children }: { children: ReactNode }) {
@@ -94,7 +90,9 @@ export function Web3ModalProvider({ children }: { children: ReactNode }) {
     "--w3m-font-size-master": "0.8",
   });
 
-  return children;
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
 }
 
 // import React, { ReactNode } from "react";
