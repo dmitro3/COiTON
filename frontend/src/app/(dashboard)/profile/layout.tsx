@@ -1,14 +1,18 @@
 "use client";
 
 import MaxWrapper from "@/components/shared/max-wrapper";
+import { useAuth } from "@/context/authContext";
 import { cn, shortenAddress } from "@/lib/utils";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
 export default function ProfileLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+
+  const { credentials } = useAuth();
   const { address } = useWeb3ModalAccount();
 
   return (
@@ -18,7 +22,17 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
 
         <div className="flex flex-col border-b -mt-14 md:-mt-20 mb-4">
           <div className="flex flex-col items-center justify-center mb-2">
-            <div className="w-28 h-28 md:w-32 md:h-32 xl:w-40 xl:h-40 rounded-full bg-secondary border-4 border-background"></div>
+            <div className="w-28 h-28 md:w-32 md:h-32 xl:w-40 xl:h-40 rounded-full bg-secondary border-4 border-background overflow-hidden">
+              <Image
+                src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                  credentials?.avatar
+                )}`}
+                alt={`${credentials?.name} profile picture`}
+                width={160}
+                height={160}
+                className="object-contain object-center rounded-full"
+              />
+            </div>
             <div className="mt-2 mb-4 text-center">
               <h1 className="text-lg md:text-xl font-semibold">
                 Abdullahi Salihu
