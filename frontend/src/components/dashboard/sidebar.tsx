@@ -11,6 +11,7 @@ import Logo from "@/components/shared/logo";
 import { LogOut, Settings } from "lucide-react";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { logoutUser } from "@/auth";
+import { LogoutModal } from "./logout-modal";
 
 const side_links = [
   {
@@ -270,7 +271,9 @@ const side_links = [
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
+
   const { address } = useWeb3ModalAccount();
+
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
@@ -337,17 +340,14 @@ export default function Sidebar() {
             Settings
           </Link>
 
-          <div
-            onClick={() => {
-              logoutUser();
-              router.push("/sign-in");
-            }}
-            className="flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-red-500/10 hover:text-red-400 text-sm font-medium group cursor-pointer">
-            <span className="grid mr-3 place-items-center">
-              <LogOut className="w-6 h-6" />
-            </span>
-            Log Out
-          </div>
+          <LogoutModal>
+            <div className="flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-red-500/10 hover:text-red-400 text-sm font-medium group cursor-pointer">
+              <span className="grid mr-3 place-items-center">
+                <LogOut className="w-6 h-6" />
+              </span>
+              Log Out
+            </div>
+          </LogoutModal>
         </div>
       </nav>
     </div>

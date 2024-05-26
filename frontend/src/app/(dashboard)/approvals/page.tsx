@@ -7,7 +7,7 @@ import { getDaoContract, getProvider } from "@/connections";
 import { useFetchUnApprovedListings } from "@/hooks/contract";
 import { shortenAddress } from "@/lib/utils";
 import { useWeb3ModalProvider } from "@web3modal/ethers/react";
-import { Check, Loader2, X } from "lucide-react";
+import { Check, Loader, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -135,7 +135,7 @@ export default function ApprovalsPage() {
                       // console.log({state:lt.region[0], index:_key + 1, id:lt.id});
                     }}>
                     {isApproving ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader className="w-4 h-4 animate-spin" />
                     ) : (
                       <Check className="w-4 h-4" />
                     )}

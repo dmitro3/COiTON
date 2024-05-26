@@ -2,15 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
-  205, 92%, 33%
-  https://www.behance.net/gallery/167912767/Real-Estate-Dashboard-Design
-  https://resido-v2.smartdemowp.com/listings/?editlisting=grid
-  https://resido-v2.smartdemowp.com/listings/westchester-village/
-  https://resido-v2.smartdemowp.com/listings/resort-valley-ocs/?editlisting=2
-  https://resido-v2.smartdemowp.com/agents/denial-parker/
-*/
-
 @layer base {
   :root {
     --background: 0 0% 3.9%;

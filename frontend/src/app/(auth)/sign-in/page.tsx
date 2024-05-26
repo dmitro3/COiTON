@@ -73,12 +73,8 @@ export default function SignInPage() {
         return;
       } else {
         toast.success(
-          `Welcome back, ${(data?.user?.user_metadata?.name).split(" ")[0]}`,
-          {
-            description: "You are being redirected to the dashboard",
-          }
+          `Welcome back, ${(data?.user?.user_metadata?.name).split(" ")[0]}`
         );
-
         router.replace("/dashboard");
       }
     } catch (error: any) {
@@ -88,6 +84,7 @@ export default function SignInPage() {
       console.log(error);
     } finally {
       toast.dismiss();
+      setIsLoading(false);
     }
   }
 

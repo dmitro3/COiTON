@@ -72,8 +72,11 @@ export default function SignUpPage() {
           description: error,
         });
         return;
-      } else {
+      } else if (data?.user) {
         toast.success("Registration successful");
+        router.push("/sign-in");
+      } else {
+        toast.error("Could not register user");
         router.push("/sign-in");
       }
     } catch (error: any) {

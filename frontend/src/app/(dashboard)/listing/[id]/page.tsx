@@ -55,8 +55,9 @@ export default function ListingDetailsPage({
     owner: listing[1],
     region: listing[2],
     postalCode: Number(listing[3]),
-    description: listing[4].split(";")[0],
-    features: listing[4].split(";")[1].split("\n"),
+    title: listing[4].split(";")[0],
+    description: listing[4].split(";")[1],
+    amenities: listing[4].split(";")[2].split("\n"),
     price: Number(listing[5]),
     images: listing[6].split(";"),
     tokenId: Number(listing[7]),
@@ -72,6 +73,7 @@ export default function ListingDetailsPage({
     getEstateSigner,
     signPurchaseAgreement,
   } = useFetchListings(true);
+
   const { handleApproveERC20, handleApproveERC721 } = useStake();
   const [isFetchingListing, setIsFetchingListing] = useState(false);
   const [listingData, setListingData] = useState<any>();
@@ -90,11 +92,11 @@ export default function ListingDetailsPage({
           if (foundListing) {
             const lt = transformListing(foundListing);
             setListingData(lt);
+            // console.log(lt);
             setPurchaseAgreement(
               await getUserInitiatedPurchaseArgument(lt.tokenId.toString())
             );
             setPurchaseSigner(await getEstateSigner(lt.tokenId.toString()));
-            setIsFetchingListing(false);
           } else {
             toast.error("Listing not found");
             router.push("/dashboard");
@@ -102,19 +104,15 @@ export default function ListingDetailsPage({
         } catch (error) {
           console.error("Error:", error);
           router.push("/dashboard");
+        } finally {
+          setIsFetchingListing(false);
         }
       }
     };
 
     fetchListingData();
-  }, [
-    getEstateSigner,
-    getUserInitiatedPurchaseArgument,
-    isLoading,
-    listings,
-    params.id,
-    router,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, listings, params.id, router]);
 
   function minus30Percent(number: number) {
     number = Number(number);
@@ -129,24 +127,21 @@ export default function ListingDetailsPage({
     <div className="w-full flex flex-col">
       <div className="flex flex-col my-6 md:my-10 mx-auto max-w-[1050px] w-full">
         <h1 className="text-2xl md:text-3xl font-semibold">
-          Luxury Sunset Vista Villa
+          {listingData?.title}
         </h1>
         <div className="flex flex-col gap-1 md:flex-row md:gap-3">
-          <p className="text-xs md:text-sm lg:text-lg font-medium flex items-center">
+          <p className="text-xs md:text-sm lg:text-base font-medium flex items-center">
             <MapPin className="mr-2 w-4 h-4" />
             {listingData?.region.split(";").join(", ")}
-          </p>
-          <p className="text-xs md:text-sm lg:text-lg font-medium flex items-center">
-            <Clock className="mr-2 w-4 h-4" /> 11 Days Ago
           </p>
         </div>
         <div className="flex items-center md:items-end justify-between mt-3 md:mt-4 pt-3 md:pt-4 border-t">
           <h2 className="text-xl md:text-2xl font-medium">
             <span className="font-bold">
-              ₦ {listingData?.price?.toLocaleString()}
+              $ {listingData?.price?.toLocaleString()}
             </span>{" "}
             <span className="text-base md:text-lg text-primary italic line-through">
-              ₦ {minus30Percent(listingData?.price).toLocaleString()}
+              $ {minus30Percent(listingData?.price).toLocaleString()}
             </span>
           </h2>
           <div className="flex items-center gap-2">
@@ -213,21 +208,19 @@ export default function ListingDetailsPage({
             className="w-full h-full flex flex-col gap-3 aspect-[1.6] xl:aspect-[1.8]">
             <div className="p-1 md:p-1.5 bg-secondary rounded-lg sm:rounded-xl flex-1 h-auto">
               <CarouselContent className="aspect-[1.6] xl:aspect-[1.8] rounded-lg sm:rounded-xl bg-background">
-                {listingData?.images
-                  .split(";")
-                  .map((image: string, index: number) => (
-                    <CarouselItem key={index}>
-                      <Image
-                        src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${image}`}
-                        alt={`Image ${index}`}
-                        width={200}
-                        height={200}
-                        priority
-                        quality={100}
-                        className="h-full w-full object-cover rounded-lg sm:rounded-xl"
-                      />
-                    </CarouselItem>
-                  ))}
+                {listingData?.images.map((image: string, index: number) => (
+                  <CarouselItem key={index}>
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_IPFS_GATEWAY}/${image}`}
+                      alt={`Image ${index}`}
+                      width={200}
+                      height={200}
+                      priority
+                      quality={100}
+                      className="h-full w-full object-cover rounded-lg sm:rounded-xl"
+                    />
+                  </CarouselItem>
+                ))}
               </CarouselContent>
             </div>
             <div className="flex items-center justify-between gap-4 mx-auto max-w-[1050px] w-full">
@@ -248,7 +241,7 @@ export default function ListingDetailsPage({
             Property Description
           </h2>
           <pre className="font-sans text-sm md:text-base text-muted-foreground whitespace-pre-wrap">
-            {listingData?.description.split(";")[0]}
+            {listingData?.description}
           </pre>
         </div>
         <div className="flex flex-col">
@@ -267,7 +260,7 @@ export default function ListingDetailsPage({
           </div>
           <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground mt-2">
             <span className="font-bold">Published On:</span>
-            <p>{formatDate(Number(listingData?.createdAt))}</p>
+            <p>{formatDate(listingData?.createdAt)}</p>
           </div>
         </div>
         <div className="flex flex-col">
@@ -275,17 +268,14 @@ export default function ListingDetailsPage({
             Amenities
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-2 gap-3">
-            {listingData?.description
-              ?.split(";")[1]
-              .split("\n")
-              .map((feature: string, _key: number) => (
-                <div
-                  className="flex items-start gap-2 text-sm md:text-base text-muted-foreground"
-                  key={_key}>
-                  <CheckCheck className="w-5 h-5 text-primary" />
-                  <p className="flex-1 text-sm">{feature}</p>
-                </div>
-              ))}
+            {listingData?.amenities.map((feature: string, _key: number) => (
+              <div
+                className="flex items-start gap-2 text-sm md:text-base text-muted-foreground"
+                key={_key}>
+                <CheckCheck className="w-5 h-5 text-primary" />
+                <p className="flex-1 text-sm">{feature}</p>
+              </div>
+            ))}
           </div>
         </div>
         <div className="w-full p-0 sm:p-4 md:p-6 bg-background rounded sm:rounded-lg md:rounded-xl border-0 sm:border">

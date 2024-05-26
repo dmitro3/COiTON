@@ -26,6 +26,7 @@ import {
 import { useAuth } from "@/context/authContext";
 import { useWeb3Modal } from "@web3modal/ethers/react";
 import { logoutUser } from "@/auth";
+import { LogoutModal } from "./logout-modal";
 
 export function Menu() {
   const router = useRouter();
@@ -82,7 +83,7 @@ export function Menu() {
         <DropdownMenuLabel>Menu</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => router.push("/profile/assets")}>
+          <DropdownMenuItem onClick={() => router.push("/profile")}>
             <User className="mr-2 h-4 w-4" />
             <span>Profile</span>
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
@@ -107,16 +108,13 @@ export function Menu() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => {
-            logoutUser();
-            router.push("/sign-in");
-          }}
-          className="hover:bg-red-500/10 hover:text-red-400">
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem>
+        <LogoutModal>
+          <div className="hover:bg-red-500/10 hover:text-red-400 flex items-center relative cursor-pointer select-none rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          </div>
+        </LogoutModal>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -10,9 +10,10 @@ import {
   useStake,
 } from "@/hooks/contract";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
+import { useAuth } from "@/context/authContext";
 
 export default function AgreementsPage() {
-  const { address } = useWeb3ModalAccount();
+  const { credentials } = useAuth();
   const { signPurchaseAgreement } = useFetchListings(false);
   const { handleApproveERC20, handleApproveERC721 } = useStake();
   const { isFetchingAgreements, allAgreements, isError } =
@@ -23,7 +24,7 @@ export default function AgreementsPage() {
       <MaxWrapper className="mb-6 xl:mb-6 px-0 lg:px-0 xl:px-0 2xl:px-4">
         <div className="bg-transparent md:bg-secondary/20 md:border px-0 md:px-6 rounded-xl">
           <p className="pb-4 md:py-6 text-primary text-sm md:text-base font-bold border-b">
-            [ List of all agreements by {shortenAddress(`${address}`)} ]
+            [ List of all agreements by {shortenAddress(credentials?.address)} ]
           </p>
 
           {isFetchingAgreements ? (
