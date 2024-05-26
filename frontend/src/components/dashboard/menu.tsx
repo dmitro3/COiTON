@@ -108,7 +108,10 @@ export function Menu() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={logoutUser}
+          onClick={() => {
+            logoutUser();
+            router.push("/sign-in");
+          }}
           className="hover:bg-red-500/10 hover:text-red-400">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
