@@ -1,5 +1,5 @@
 import { createAvatar } from "@dicebear/core";
-import { pixelArt } from "@dicebear/collection";
+import { adventurerNeutral } from "@dicebear/collection";
 import { supabase } from "@/constants";
 import { toast } from "sonner";
 
@@ -14,7 +14,7 @@ export const registerUser = async ({
   password: string;
   address: any;
 }) => {
-  const avatar = createAvatar(pixelArt, {
+  const avatar = createAvatar(adventurerNeutral, {
     seed: `${name + email + address + password}`,
   }).toString();
 
@@ -23,7 +23,7 @@ export const registerUser = async ({
       email,
       password,
       options: {
-        emailRedirectTo: "http://localhost:3000/dashboard",
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_AUTH_REDIRECT}/dashboard`,
         data: {
           name,
           address,

@@ -73,11 +73,8 @@ export default function SignUpPage() {
         });
         return;
       } else {
-        toast.success("Confirm registration", {
-          description: `A confirmation email has been sent to ${data?.user?.user_metadata?.email}.`,
-        });
-
-        router.replace(`/confirm?message=${data?.user?.user_metadata?.email}`);
+        toast.success("Registration successful");
+        router.push("/sign-in");
       }
     } catch (error: any) {
       toast.error("Something went wrong", {

@@ -279,8 +279,7 @@ export default function CreateListingPage() {
                       </FormControl>
                       {address && (
                         <FormDescription>
-                          Your address has been added as the owner
-                          automatically.
+                          Your address was automatically listed as the owner.
                         </FormDescription>
                       )}
                       <FormMessage />
