@@ -7,6 +7,7 @@ import {
   getERC721Contract,
   getProvider,
 } from "@/connections";
+import { useAuth } from "@/context/authContext";
 import {
   useWeb3ModalAccount,
   useWeb3ModalProvider,
@@ -181,17 +182,11 @@ export const useFetchListings = (shouldFetchData: boolean) => {
       return;
     }
     const readWriteProvider = getProvider(walletProvider);
-    console.log(`READ WRITE PROVIDER: ${readWriteProvider} ==========`);
     const signer = await readWriteProvider.getSigner();
-    console.log(`SIGNER: ${signer} ==========`);
     const contract = getDiamondContract(signer);
-    console.log(`CONTRACT: ${contract} ==========`);
 
     try {
-      console.log(`TRYING TO GET LISTINGS ==========`);
       const tx = await contract.getListings();
-      console.log(`FETCHED SUCCESSFULLY ==========`);
-      console.log("Transaction result:", tx);
       setListings(tx);
     } catch (error: any) {
       console.error("UNABLE TO FETCH LISTINGS:", error);
@@ -304,7 +299,6 @@ export const useFetchUnApprovedListings = () => {
 
 export const useCheckIfUserStaked = () => {
   const { walletProvider }: any = useWeb3ModalProvider();
-  const { address } = useWeb3ModalAccount();
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -337,7 +331,6 @@ export const useCheckIfUserStaked = () => {
 
 export const useStake = () => {
   const { walletProvider }: any = useWeb3ModalProvider();
-  const { address } = useWeb3ModalAccount();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -351,11 +344,7 @@ export const useStake = () => {
     const contract = getERC20Contract(signer);
 
     try {
-      const tx = await contract.approve(
-        receipient,
-        // process.env.NEXT_PUBLIC_DAO_ADDRESS,
-        amount
-      );
+      const tx = await contract.approve(receipient, amount);
       const result = await tx.wait();
 
       if (result.status === 0) {
@@ -427,17 +416,17 @@ export const useFetchAllAgreements = () => {
         owner: listing[1],
         region: listing[2],
         postalCode: Number(listing[3]),
-        description: listing[4].split(";")[0],
-        features: listing[4].split(";")[1].split("\n"),
+        title: listing[4].split(";")[0],
+        description: listing[4].split(";")[1],
+        amenities: listing[4].split(";")[2].split("\n"),
         price: Number(listing[5]),
         images: listing[6].split(";"),
-        tokenId: listing[7],
+        tokenId: Number(listing[7]),
         coverImage: listing[8],
         createdAt: Number(listing[9]),
       });
 
       const tx = await contract.getPurchaseAgreementSigners(signer.address);
-      // console.log(tx[0][0].executed);
       const dt = {
         agr: tx[0],
         hasSigned: tx[1],
@@ -680,4 +669,54 @@ export const useFetchTradingMarket = () => {
   }
 
   return { market, isFetchingData, isError, buyShares, sellShares };
+};
+
+export const useFetchUserListings = () => {
+  const { walletProvider }: any = useWeb3ModalProvider();
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [listings, setListings] = useState<any>();
+  const [userBalance, setUserBalance] = useState<string>();
+
+  async function fetchData(address: string) {
+    setIsLoading(true);
+    if (!walletProvider) {
+      console.log("No wallet provider available");
+      setIsLoading(false);
+      return;
+    }
+    const readWriteProvider = getProvider(walletProvider);
+    const signer = await readWriteProvider.getSigner();
+    const contract = getDiamondContract(signer);
+    const contractERC20 = getERC20Contract(signer);
+
+    try {
+      const tx = await contract.getUserListings(address);
+      const tx2 = await contractERC20.balanceOf(address);
+
+      setListings(tx);
+      setUserBalance(ethers.formatUnits(tx2, 18));
+    } catch (error: any) {
+      console.error("UNABLE TO FETCH LISTINGS:", error);
+
+      if (error.reason === "rejected") {
+        toast.error("Failed transaction", {
+          description: "You rejected the transaction",
+        });
+      } else {
+        toast.error(error.code, {
+          description: error.message,
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return {
+    fetchData,
+    isLoading,
+    listings,
+    userBalance,
+  };
 };

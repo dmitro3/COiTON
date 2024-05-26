@@ -10,10 +10,9 @@ import {
 import { Web3ModalProvider } from "./web3modal";
 import { usePathname, useRouter } from "next/navigation";
 
-import { supabase } from "@/constants";
+import { site, supabase } from "@/constants";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
-
-// Create a default value for the context
+import { toast } from "sonner";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -31,41 +30,58 @@ export default function AuthContextProvider({
   const [isFetchingUser, setIsFetchingUser] = useState<boolean>(true);
   const [isError, setIsError] = useState<string>("");
 
+  const getUser = async () => {
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      return { data, error };
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      return { data: null, error };
+    } finally {
+      setIsFetchingUser(false);
+    }
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const { data, error } = await supabase.auth.getUser();
+        const { data, error } = await getUser();
+
         if (!error && data?.user) {
-          setCredentials({
-            name: data?.user?.user_metadata?.name,
-            address: data?.user?.user_metadata?.address,
-            email: data?.user?.user_metadata?.email,
-            avatar: data?.user?.user_metadata?.avatar,
-            id: data?.user?.id,
-          });
+          const userCredentials = {
+            name: data.user.user_metadata?.name,
+            address: data.user.user_metadata?.address,
+            email: data.user.user_metadata?.email.toLowerCase(),
+            avatar: data.user.user_metadata?.avatar,
+            id: data.user.id,
+          };
+          setCredentials(userCredentials);
         } else if (!data?.user) {
-          if (
-            pathname === "/" ||
-            pathname === "/sign-in" ||
-            pathname === "/sign-up"
-          )
-            return;
-          router.push("/sign-in");
+          toast.error("Authentication Error", {
+            description: `Please sign in to continue using ${site.name}`,
+          });
+        } else {
+          setIsError("Error fetching user");
         }
       } catch (error) {
-        setIsError("Error fetching user");
         console.error("Error fetching user:", error);
-      } finally {
-        setIsFetchingUser(false);
+        setIsError("Error fetching user");
       }
     };
 
     fetchUser();
-  }, [router, address, pathname]);
+  }, [router, address]);
+
+  const providerValues = {
+    credentials,
+    isFetchingUser,
+    isError,
+    setCredentials,
+    getUser,
+  };
 
   return (
-    <AuthContext.Provider
-      value={{ credentials, isFetchingUser, isError, setCredentials }}>
+    <AuthContext.Provider value={providerValues}>
       <Web3ModalProvider>{children}</Web3ModalProvider>
     </AuthContext.Provider>
   );

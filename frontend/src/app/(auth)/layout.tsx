@@ -2,19 +2,27 @@
 
 import LoadingComponent from "@/components/shared/loader";
 import { buttonVariants } from "@/components/ui/button";
+import { site } from "@/constants";
 import { useAuth } from "@/context/authContext";
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
+import { MoveLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+
   const { isFetchingUser } = useAuth();
 
   if (isFetchingUser)
-    return <LoadingComponent text="Checking if you're authenticated..." />;
+    return <LoadingComponent text="Authenticating, please wait..." />;
 
   return (
     <div className="flex h-screen">
@@ -34,9 +42,11 @@ export default function AuthLayout({
         <Link
           href="/"
           className={buttonVariants({
-            variant: "outline",
+            variant: "ghost",
+            size: "sm",
             className: "w-max h-12 absolute top-4 md:top-6 left-4 md:left-6",
           })}>
+          <MoveLeft className="w-4 h-4 mr-2" />
           Go Back
         </Link>
         {children}

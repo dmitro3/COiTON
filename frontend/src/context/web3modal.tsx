@@ -62,10 +62,10 @@ const ethersConfig = defaultConfig({
 createWeb3Modal({
   ethersConfig,
   chains: [
-    // ethereumSepolia,
+    ethereumSepolia,
     optimismSepolia,
     // localhost,
-    // liskSepolia
+    liskSepolia,
   ],
   projectId: "0a4f797ca31c020f3cb7579960b64b36",
   enableOnramp: true,

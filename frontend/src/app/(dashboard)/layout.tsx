@@ -2,21 +2,42 @@
 
 import DashboardHeader from "@/components/dashboard/header";
 import Sidebar from "@/components/dashboard/sidebar";
-
 import LoadingComponent from "@/components/shared/loader";
-
+import { site } from "@/constants";
 import { useAuth } from "@/context/authContext";
-import Image from "next/image";
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { useRouter } from "next/navigation";
 import React, { ReactNode, useEffect } from "react";
+import { toast } from "sonner";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
+  const { address } = useWeb3ModalAccount();
   const router = useRouter();
 
-  const { isFetchingUser } = useAuth();
+  const { isFetchingUser, credentials, getUser } = useAuth();
 
-  if (isFetchingUser)
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data, error }: any = await getUser();
+      if (!data?.user || error) {
+        toast.error("Authentication Error", {
+          description: `Please sign in to continue using ${site.name}.`,
+        });
+        router.push("/sign-in");
+      } else if (data.user.user_metadata?.address !== address) {
+        toast.error("Wallet address changed", {
+          description: "Link the wallet address you registered with.",
+        });
+        router.push("/sign-in");
+      }
+    };
+
+    fetchUser();
+  }, [address, router, getUser]);
+
+  if (isFetchingUser) {
     return <LoadingComponent text="Fetching credentials..." />;
+  }
 
   return (
     <div className="flex w-full h-full">
@@ -28,15 +49,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <DashboardHeader />
 
         <div className="flex-1 h-full px-4 pt-2 mb-4 relative">{children}</div>
-        {/* <Image
-          src="/svg/home.svg"
-          alt="home"
-          width={800}
-          height={800}
-          quality={100}
-          priority
-          className="fixed -bottom-0 right-0 select-none pointer-events-none"
-        /> */}
       </main>
     </div>
   );

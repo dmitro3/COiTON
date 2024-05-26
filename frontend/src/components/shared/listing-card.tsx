@@ -22,11 +22,14 @@ export default function ListingCard({ listing }: { listing: any }) {
         </div>
 
         <div className="py-4 px-5 h-max">
+          <h1 className="text-sm md:text-base font-semibold line-clamp-1">
+            {listing?.description.split(";")[0]}
+          </h1>
           <p className="text-xs md:text-sm text-muted-foreground line-clamp-1">
-            {listing.description}
+            {listing.description.split(";")[1]}
           </p>
 
-          <div className="flex items-center gap-2 text-muted-foreground py-4 border-b">
+          <div className="flex items-center gap-1.5 text-muted-foreground py-2 border-b">
             <Clock className="w-4 h-4" />
             <p className="text-xs md:text-sm font-medium">
               {formatDate(Number(listing.createdAt))}
@@ -34,8 +37,8 @@ export default function ListingCard({ listing }: { listing: any }) {
           </div>
 
           <div className="flex items-center justify-between pt-3 pb-1">
-            <p className="text-base md:text-lg font-bold">
-              ₦{listing?.price?.toLocaleString()}
+            <p className="text-xs md:text-sm font-bold">
+              ${listing?.price?.toLocaleString()}
             </p>
             <p className="text-xs md:text-sm font-medium text-muted-foreground">
               {shortenAddress(`${listing.owner}`)}
