@@ -1,42 +1,30 @@
 "use client";
 
-import ListingCard from "@/components/card/ListingCard";
-import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useFetchListings } from "@/hooks/useFetchBackend";
-import { PlusIcon } from "lucide-react";
 import Link from "next/link";
+import { PlusIcon } from "lucide-react";
+import ListingCard from "@/components/shared/listing-card";
+import { useFetchListings } from "@/hooks/contract";
+import MaxWrapper from "@/components/shared/max-wrapper";
 
 export default function DashboardPage() {
   const { isLoading, listings } = useFetchListings(true);
 
   return (
-    <div className="flex-1 flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl md:text-2xl capitalize font-bold">
-          Find your dream home
-        </h1>
-
-        <Link
-          href="/create-listing"
-          className={buttonVariants({ variant: "outline" })}>
-          Add Property
-        </Link>
-      </div>
-
-      <div className="mt-4 py-6 border-t grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+    <div className="mb-4 md:mb-6">
+      <MaxWrapper className="px-0 lg:px-0 xl:px-0 2xl:px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         {isLoading ? (
           Array.from({ length: 8 }).map((_, _key) => (
-            <Skeleton key={_key} className="w-full rounded-xl h-[416px]" />
+            <Skeleton key={_key} className="w-full rounded-xl h-[363px]" />
           ))
-        ) : !listings || listings.length === 0 ? (
+        ) : !listings || listings?.length === 0 ? (
           <Link
-            href="/create-listing"
-            className="bg-secondary/30 hover:bg-secondary/40 w-full rounded-xl h-auto aspect-[1] sm:aspect-auto sm:h-[416px] transition flex items-center justify-center flex-col">
+            href="/new"
+            className="bg-secondary/20 hover:bg-secondary/30 w-full rounded-xl h-auto aspect-[1] sm:aspect-auto sm:h-[363px] transition flex items-center justify-center flex-col">
             <div className="w-20 h-20 rounded-full border-2 border-dashed flex items-center justify-center">
-              <PlusIcon className="w-10 h-10" />
+              <PlusIcon className="w-8 h-8" />
             </div>
-            <p className="mt-2 text-sm md:text-base">Add Property</p>
+            <p className="mt-2 text-sm md:text-base">Create a new listing</p>
           </Link>
         ) : (
           listings?.map((listing: any) => {
@@ -55,7 +43,7 @@ export default function DashboardPage() {
             return <ListingCard key={lt.id} listing={lt} />;
           })
         )}
-      </div>
+      </MaxWrapper>
     </div>
   );
 }

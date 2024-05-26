@@ -13,7 +13,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { useFetchTradingMarket, useStake } from "@/hooks/useFetchBackend";
 import {
   Dialog,
   DialogContent,
@@ -23,52 +22,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@radix-ui/react-label";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import MaxWrapper from "@/components/shared/max-wrapper";
+import { shortenAddress } from "@/lib/utils";
+import { Handshake, ShoppingCart } from "lucide-react";
+import { useFetchTradingMarket, useStake } from "@/hooks/contract";
+
 enum ACTION_TYPE {
   BUY,
   Sell,
 }
-// const tradings = [
-//   {
-//     token: "CTN",
-//     buy: "$150",
-//     sell: "$250.00",
-//     amount: "10",
-//   },
-//   {
-//     token: "CTN",
-//     buy: "$150",
-//     sell: "$250.00",
-//     amount: "10",
-//   },
-//   {
-//     token: "CTN",
-//     buy: "$150",
-//     sell: "$250.00",
-//     amount: "10",
-//   },
-//   {
-//     token: "CTN",
-//     buy: "$150",
-//     sell: "$250.00",
-//     amount: "10",
-//   },
-//   {
-//     token: "CTN",
-//     buy: "$150",
-//     sell: "$250.00",
-//     amount: "10",
-//   },
-//   {
-//     token: "CTN",
-//     buy: "$150",
-//     sell: "$250.00",
-//     amount: "10",
-//   },
-// ];
-
 const Comp = ({
   open,
   onChange,
@@ -112,6 +77,7 @@ const Comp = ({
 );
 
 export default function TradingsPage() {
+  const router = useRouter();
   const { handleApproveERC20 } = useStake();
   const { isFetchingData, market, isError, buyShares, sellShares } =
     useFetchTradingMarket();
@@ -121,6 +87,7 @@ export default function TradingsPage() {
     null
   );
   const inputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className="flex-1 flex flex-col gap-4">
       <Comp
@@ -173,60 +140,146 @@ export default function TradingsPage() {
           setCurrentAction(null);
         }}
       />
-      <h1 className="text-xl md:text-2xl capitalize font-bold">Tradings</h1>
 
-      <div className="my-2 rounded-xl bg-secondary/30 flex-1 py-4 px-6">
-        <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
-          <TableHeader>
-            <TableRow className="text-sm md:text-base font-semibold">
-              <TableHead className="w-[150px]">Token ID</TableHead>
-              <TableHead>Current Price</TableHead>
-              <TableHead>Available Shares</TableHead>
-              <TableHead>Share Price</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {market.map((trades, _id) => (
-              <TableRow key={_id}>
-                <TableCell className="h-12 font-medium">
+      <MaxWrapper className="my-6 xl:my-6 px-0 lg:px-0 xl:px-0 2xl:px-4">
+        <div className="hidden sm:flex flex-1">
+          <Table>
+            <TableHeader>
+              <TableRow className="text-sm md:text-base font-semibold">
+                <TableHead>#ID</TableHead>
+                <TableHead className="hidden md:flex items-center">
+                  Token Owner
+                </TableHead>
+                <TableHead>Current Price</TableHead>
+                <TableHead>Available Shares</TableHead>
+                <TableHead>Share Price</TableHead>
+                <TableHead className="text-right"> </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {market.map((trades: any, _id: number) => (
+                <TableRow
+                  key={_id}
+                  onClick={() => router.push(`/listing/${trades?.listing?.id}`)}
+                  className="cursor-pointer group">
+                  <TableCell className="py-2 font-medium group-hover:underline">
+                    {trades.listing.tokenId < 9
+                      ? `0${trades.listing.tokenId}`
+                      : trades.listing.tokenId}
+                  </TableCell>
+                  <TableCell className="py-2 text-muted-foreground font-normal hidden md:flex">
+                    {shortenAddress(trades.listing.owner)}
+                  </TableCell>
+                  <TableCell className="py-2 text-primary font-semibold">
+                    ₦ {Number(trades.market.currentPrice).toLocaleString()}
+                  </TableCell>
+                  <TableCell className="py-2 text-red-500 font-semibold">
+                    {100 - Number(trades.market.consumedShares)}
+                  </TableCell>
+                  <TableCell className="py-2 text-orange-500 font-semibold">
+                    ₦{" "}
+                    {Math.round(
+                      (Number(trades.market.currentPrice) * 1) / 100
+                    ).toLocaleString()}
+                  </TableCell>
+                  <TableCell className="py-2 flex items-center justify-end gap-3">
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsOpen(true);
+                        setSelectedTokenIndex(_id);
+                        setCurrentAction(ACTION_TYPE.BUY);
+                      }}>
+                      <ShoppingCart className="w-4 h-4" />
+                    </Button>
+
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsOpen(true);
+                        setSelectedTokenIndex(_id);
+                        setCurrentAction(ACTION_TYPE.Sell);
+                      }}>
+                      <Handshake className="w-4 h-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        <div className="flex flex-1 flex-col sm:hidden">
+          {market.map((trades: any, _id: number) => (
+            <div
+              key={_id}
+              className="flex flex-col gap-2 border-b last:border-b-0 py-4 first:pt-0 last:pb-0">
+              <div className="flex items-start">
+                <p className="text-sm w-full max-w-32">Token ID</p>
+                <p className="text-sm text-muted-foreground">
                   {trades.listing.tokenId}
-                </TableCell>
-                <TableCell className="h-12 text-green-500 font-semibold">
+                </p>
+              </div>
+              <div className="flex items-start">
+                <p className="text-sm w-full max-w-32">Token Owner</p>
+                <p className="text-sm text-muted-foreground">
+                  {shortenAddress(trades.listing.owner)}
+                </p>
+              </div>
+              <div className="flex items-start">
+                <p className="text-sm w-full max-w-32">Current Price</p>
+                <p className="text-sm text-primary">
                   {trades.market.currentPrice}
-                </TableCell>
-                <TableCell className="h-12 text-red-500 font-semibold">
+                </p>
+              </div>
+              <div className="flex items-start">
+                <p className="text-sm w-full max-w-32">Available Shares</p>
+                <p className="text-sm text-red-500">
                   {100 - Number(trades.market.consumedShares)}
-                </TableCell>
-                <TableCell>
+                </p>
+              </div>
+              <div className="flex items-start">
+                <p className="text-sm w-full max-w-32">Share Price</p>
+                <p className="text-sm text-orange-500">
                   {Math.round((Number(trades.market.currentPrice) * 1) / 100)}
-                </TableCell>
-                <TableCell className="h-12 flex items-center justify-end gap-4">
-                  <button
-                    onClick={() => {
+                </p>
+              </div>
+              <div className="flex items-start">
+                <p className="text-sm w-full max-w-32"> </p>
+                <div className="flex flex-col gap-2 flex-1 mt-2 pt-4 border-t">
+                  <Button
+                    variant="outline"
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setIsOpen(true);
                       setSelectedTokenIndex(_id);
                       setCurrentAction(ACTION_TYPE.BUY);
-                    }}
-                  >
+                    }}>
+                    <ShoppingCart className="w-4 h-4 mr-2" />
                     Buy
-                  </button>
-                  <button
-                    onClick={() => {
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setIsOpen(true);
                       setSelectedTokenIndex(_id);
                       setCurrentAction(ACTION_TYPE.Sell);
-                    }}
-                  >
+                    }}>
+                    <Handshake className="w-4 h-4 mr-2" />
                     Sell
-                  </button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </MaxWrapper>
     </div>
   );
 }

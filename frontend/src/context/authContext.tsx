@@ -46,11 +46,11 @@ export default function AuthContextProvider({
         } else if (!data?.user) {
           if (
             pathname === "/" ||
-            pathname === "/login" ||
-            pathname === "/register"
+            pathname === "/sign-in" ||
+            pathname === "/sign-up"
           )
             return;
-          router.push("/login");
+          router.push("/sign-in");
         }
       } catch (error) {
         setIsError("Error fetching user");
@@ -61,7 +61,7 @@ export default function AuthContextProvider({
     };
 
     fetchUser();
-  }, [router, address, credentials, isError, pathname]);
+  }, [router, address]);
 
   return (
     <AuthContext.Provider
