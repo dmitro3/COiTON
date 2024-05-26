@@ -61,7 +61,7 @@ export default function AuthContextProvider({
     };
 
     fetchUser();
-  }, [router, address]);
+  }, [router, address, pathname]);
 
   return (
     <AuthContext.Provider
