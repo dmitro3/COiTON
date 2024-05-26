@@ -78,7 +78,7 @@ const FormItem = React.forwardRef<
 
   return (
     <FormItemContext.Provider value={{ id }}>
-      <div ref={ref} className={className} {...props} />
+      <div ref={ref} className={cn("flex flex-col", className)} {...props} />
     </FormItemContext.Provider>
   );
 });
@@ -91,7 +91,12 @@ const FormLabel = React.forwardRef<
   const { formItemId } = useFormField();
 
   return (
-    <Label ref={ref} className={className} htmlFor={formItemId} {...props} />
+    <Label
+      ref={ref}
+      className={cn("mb-1", className)}
+      htmlFor={formItemId}
+      {...props}
+    />
   );
 });
 FormLabel.displayName = "FormLabel";
@@ -123,16 +128,13 @@ const FormDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => {
-  const { error, formDescriptionId } = useFormField();
+  const { formDescriptionId } = useFormField();
 
   return (
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn(
-        `text-[0.8rem] text-muted-foreground ${error ? "hidden" : ""}`,
-        className
-      )}
+      className={cn("text-xs text-muted-foreground", className)}
       {...props}
     />
   );
@@ -154,7 +156,10 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-[0.8rem] font-medium text-destructive", className)}
+      className={cn(
+        "text-xs sm:text-[0.8rem] font-medium text-destructive",
+        className
+      )}
       {...props}>
       {body}
     </p>

@@ -1,9 +1,10 @@
 "use client";
 
+import MaxWrapper from "@/components/shared/max-wrapper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getDaoContract, getProvider } from "@/connections";
-import { useFetchUnApprovedListings } from "@/hooks/useFetchBackend";
+import { useFetchUnApprovedListings } from "@/hooks/contract";
 import { shortenAddress } from "@/lib/utils";
 import { useWeb3ModalProvider } from "@web3modal/ethers/react";
 import { Check, Loader2, X } from "lucide-react";
@@ -21,6 +22,7 @@ export default function ApprovalsPage() {
 
   const [isApproving, setIsApproving] = useState<boolean>(false);
   const [isApproved, setIsApproved] = useState<boolean>(false);
+  const [isError, setIsError] = useState("");
 
   async function approveListing(state: string, index: number, id: string) {
     const readWriteProvider = getProvider(walletProvider);
@@ -42,7 +44,8 @@ export default function ApprovalsPage() {
 
       setIsApproved(true);
     } catch (error: any) {
-      console.error("errd", error);
+      console.error("error", error);
+      setIsError("Something went wrong");
       toast.error("Something Went wrong", {
         description: error.message,
       });
@@ -53,13 +56,9 @@ export default function ApprovalsPage() {
 
   return (
     <div className="flex-1 flex flex-col gap-4">
-      <h1 className="text-xl md:text-2xl capitalize font-bold">
-        Unapproved Listings
-      </h1>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <MaxWrapper className="px-0 lg:px-0 xl:px-0 2xl:px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         {isLoading ? (
-          Array.from({ length: 8 }).map((_, _key) => (
+          Array.from({ length: 4 }).map((_, _key) => (
             <div
               key={_key + Math.random() * 50}
               className="flex flex-col gap-2 w-full">
@@ -76,6 +75,8 @@ export default function ApprovalsPage() {
               </div>
             </div>
           ))
+        ) : isError ? (
+          <p>{isError}</p>
         ) : listings?.length === 0 ? (
           <p>No listings to approve</p>
         ) : (
@@ -121,7 +122,7 @@ export default function ApprovalsPage() {
                 <div className="flex gap-2">
                   <Button
                     className="w-full"
-                    disabled={isApproving || isApproved}
+                    disabled={isApproving}
                     variant="secondary"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -147,7 +148,7 @@ export default function ApprovalsPage() {
             );
           })
         )}
-      </div>
+      </MaxWrapper>
     </div>
   );
 }

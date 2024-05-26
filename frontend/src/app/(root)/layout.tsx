@@ -1,5 +1,5 @@
-import Footer from "@/components/shared/footer";
-import Header from "@/components/shared/header";
+import Footer from "@/components/root/footer";
+import Header from "@/components/root/header";
 
 export default function RootLayout({
   children,
@@ -9,7 +9,7 @@ export default function RootLayout({
   return (
     <>
       <Header />
-      <div className="flex flex-col flex-1 min-h-screen">{children}</div>
+      <div className="flex flex-col flex-1 min-h-svh">{children}</div>
       <Footer />
     </>
   );

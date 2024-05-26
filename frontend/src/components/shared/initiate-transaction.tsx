@@ -24,11 +24,14 @@ import {
 export const InitiatePurchaseTransaction = ({
   agentId,
   estateId,
-  callback
+  callback,
 }: {
   agentId: string;
   estateId: string;
-  callback: (success: boolean, data: null | { buyer: string; signers: string[]; }) => void;
+  callback: (
+    success: boolean,
+    data: null | { buyer: string; signers: string[] }
+  ) => void;
 }) => {
   const { walletProvider }: any = useWeb3ModalProvider();
   const { address } = useWeb3ModalAccount();
@@ -63,20 +66,20 @@ export const InitiatePurchaseTransaction = ({
 
       if (tx_receipt.status) {
         toast.success("SUCCESS");
-        callback(true, { buyer: buyerAddress, signers: [buyerAddress, address] })
+        callback(true, {
+          buyer: buyerAddress,
+          signers: [buyerAddress, address],
+        });
       } else {
         toast.error(tx_receipt.reason ?? "OOPS!!! SOMETHING WENT WRONG");
-        callback(false, null)
-
+        callback(false, null);
       }
       setLoading(false);
       toast.dismiss();
     } catch (error) {
-
       toast.dismiss();
       console.log(error);
-      callback(false, null)
-
+      callback(false, null);
     }
   };
 
@@ -119,7 +122,10 @@ export const InitiatePurchaseTransaction = ({
           </div>
         </div>
         <DialogFooter>
-          <Button disabled={loading} onClick={initiatePurchaseTransaction} type="submit">
+          <Button
+            disabled={loading}
+            onClick={initiatePurchaseTransaction}
+            type="submit">
             Create
           </Button>
         </DialogFooter>

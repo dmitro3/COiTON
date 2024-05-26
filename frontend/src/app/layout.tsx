@@ -1,26 +1,22 @@
 import type { Metadata } from "next";
-import { Lato as FontSans } from "next/font/google";
+import { Inter } from "next/font/google";
 
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import { site } from "@/constants";
-
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { Toaster } from "@/components/ui/sonner";
 import AuthContextProvider from "@/context/authContext";
+import { Toaster } from "@/components/ui/sonner";
 
-const fontSans = FontSans({
+const fontSans = Inter({
   subsets: ["latin"],
-  variable: "--font-sans",
-  weight: ["100", "300", "400", "700", "900"],
+  // variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
   title: site.name,
   description: site.description,
   icons: {
-    icon: "./favicon.ico",
+    icon: "/favicon.ico",
   },
 };
 
@@ -31,15 +27,18 @@ export default function RootLayout({
 }>) {
   return (
     <AuthContextProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html
+        lang="en"
+        className="bg-background"
+        suppressContentEditableWarning
+        suppressHydrationWarning>
         <body
           className={cn(
             "min-h-screen bg-background font-sans antialiased flex flex-col",
-            fontSans.variable
-          )}
-        >
+            fontSans.className
+          )}>
           <Toaster richColors />
-          <main className="flex-1">{children}</main>
+          {children}
         </body>
       </html>
     </AuthContextProvider>

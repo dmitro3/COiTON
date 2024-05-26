@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Cross2Icon, UploadIcon } from "@radix-ui/react-icons";
+import { X, UploadIcon } from "lucide-react";
 import Dropzone, {
   type DropzoneProps,
   type FileRejection,
@@ -185,7 +185,7 @@ export function FileUploader(props: FileUploaderProps) {
   const isDisabled = disabled || (files?.length ?? 0) >= maxFiles;
 
   return (
-    <div className="relative flex flex-col gap-6 overflow-hidden">
+    <div className="relative flex flex-col gap-4 overflow-hidden">
       <Dropzone
         onDrop={onDrop}
         accept={accept}
@@ -197,7 +197,7 @@ export function FileUploader(props: FileUploaderProps) {
           <div
             {...getRootProps()}
             className={cn(
-              "group relative grid h-52 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
+              "aspect-[1.6] bg-secondary/30 hover:bg-secondary/20 sm:bg-background/50 sm:hover:bg-background/60 transition-colors rounded-lg flex items-center justify-center flex-col text-center cursor-pointer border border-dashed",
               "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               isDragActive && "border-muted-foreground/50",
               isDisabled && "pointer-events-none opacity-60",
@@ -213,7 +213,7 @@ export function FileUploader(props: FileUploaderProps) {
                     aria-hidden="true"
                   />
                 </div>
-                <p className="font-medium text-muted-foreground">
+                <p className="font-medium text-muted-foreground text-xs md:text-sm">
                   Drop the files here
                 </p>
               </div>
@@ -226,10 +226,10 @@ export function FileUploader(props: FileUploaderProps) {
                   />
                 </div>
                 <div className="space-y-px">
-                  <p className="font-medium text-muted-foreground">
+                  <p className="font-medium text-muted-foreground text-xs md:text-sm">
                     Drag {`'n'`} drop files here, or click to select files
                   </p>
-                  <p className="text-sm text-muted-foreground/70">
+                  <p className="text-xs text-muted-foreground/70">
                     You can upload
                     {maxFiles > 1
                       ? ` ${maxFiles === Infinity ? "multiple" : maxFiles}
@@ -243,8 +243,8 @@ export function FileUploader(props: FileUploaderProps) {
         )}
       </Dropzone>
       {files?.length ? (
-        <ScrollArea className="h-fit w-full px-3">
-          <div className="max-h-48 space-y-4">
+        <ScrollArea className="h-fit w-full">
+          <div className="max-h-48 space-y-1 sm:space-y-3">
             {files?.map((file: any, index: number) => (
               <FileCard
                 key={index}
@@ -268,24 +268,24 @@ interface FileCardProps {
 
 function FileCard({ file, progress, onRemove }: FileCardProps) {
   return (
-    <div className="relative flex items-center space-x-4">
-      <div className="flex flex-1 space-x-4">
+    <div className="relative flex items-center space-x-4 p-3 bg-secondary/30 border sm:border-none sm:p-0 sm:bg-transparent rounded-md">
+      <div className="flex flex-1 items-center space-x-4">
         {isFileWithPreview(file) ? (
           <Image
             src={file.preview}
             alt={file.name}
-            width={48}
-            height={48}
+            width={40}
+            height={40}
             loading="lazy"
-            className="aspect-square shrink-0 rounded-md object-cover"
+            className="aspect-square shrink-0 rounded-sm object-cover"
           />
         ) : null}
         <div className="flex w-full flex-col gap-2">
           <div className="space-y-px">
-            <p className="line-clamp-1 text-sm font-medium text-foreground/80">
+            <p className="line-clamp-1 text-xs font-medium text-muted-foreground">
               {file.name}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[11px] text-muted-foreground/70">
               {formatBytes(file.size)}
             </p>
           </div>
@@ -299,7 +299,7 @@ function FileCard({ file, progress, onRemove }: FileCardProps) {
           size="icon"
           className="size-7"
           onClick={onRemove}>
-          <Cross2Icon className="size-4 " aria-hidden="true" />
+          <X className="size-4 " aria-hidden="true" />
           <span className="sr-only">Remove file</span>
         </Button>
       </div>

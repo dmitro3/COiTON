@@ -1,11 +1,46 @@
-export default function RootLayout({
+"use client";
+
+import LoadingComponent from "@/components/shared/loader";
+import { buttonVariants } from "@/components/ui/button";
+import { useAuth } from "@/context/authContext";
+import Image from "next/image";
+import Link from "next/link";
+
+export default function AuthLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const { isFetchingUser } = useAuth();
+
+  if (isFetchingUser)
+    return <LoadingComponent text="Checking if you're authenticated..." />;
+
   return (
-    <div className="flex flex-1 min-h-screen">
-      <main className="w-full p-4 md:p-6">{children}</main>
+    <div className="flex h-screen">
+      <div className="h-full flex-1 bg-secondary/20 hidden lg:flex p-4 md:p-6 lg:p-8 xl:p-10 border-r relative overflow-hidden">
+        <div className="absolute bg-secondary w-full h-full top-0 left-0">
+          <Image
+            src="/img/test.png"
+            alt=""
+            width={3456}
+            height={6912}
+            priority
+            className="object-cover w-full brightness-75"
+          />
+        </div>
+      </div>
+      <div className="flex justify-center items-center h-full py-10 px-4 w-full max-w-full lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl relative">
+        <Link
+          href="/"
+          className={buttonVariants({
+            variant: "outline",
+            className: "w-max h-12 absolute top-4 md:top-6 left-4 md:left-6",
+          })}>
+          Go Back
+        </Link>
+        {children}
+      </div>
     </div>
   );
 }
