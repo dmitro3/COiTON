@@ -28,7 +28,7 @@ exports.updateMarketIndice = async (req, res) => {
         if (find) {
             
             const indices = await MarketIndices.create({ estateId: id, indexValue:price,priceChange:share  });
-            return ResponseMessage(res, true, 200, "Indice created successfully",  indices);
+            return ResponseMessage(res, true, 200, "Indice created successfully",  {...indices,id:share});
         }
 
         return ResponseMessage(res,false,400,"Invalid Id",{})
