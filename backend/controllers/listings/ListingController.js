@@ -15,6 +15,31 @@ exports.createListing = async (req, res) => {
     }
 }
 
+exports.updateMarketIndice = async (req, res) => {
+    try {
+        const {id,share,price} = req.params;
+        const find = await MarketIndices.find({
+            where: {
+                estateId: id
+            }
+        });
+        
+
+        if (find) {
+            
+            const indices = await MarketIndices.create({ estateId: id, indexValue:price,priceChange:share  });
+            return ResponseMessage(res, true, 200, "Indice created successfully",  indices);
+        }
+
+        return ResponseMessage(res,false,400,"Invalid Id",{})
+       
+    } catch (error) {
+        console.log(error.message)
+        ResponseMessage(res, false, 500, error.message ?? "Internal server error", {});
+    }
+}
+
+
 
 exports.approveListing = async (req, res) => {
     try {
@@ -43,6 +68,23 @@ exports.getListings = async (req, res) => {
     try {
         const { page, size } = req.query;
         const listings = await Listing.findAndCountAll({
+            distinct: true,
+            limit: size ?? 50,
+            offset: (page ?? 0) * (size ?? 50),
+            order: [["createdAt", "ASC"]],
+        })
+        return ResponseMessage(res, true, 200, "Listing fetched", listings);
+    } catch (error) {
+        console.log(error)
+        ResponseMessage(res, false, 500, "Internal server error", {});
+    }
+}
+
+
+exports.getIndices = async (req, res) => {
+    try {
+        const { page, size } = req.query;
+        const listings = await MarketIndices.findAndCountAll({
             distinct: true,
             limit: size ?? 50,
             offset: (page ?? 0) * (size ?? 50),

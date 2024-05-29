@@ -17,10 +17,6 @@ app.get("/", (req, res) => {
     res.status(200).send("server running successfully");
 })
 
-app.get("/event/:id", (req, res) => {
-    console.log(req.params)
-    res.send({ data: { id: 4 } });
-})
 
 app.use("/api/v1", AppRoutes)
 const server = app;
