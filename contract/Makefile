@@ -42,6 +42,9 @@ verify:
 deployLocal:
 	yarn hardhat run scripts/deploy.js --network anvil
 
+deployApi:
+	yarn hardhat run scripts/deployApi.js --network op
+
 deployLive:
 	yarn hardhat run scripts/deploy.js --network op
 
@@ -52,7 +55,10 @@ runDao:
 	yarn hardhat run scripts/interractions/daoSettings.js --network op
 
 approve:
-	yarn hardhat run scripts/interractions/approve.js --network anvil
+	yarn hardhat run scripts/interractions/approve.js --network op
+
+req:
+	yarn hardhat run scripts/interractions/requestApi.js --network op
 
 approveListing:
 	yarn hardhat run scripts/interractions/approveListing.js --network anvil
