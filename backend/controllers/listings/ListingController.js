@@ -18,7 +18,7 @@ exports.createListing = async (req, res) => {
 exports.updateMarketIndice = async (req, res) => {
     try {
         const {id,share,price} = req.params;
-        const find = await MarketIndices.find({
+        const find = await MarketIndices.findOne({
             where: {
                 estateId: id
             }
