@@ -1,5 +1,6 @@
 const ethers = require("ethers");
 const ABI = require("../config/abi.json");
+const REAL_ESTATE_ABI = require("../config/real_estate_abi.json");
 const fs = require("fs-extra");
 require("dotenv").config();
 
@@ -8,15 +9,7 @@ exports.SendListingTransaction = async (id, details) => {
     const region = details.region;
     const description = details.description;
     const hash = ethers.solidityPackedKeccak256(
-      [
-        "string",
-        "address",
-        "string",
-        "uint24",
-        "string",
-        "uint256",
-        "string",
-      ],
+      ["string", "address", "string", "uint24", "string", "uint256", "string"],
       [
         id,
         details.agentId,
@@ -98,6 +91,43 @@ exports.exchange = async (address, amount) => {
     const receipt = await tx.wait();
     const bal = await contract.balanceOf(address);
     console.log(bal.toString());
+    if (receipt.status) {
+      return { success: true, tx, message: "Transaction successful" };
+    } else {
+      return { success: false, tx, message: "Transaction failed" };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      tx: {},
+      message: "Transaction faileddddd",
+    };
+  }
+};
+
+exports.bulkUpdate = async (data) => {
+  try {
+    const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+
+    const encryptedJsonKey = fs.readFileSync(
+      "./config/.encryptedKey.json",
+      "utf8"
+    );
+    let wallet = ethers.Wallet.fromEncryptedJsonSync(
+      encryptedJsonKey,
+      process.env.PRIVATE_KEY_PASSWORD
+    );
+    wallet = wallet.connect(provider);
+    const contract = new ethers.Contract(
+      process.env.REAL_ESTATE_CONTRACT_ADDRESS,
+      REAL_ESTATE_ABI,
+      wallet
+    );
+
+    const tx = await contract.bulkUpdate(data);
+    const receipt = await tx.wait();
+
     if (receipt.status) {
       return { success: true, tx, message: "Transaction successful" };
     } else {
