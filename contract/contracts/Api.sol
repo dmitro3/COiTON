@@ -35,8 +35,13 @@ contract APIConsumer is ChainlinkClient, ConfirmedOwner {
      *
      */
     constructor() ConfirmedOwner(msg.sender) {
-        _setChainlinkToken(0x779877A7B0D9E8603169DdbD7836e478b4624789);
-        _setChainlinkOracle(0x6090149792dAAeE9D1D568c9f9a6F6B46AA29eFD);
+        ///AVALANCHE
+        _setChainlinkToken(0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846);
+        _setChainlinkOracle(0x022EEA14A6010167ca026B32576D6686dD7e85d2);
+
+        /// SEPOLIA
+        // _setChainlinkToken(0x779877A7B0D9E8603169DdbD7836e478b4624789);
+        // _setChainlinkOracle(0x6090149792dAAeE9D1D568c9f9a6F6B46AA29eFD);
         jobId = "ca98366cc7314957b8c012c72f05aeeb";
         fee = (1 * LINK_DIVISIBILITY) / 10; // 0,1 * 10**18 (Varies by network and job)
     }
