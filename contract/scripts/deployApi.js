@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 
 async function deployApi() {
 
-const GetAPI = await ethers.getContractFactory("APIConsumer");
+  const GetAPI = await ethers.getContractFactory("APIConsumer");
   const getApi = await GetAPI.deploy();
   await getApi.deployed();
   console.log("getApi deployed:", getApi.address);

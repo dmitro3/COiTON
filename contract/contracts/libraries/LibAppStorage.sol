@@ -13,6 +13,11 @@ library LibAppStorage {
         bool executed;
         address[] validSigners;
     }
+
+    struct BulkUpdate {
+        string id;
+        uint value;
+    }
     struct Proposal {
         address from;
         uint estateId;
@@ -88,12 +93,14 @@ library LibAppStorage {
     struct Layout {
         address owner;
         address diamondAddress;
+        address apiAddress;
         address erc20Token;
         address erc721Token;
         mapping(uint => Market) market;
         mapping(address => mapping(uint => uint8)) userMarketShare;
         Listing[] listings;
         mapping(uint => Listing) listing;
+        mapping(string => uint) getListingId;
         mapping(string => ListingApproval) listingApproval;
         Proposal[] proposals;
         TransactionHistory[] transactionHistory;

@@ -45,17 +45,32 @@ contract APIConsumer is ChainlinkClient, ConfirmedOwner {
      * Create a Chainlink request to retrieve API response, find the target
      * data, then multiply by 1000000000000000000 (to remove decimal places from data).
      */
-    function requestVolumeData() public returns (bytes32 requestId) {
+    function requestVolumeData(
+        string calldata id,
+        string calldata share,
+        string calldata price
+    ) public returns (bytes32 requestId) {
         Chainlink.Request memory req = _buildChainlinkRequest(
             jobId,
             address(this),
             this.fulfill.selector
         );
+        string memory linked = string(
+            abi.encodePacked(
+                "https://decentralized-real-estate-trading.onrender.com/api/v1/listings/event/",
+                id,
+                "/",
+                share,
+                "/",
+                price
+            )
+        );
 
         // Set the URL to perform the GET request on
         req._add(
             "get",
-            "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETH&tsyms=USD"
+            linked
+            // "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETH&tsyms=USD"
         );
 
         // Set the path to find the desired data in the API response, where the response format is:
@@ -69,7 +84,44 @@ contract APIConsumer is ChainlinkClient, ConfirmedOwner {
         //   }
         //  }
         // request.add("path", "RAW.ETH.USD.VOLUME24HOUR"); // Chainlink nodes prior to 1.0.0 support this format
-        req._add("path", "RAW,ETH,USD,VOLUME24HOUR"); // Chainlink nodes 1.0.0 and later support this format
+        req._add("path", "data,status"); // Chainlink nodes 1.0.0 and later support this format
+
+        // Multiply the result by 1000000000000000000 to remove decimals
+        int256 timesAmount = 10 ** 18;
+        req._addInt("times", timesAmount);
+
+        // Sends the request
+        return _sendChainlinkRequest(req, fee);
+    }
+
+    function getStats() public returns (bytes32 requestId) {
+        Chainlink.Request memory req = _buildChainlinkRequest(
+            jobId,
+            address(this),
+            this.fulfill.selector
+        );
+        string
+            memory linked = "https://decentralized-real-estate-trading.onrender.com/api/v1/indices/stats/get";
+
+        // Set the URL to perform the GET request on
+        req._add(
+            "get",
+            linked
+            // "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETH&tsyms=USD"
+        );
+
+        // Set the path to find the desired data in the API response, where the response format is:
+        // {"RAW":
+        //   {"ETH":
+        //    {"USD":
+        //     {
+        //      "VOLUME24HOUR": xxx.xxx,
+        //     }
+        //    }
+        //   }
+        //  }
+        // request.add("path", "RAW.ETH.USD.VOLUME24HOUR"); // Chainlink nodes prior to 1.0.0 support this format
+        req._add("path", "data,status"); // Chainlink nodes 1.0.0 and later support this format
 
         // Multiply the result by 1000000000000000000 to remove decimals
         int256 timesAmount = 10 ** 18;

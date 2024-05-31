@@ -99,7 +99,7 @@ contract DiamondDeployer is Test, IDiamondCut {
 
         boundEstate = RealEstate(address(diamond));
         boundTrade = Trade(address(diamond));
-        diamond.setToken(address(coitonERC20), address(coitonNFT));
+        diamond.setToken(address(coitonERC20), address(coitonNFT), address(0));
     }
 
     // function testCreateListing() public {
