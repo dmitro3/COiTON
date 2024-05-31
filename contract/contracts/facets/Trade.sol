@@ -4,6 +4,8 @@ import "../libraries/LibAppStorage.sol";
 import "../libraries/Events.sol";
 import "../libraries/Errors.sol";
 import "../interfaces/IERC20.sol";
+import "../interfaces/IAPI.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract Trade {
     //Instantiating a new Layout from the LibAppStorage.
@@ -101,7 +103,13 @@ contract Trade {
                 description: ""
             });
         l.transactionHistory.push(_new_transaction);
+        LibAppStorage.Listing memory _listing = l.listing[tokenId];
 
+        IAPI(l.apiAddress).requestVolumeData(
+            _listing.id,
+            Strings.toString(shares),
+            Strings.toString(tokenValueAtPercentageShare)
+        );
         emit EVENTS.BuyShares(msg.sender, tokenValueAtPercentageShare, shares);
     }
 
@@ -148,6 +156,15 @@ contract Trade {
 
         tokenMarket.consumedShares -= shares;
         tokenMarket.currentPrice -= calculation;
+
+        LibAppStorage.Listing memory _listing = l.listing[tokenId];
+
+        IAPI(l.apiAddress).requestVolumeData(
+            _listing.id,
+            Strings.toString(shares),
+            Strings.toString(calculation)
+        );
+
         emit EVENTS.SellShares(msg.sender, calculation, shares);
     }
 

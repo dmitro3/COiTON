@@ -40,10 +40,24 @@ async function deployDiamond() {
   await erc721Token.deployed();
   console.log("Deployed erc721 token at", erc721Token.address);
 
-  await diamond.setToken(erc20Token.address, erc721Token.address);
+  const GetAPI = await ethers.getContractFactory("APIConsumer");
+  const getApi = await GetAPI.deploy();
+  await getApi.deployed();
+  console.log("getApi deployed:", getApi.address);
+
+  const GetAut = await ethers.getContractFactory("Aut");
+  const getAut = await GetAut.deploy(60 * 60 * 24, getApi.address);
+  await getAut.deployed();
+  console.log("getAut deployed:", getAut.address);
+
+  await diamond.setToken(
+    erc20Token.address,
+    erc721Token.address,
+    getApi.address
+  );
 
   // deploy facets
-  console.log("");
+  console.log("------------------------------------------------");
   console.log("Deploying facets");
   const FacetNames = [
     "DiamondLoupeFacet",

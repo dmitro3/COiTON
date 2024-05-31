@@ -64,6 +64,18 @@ contract RealEstate {
         emit EVENTS.ListingQueuedForApproval(id, hash, approver);
     }
 
+    function bulkUpdate(LibAppStorage.BulkUpdate[] calldata bulk) external {
+        for (uint i = 0; i < bulk.length; i++) {
+            uint _listingId = l.getListingId[bulk[i].id];
+            LibAppStorage.Listing storage listingArr = l.listings[
+                _listingId - 1
+            ];
+            listingArr.price = bulk[i].value;
+            LibAppStorage.Listing storage listing = l.listing[_listingId];
+            listing.price = bulk[i].value;
+        }
+    }
+
     // This function is use to create new listings
     //@param address owner the owner address in this case the agent or house owner address
     //@param country : The country where the real estate is located
@@ -126,6 +138,7 @@ contract RealEstate {
         _listingApproval.approved = true;
         _listingApproval.created = true;
         l.listing[listingId] = _newListing;
+        l.getListingId[id] = listingId;
         LibAppStorage.Market storage _market = l.market[listingId];
 
         _market.currentPrice = price;
