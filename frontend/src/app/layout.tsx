@@ -26,21 +26,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <AuthContextProvider>
-      <html
-        lang="en"
-        className="bg-background"
-        suppressContentEditableWarning
-        suppressHydrationWarning>
-        <body
-          className={cn(
-            "min-h-screen bg-background font-sans antialiased flex flex-col",
-            fontSans.className
-          )}>
+    <html
+      lang="en"
+      className="bg-background"
+      suppressContentEditableWarning
+      suppressHydrationWarning>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased flex flex-col",
+          fontSans.className
+        )}>
+        <AuthContextProvider>
           <Toaster richColors />
           {children}
-        </body>
-      </html>
-    </AuthContextProvider>
+        </AuthContextProvider>
+      </body>
+    </html>
   );
 }

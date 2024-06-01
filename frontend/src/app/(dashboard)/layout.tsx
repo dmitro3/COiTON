@@ -18,17 +18,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data, error }: any = await getUser();
+      const { data, error }: any = getUser();
       if (!data?.user || error) {
         toast.error("Authentication Error", {
           description: `Please sign in to continue using ${site.name}.`,
         });
         router.push("/sign-in");
-      } else if (data.user.user_metadata?.address !== address) {
-        toast.error("Wallet address changed", {
-          description: "Link the wallet address you registered with.",
-        });
-        router.push("/sign-in");
+        return;
       }
     };
 

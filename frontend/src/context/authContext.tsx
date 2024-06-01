@@ -56,10 +56,6 @@ export default function AuthContextProvider({
             id: data.user.id,
           };
           setCredentials(userCredentials);
-        } else if (!data?.user) {
-          toast.error("Authentication Error", {
-            description: `Please sign in to continue using ${site.name}`,
-          });
         } else {
           setIsError("Error fetching user");
         }
