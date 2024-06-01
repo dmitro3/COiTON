@@ -23,14 +23,14 @@ contract RealEstate {
     }
 
     //The function enables the updating of the ERC20 token's address.
-    function updateERC20Token(address _address) external OnlyOwner {
-        l.erc20Token = _address;
-    }
+    // function updateERC20Token(address _address) external OnlyOwner {
+    //     l.erc20Token = _address;
+    // }
 
-    //The function enables the updating of the ERC1155 token's address.
-    function updateERC721Token(address _address) external OnlyOwner {
-        l.erc721Token = _address;
-    }
+    // //The function enables the updating of the ERC1155 token's address.
+    // function updateERC721Token(address _address) external OnlyOwner {
+    //     l.erc721Token = _address;
+    // }
 
     function getErc20Token() external view returns (address) {
         return l.erc20Token;
@@ -193,11 +193,11 @@ contract RealEstate {
     /// This function is to get all the real estate listing hash.
     /// @param Id : The Id is use to fetch all the Listing real estate hash.
     //@notice returns all the hash from the array.
-    function getHash(
-        string memory Id
-    ) external view returns (LibAppStorage.ListingApproval memory) {
-        return l.listingApproval[Id];
-    }
+    // function getHash(
+    //     string memory Id
+    // ) external view returns (LibAppStorage.ListingApproval memory) {
+    //     return l.listingApproval[Id];
+    // }
 
     /// This functions takes in the important information for the listing estate and hash it
     // / @param owner : the owner's address in the hash helps bind the hash specifically to the owner,
