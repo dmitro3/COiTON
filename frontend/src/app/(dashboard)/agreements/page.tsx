@@ -9,7 +9,6 @@ import {
   useFetchListings,
   useStake,
 } from "@/hooks/contract";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { useAuth } from "@/context/authContext";
 
 export default function AgreementsPage() {

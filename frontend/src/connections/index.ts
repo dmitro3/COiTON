@@ -37,8 +37,9 @@ export const getERC721Contract = (providerOrSigner: any) =>
 // read only provider pointing to sepolia. It allows read only access to the sepolia blockchain
 export const readOnlyProvider = new ethers.JsonRpcProvider(
   // `http://127.0.0.1:8545`
-  `https://opt-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+  // `https://opt-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
   // `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+  "https://api.avax-test.network/ext/bc/C/rpc"
 );
 
 // read/write provider, that allows you to read data and also sign transaction on whatever chain it's pointing to
