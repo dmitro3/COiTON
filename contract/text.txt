@@ -1,12 +1,10 @@
-DiamondCutFacet deployed: 0x33d30dc6BF32862A38000551e224a7887879ADBd
-DiamondInit deployed: 0x04B938a7fe8cD2e4A42758A4Fb05F98CD4E29495
-Deployed erc20 token at 0xda45E29597770d44bac12440c0D641DCCE5B1552
-Deployed erc721 token at 0x6F266fE572bD172Cde7B1d5a663e081798Db2eC9
-getApi deployed: 0x1608faE1e63f22547DA4cAEd9973AE072293f87A
-getAut deployed: 0xD452eacce9bfF58c8796165a2A5ffbCCd63fcE02
-------------------------------------------------
+DiamondCutFacet deployed: 0x3535F5aA5f01ee3c18CBEB3dd1855e41638A4c9a
+DiamondInit deployed: 0xA1CB74d907137a08C28984Ec315694457C1118F3
+Deployed erc20 token at 0xD8Bc4a83Edb04D1394394B980E28Fc53152a5Dd0
+Deployed erc721 token at 0x1a9E83785c96cdc3a6f8Bd4b1907D5830950BC80
+
 Deploying facets
-DiamondLoupeFacet deployed: 0xa7ac4843b88FAd0817C8677B793f8E56fE11CA83
+DiamondLoupeFacet deployed: 0x2aB8Ff06a5D9F868CdB4784e371C61066ca7f2E0
 [
   'facetAddress(bytes4)',
   'facetAddresses()',
@@ -14,16 +12,16 @@ DiamondLoupeFacet deployed: 0xa7ac4843b88FAd0817C8677B793f8E56fE11CA83
   'facets()',
   'supportsInterface(bytes4)'
 ]
-OwnershipFacet deployed: 0xE0a0e6141747e73BA9c357Ee85d529Ee6084aED4
+OwnershipFacet deployed: 0xb70E4f8f09596C6B9ECA612da897A88c6256B266
 [ 'owner()', 'transferOwnership(address)' ]
-RealEstate deployed: 0x7b253b645970E840a5FB7A30cb87d87Ff8Bc0Fe0
+RealEstate deployed: 0x6641fb5457e3B6BAcC9Ee49d0980Bc2ACb21767B
 [
-  'bulkUpdate((string,uint256)[])',
   'checkIfApprovedERC20Token(uint256,address)',
   'checkIfApprovedERC721Token(uint256)',
   'createListing(string,address,string,uint24,string,uint256,string,string)',
   'getErc20Token()',
   'getEstateSigner(address,uint256)',
+  'getHash(string)',
   'getListing(uint256)',
   'getListings()',
   'getProposal(uint256)',
@@ -34,9 +32,11 @@ RealEstate deployed: 0x7b253b645970E840a5FB7A30cb87d87Ff8Bc0Fe0
   'initiatePurchaseAgreement(uint256,address,address[])',
   'proposeBuy(uint256,uint256)',
   'queListingForApproval(string,bytes32,address)',
-  'signPurchaseAgreement(uint256)'
+  'signPurchaseAgreement(uint256)',
+  'updateERC20Token(address)',
+  'updateERC721Token(address)'
 ]
-Trade deployed: 0x6ee7660605ac4B6baf5794c9bafb4d2CbEE33A68
+Trade deployed: 0x0454eF529e0cA6Abfa7e89a2E039Be58b818553b
 [
   'buyNFTTokenShares(uint256,uint8)',
   'calculateTokenValueInShares(uint8,uint256)',
@@ -46,11 +46,11 @@ Trade deployed: 0x6ee7660605ac4B6baf5794c9bafb4d2CbEE33A68
   'stake(uint256)',
   'withdrawStake(uint256)'
 ]
-Deployed Dao to  0x305fDd9A00769c84597200d91A99b0e789a47a84
+Deployed Dao to  0xe9e43Befd6d778dB8afe10dd7926d99c487575ae
 
 Diamond Cut: [
   {
-    facetAddress: '0xa7ac4843b88FAd0817C8677B793f8E56fE11CA83',
+    facetAddress: '0x2aB8Ff06a5D9F868CdB4784e371C61066ca7f2E0',
     action: 0,
     functionSelectors: [
       '0xcdffacc6',
@@ -61,27 +61,28 @@ Diamond Cut: [
     ]
   },
   {
-    facetAddress: '0xE0a0e6141747e73BA9c357Ee85d529Ee6084aED4',
+    facetAddress: '0xb70E4f8f09596C6B9ECA612da897A88c6256B266',
     action: 0,
     functionSelectors: [ '0x8da5cb5b', '0xf2fde38b' ]
   },
   {
-    facetAddress: '0x7b253b645970E840a5FB7A30cb87d87Ff8Bc0Fe0',
+    facetAddress: '0x6641fb5457e3B6BAcC9Ee49d0980Bc2ACb21767B',
     action: 0,
     functionSelectors: [
-      '0xef9a2d6c', '0x496de38b',
-      '0xdd5f4ba0', '0xa12a16a1',
-      '0xfeb1824b', '0x0ce514f5',
+      '0x496de38b', '0xdd5f4ba0',
+      '0xa12a16a1', '0xfeb1824b',
+      '0x0ce514f5', '0x5b6beeb9',
       '0x107a274a', '0xf1b2d6a3',
       '0xc7f758a8', '0x6558bc59',
       '0x3314d28f', '0x9f705e73',
       '0xeb18a9d8', '0x297983c0',
       '0x6ba4a92b', '0xdee29d13',
-      '0xbaf9c494'
+      '0xbaf9c494', '0x4dffc5c3',
+      '0x18fb5068'
     ]
   },
   {
-    facetAddress: '0x6ee7660605ac4B6baf5794c9bafb4d2CbEE33A68',
+    facetAddress: '0x0454eF529e0cA6Abfa7e89a2E039Be58b818553b',
     action: 0,
     functionSelectors: [
       '0xfe542ddb',
@@ -94,9 +95,9 @@ Diamond Cut: [
     ]
   }
 ]
-Diamond cut tx:  0xe873817179c230fa9d2727d222424f5acce7812f227bb886b0d370e0a101e740
+Diamond cut tx:  0x798e3a60d473a3bf80fc009eec48fa1e5ff58225f17fc6a1d2fb75bebccf4d0c
 Completed diamond cut
 
 -------------------------------------
 
-Diamond deployed at: 0x0f697d0e60041acC1689393802D018Ac948fB004
+Diamond deployed at: 0x3C0ac05F7cf9Ce7eD011089c7cc95E903A6eF93d

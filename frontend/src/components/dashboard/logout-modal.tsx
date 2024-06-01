@@ -12,11 +12,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useAuth } from "@/context/authContext";
 import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
 export function LogoutModal({ children }: { children: ReactNode }) {
   const router = useRouter();
+
+  const { updateCredentials } = useAuth();
 
   return (
     <AlertDialog>
@@ -33,7 +36,7 @@ export function LogoutModal({ children }: { children: ReactNode }) {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              logoutUser();
+              logoutUser(updateCredentials);
               router.push("/sign-in");
             }}>
             Proceed
