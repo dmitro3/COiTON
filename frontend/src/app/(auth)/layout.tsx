@@ -19,12 +19,12 @@ export default function AuthLayout({
 }) {
   const router = useRouter();
 
-  const { isFetchingUser, credentials, getUser } = useAuth();
+  const { credentials, isFetchingUser } = useAuth();
 
   useEffect(() => {
-    return () => {
-      if (!isFetchingUser && credentials) router.push("/dashboard");
-    };
+    if (!isFetchingUser && credentials) {
+      router.push("/dashboard");
+    }
   }, [credentials, isFetchingUser, router]);
 
   if (isFetchingUser)

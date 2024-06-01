@@ -3,23 +3,18 @@
 import DashboardHeader from "@/components/dashboard/header";
 import Sidebar from "@/components/dashboard/sidebar";
 import LoadingComponent from "@/components/shared/loader";
-import { site } from "@/constants";
 import { useAuth } from "@/context/authContext";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { useRouter } from "next/navigation";
 import React, { ReactNode, useEffect } from "react";
-import { toast } from "sonner";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const { address } = useWeb3ModalAccount();
+  const { credentials, isFetchingUser } = useAuth();
   const router = useRouter();
 
-  const { isFetchingUser, credentials, getUser } = useAuth();
-
   useEffect(() => {
-    return () => {
-      if (!isFetchingUser && credentials === null) router.push("/sign-in");
-    };
+    if (!isFetchingUser && !credentials) {
+      router.push("/sign-in");
+    }
   }, [credentials, isFetchingUser, router]);
 
   if (isFetchingUser) {

@@ -26,9 +26,12 @@ import Image from "next/image";
 import { useWeb3Modal, useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { useEffect, useState } from "react";
 import { loginUser } from "@/auth";
+import { useAuth } from "@/context/authContext";
 
 export default function SignInPage() {
   const router = useRouter();
+
+  const { updateCredentials } = useAuth();
 
   const { address, isConnected } = useWeb3ModalAccount();
   const { open } = useWeb3Modal();
@@ -62,6 +65,7 @@ export default function SignInPage() {
       email: values.email,
       password: values.password,
       address: isAddress,
+      updateCredentials,
     };
 
     try {

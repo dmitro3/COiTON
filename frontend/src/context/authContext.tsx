@@ -42,20 +42,28 @@ export default function AuthContextProvider({
     }
   };
 
+  const updateCredentials = (user: any) => {
+    if (user) {
+      const userCredentials = {
+        name: user.user_metadata?.name,
+        address: user.user_metadata?.address,
+        email: user.user_metadata?.email.toLowerCase(),
+        avatar: user.user_metadata?.avatar,
+        id: user.id,
+      };
+      setCredentials(userCredentials);
+    } else {
+      setCredentials(null);
+    }
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const { data, error } = await getUser();
 
         if (!error && data?.user) {
-          const userCredentials = {
-            name: data.user.user_metadata?.name,
-            address: data.user.user_metadata?.address,
-            email: data.user.user_metadata?.email.toLowerCase(),
-            avatar: data.user.user_metadata?.avatar,
-            id: data.user.id,
-          };
-          setCredentials(userCredentials);
+          updateCredentials(data.user);
         } else {
           setIsError("Error fetching user");
         }
@@ -74,6 +82,7 @@ export default function AuthContextProvider({
     isError,
     setCredentials,
     getUser,
+    updateCredentials,
   };
 
   return (
