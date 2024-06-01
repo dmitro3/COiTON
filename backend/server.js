@@ -16,28 +16,34 @@ app.get("/", (req, res) => {
   res.status(200).send("server running successfully");
 });
 
-app.get("/yo", async (req, res) => {
-  const apiKey = process.env.API_KEY; // Your API key, securely managed
-  const data = {
-    model: "dall-e-2",
-    prompt: "a girl",
-    n: 1,
-    size: "1024x1024",
-  };
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${apiKey}`,
-  };
-  const response = await axios.post(
-    "https://api.openai.com/v1/images/generations",
-    data,
-    {
-      headers,
-    }
-  );
+// app.get("/yo", async (req, res) => {
+//   try {
+//     const apiKey = process.env.API_KEY; // Your API key, securely managed
+//     const data = {
+//       model: "dall-e-2",
+//       prompt: "a girl",
+//       n: 1,
+//       size: "1024x1024",
+//     };
+//     const headers = {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${apiKey}`,
+//     };
+//     const response = await axios.post(
+//       "https://api.openai.com/v1/images/generations",
+//       data,
+//       {
+//         headers,
+//       }
+//     );
 
-  res.status(200).send({ data: response.data.data[0] });
-});
+//     res.status(200).send({ data: response.data.data[0] });
+//   } catch (error) {
+//     console.log(apiKeyyy);
+//     console.log(error.message);
+//     res.status(500).send(error);
+//   }
+// });
 
 app.use("/api/v1", AppRoutes);
 const server = app;

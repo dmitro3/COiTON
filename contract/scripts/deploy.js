@@ -46,7 +46,7 @@ async function deployDiamond() {
   console.log("getApi deployed:", getApi.address);
 
   const GetAut = await ethers.getContractFactory("Aut");
-  const getAut = await GetAut.deploy(60 * 60 * 24, getApi.address);
+  const getAut = await GetAut.deploy(60 * 5, getApi.address);
   await getAut.deployed();
   console.log("getAut deployed:", getAut.address);
 
