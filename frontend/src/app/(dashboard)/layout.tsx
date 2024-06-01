@@ -16,20 +16,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   const { isFetchingUser, credentials, getUser } = useAuth();
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const { data, error }: any = getUser();
-  //     if (!data?.user || error) {
-  //       toast.error("Authentication Error", {
-  //         description: `Please sign in to continue using ${site.name}.`,
-  //       });
-  //       router.push("/sign-in");
-  //       return;
-  //     }
-  //   };
-
-  //   fetchUser();
-  // }, [address, router, getUser]);
+  useEffect(() => {
+    return () => {
+      if (!isFetchingUser && credentials === null) router.push("/sign-in");
+    };
+  }, [credentials, isFetchingUser, router]);
 
   if (isFetchingUser) {
     return <LoadingComponent text="Fetching credentials..." />;
