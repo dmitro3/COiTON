@@ -169,7 +169,12 @@ export default function CreateListingPage() {
               hidden
               onChange={(e: any) => setCoverPhoto(e.target.files[0])}
               className="w-full h-12 bg-secondary/20 hidden"
-              disabled={isUploading || isFetchingUser || isStaking}
+              disabled={
+                isUploading ||
+                isFetchingUser ||
+                isStaking ||
+                credentials === null
+              }
             />
             <Label htmlFor="coverPhoto">
               {coverPhoto ? (
@@ -221,7 +226,12 @@ export default function CreateListingPage() {
               maxFiles={6}
               maxSize={8 * 1024 * 1024}
               onValueChange={setFiles}
-              disabled={isUploading || isFetchingUser || isStaking}
+              disabled={
+                isUploading ||
+                isFetchingUser ||
+                isStaking ||
+                credentials === null
+              }
             />
           </div>
         </div>
@@ -246,7 +256,12 @@ export default function CreateListingPage() {
                           type="text"
                           {...field}
                           className="w-full h-12 text-xs sm:text-sm bg-secondary/20 sm:bg-background/40"
-                          disabled={isUploading || isFetchingUser || isStaking}
+                          disabled={
+                            isUploading ||
+                            isFetchingUser ||
+                            isStaking ||
+                            credentials === null
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -302,7 +317,12 @@ export default function CreateListingPage() {
                         <Input
                           placeholder="1/3 Adebola Gbadebo Drv. (Adebola House) Off Abadek Avenue, off Akin Ogunlewe Rd, Igbogbo, Ikorodu, Lagos"
                           type="text"
-                          disabled={isUploading || isFetchingUser || isStaking}
+                          disabled={
+                            isUploading ||
+                            isFetchingUser ||
+                            isStaking ||
+                            credentials === null
+                          }
                           {...field}
                           className="w-full h-12 text-xs sm:text-sm bg-secondary/20 sm:bg-background/40"
                         />
@@ -323,7 +343,12 @@ export default function CreateListingPage() {
                         <Input
                           placeholder="800104"
                           type="text"
-                          disabled={isUploading || isFetchingUser || isStaking}
+                          disabled={
+                            isUploading ||
+                            isFetchingUser ||
+                            isStaking ||
+                            credentials === null
+                          }
                           {...field}
                           className="w-full h-12 text-xs sm:text-sm bg-secondary/20 sm:bg-background/40"
                         />
@@ -347,7 +372,12 @@ export default function CreateListingPage() {
                         <Input
                           placeholder="Ikorodu Lagos"
                           type="text"
-                          disabled={isUploading || isFetchingUser || isStaking}
+                          disabled={
+                            isUploading ||
+                            isFetchingUser ||
+                            isStaking ||
+                            credentials === null
+                          }
                           {...field}
                           className="w-full h-12 text-xs sm:text-sm bg-secondary/20 sm:bg-background/40"
                         />
@@ -369,7 +399,12 @@ export default function CreateListingPage() {
                           name="state"
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          disabled={isUploading || isFetchingUser || isStaking}>
+                          disabled={
+                            isUploading ||
+                            isFetchingUser ||
+                            isStaking ||
+                            credentials === null
+                          }>
                           <SelectTrigger className="w-full h-12 text-xs sm:text-sm bg-secondary/20 sm:bg-background/40">
                             {!field.value ? (
                               <p className="flex items-start text-muted-foreground">
@@ -406,7 +441,12 @@ export default function CreateListingPage() {
                       <Input
                         placeholder="$ 350,000"
                         type="text"
-                        disabled={isUploading || isFetchingUser || isStaking}
+                        disabled={
+                          isUploading ||
+                          isFetchingUser ||
+                          isStaking ||
+                          credentials === null
+                        }
                         {...field}
                         className="w-full h-12 text-xs sm:text-sm bg-secondary/20 sm:bg-background/40"
                       />
@@ -429,7 +469,12 @@ export default function CreateListingPage() {
                         cols={8}
                         rows={8}
                         placeholder="Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, sint?"
-                        disabled={isUploading || isFetchingUser || isStaking}
+                        disabled={
+                          isUploading ||
+                          isFetchingUser ||
+                          isStaking ||
+                          credentials === null
+                        }
                         className="bg-secondary/20 sm:bg-background/40 text-xs sm:text-sm"
                         {...field}
                       />
@@ -452,7 +497,12 @@ export default function CreateListingPage() {
                         cols={8}
                         rows={8}
                         placeholder="Fully Automated Smart Homes"
-                        disabled={isUploading || isFetchingUser || isStaking}
+                        disabled={
+                          isUploading ||
+                          isFetchingUser ||
+                          isStaking ||
+                          credentials === null
+                        }
                         className="bg-secondary/20 sm:bg-background/40 text-xs sm:text-sm"
                         {...field}
                       />
@@ -465,7 +515,12 @@ export default function CreateListingPage() {
               <Button
                 type="submit"
                 className="w-full h-12 mt-2"
-                disabled={isUploading || isFetchingUser || isStaking}>
+                disabled={
+                  isUploading ||
+                  isFetchingUser ||
+                  isStaking ||
+                  credentials === null
+                }>
                 {isUploading ? (
                   <>
                     <Loader className="w-4 h-4 mr-2 animate-spin" />
