@@ -25,7 +25,7 @@ app.get("/token/:chain/:address", async (req, res) => {
       {
         headers: {
           accept: "application/json",
-          "x-api-key": req.headers["acceptx-api-key"],
+          "x-api-key": req.headers["x-api-key"],
         },
       }
     );
