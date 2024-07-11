@@ -19,12 +19,13 @@ app.get("/", (req, res) => {
 app.get("/token/:chain/:address", async (req, res) => {
   try {
     const { chain, address } = req.params;
+
     const response = await axios.get(
       `https://public-api.dextools.io/trial/v2/token/${chain}/${address}`,
       {
         headers: {
           accept: "application/json",
-          "x-api-key": process.env.DEX_API_KEY,
+          "x-api-key": req.headers["acceptx-api-key"],
         },
       }
     );
