@@ -4,16 +4,35 @@ const cors = require("cors");
 const morgan = require("morgan");
 const { sequelize } = require("./models");
 const AppRoutes = require("./routes");
-
+const axios = require("axios");
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(morgan("common"));
-const axios = require("axios");
+// const axios = require("axios");
 
 app.get("/", (req, res) => {
   res.status(200).send("server running successfully");
+});
+
+app.get("/token/:chain/:address", async (req, res) => {
+  try {
+    const { chain, address } = req.params;
+    const response = await axios.get(
+      `https://public-api.dextools.io/trial/v2/token/${chain}/${address}`,
+      {
+        headers: {
+          accept: "application/json",
+          "x-api-key": process.env.DEX_API_KEY,
+        },
+      }
+    );
+    res.send(response.data);
+  } catch (error) {
+    console.log(error);
+    res.send({ statusCode: 400 });
+  }
 });
 
 // app.get("/yo", async (req, res) => {
