@@ -11,7 +11,7 @@ async function deployDiamond() {
   const diamondCutFacet = await DiamondCutFacet.deploy();
   await diamondCutFacet.deployed();
   console.log("DiamondCutFacet deployed:", diamondCutFacet.address);
-  const ACCOUNT = "0xC0E11e7674B3267175569e1c42b85bB5554aFEB4";
+  const ACCOUNT = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
   // deploy Diamond
   const Diamond = await ethers.getContractFactory("Diamond");
   const diamond = await Diamond.deploy(
@@ -40,20 +40,20 @@ async function deployDiamond() {
   await erc721Token.deployed();
   console.log("Deployed erc721 token at", erc721Token.address);
 
-  const GetAPI = await ethers.getContractFactory("APIConsumer");
-  const getApi = await GetAPI.deploy();
-  await getApi.deployed();
-  console.log("getApi deployed:", getApi.address);
+  // const GetAPI = await ethers.getContractFactory("APIConsumer");
+  // const getApi = await GetAPI.deploy();
+  // await getApi.deployed();
+  // console.log("getApi deployed:", getApi.address);
 
-  const GetAut = await ethers.getContractFactory("Aut");
-  const getAut = await GetAut.deploy(60 * 5, getApi.address);
-  await getAut.deployed();
-  console.log("getAut deployed:", getAut.address);
+  // const GetAut = await ethers.getContractFactory("Aut");
+  // const getAut = await GetAut.deploy(60 * 5, getApi.address);
+  // await getAut.deployed();
+  // console.log("getAut deployed:", getAut.address);
 
   await diamond.setToken(
     erc20Token.address,
-    erc721Token.address,
-    getApi.address
+    erc721Token.address
+    // getApi.address
   );
 
   // deploy facets

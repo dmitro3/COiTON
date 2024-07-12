@@ -4,7 +4,6 @@ import "../libraries/LibAppStorage.sol";
 import "../libraries/Events.sol";
 import "../libraries/Errors.sol";
 import "../interfaces/IERC20.sol";
-import "../interfaces/IAPI.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract Trade {
@@ -103,13 +102,7 @@ contract Trade {
                 description: ""
             });
         l.transactionHistory.push(_new_transaction);
-        LibAppStorage.Listing memory _listing = l.listing[tokenId];
 
-        IAPI(l.apiAddress).requestVolumeData(
-            _listing.id,
-            Strings.toString(shares),
-            Strings.toString(tokenValueAtPercentageShare)
-        );
         emit EVENTS.BuyShares(msg.sender, tokenValueAtPercentageShare, shares);
     }
 
@@ -157,14 +150,6 @@ contract Trade {
         tokenMarket.consumedShares -= shares;
         tokenMarket.currentPrice -= calculation;
 
-        LibAppStorage.Listing memory _listing = l.listing[tokenId];
-
-        IAPI(l.apiAddress).requestVolumeData(
-            _listing.id,
-            Strings.toString(shares),
-            Strings.toString(calculation)
-        );
-
         emit EVENTS.SellShares(msg.sender, calculation, shares);
     }
 
@@ -177,5 +162,29 @@ contract Trade {
     ) public pure returns (uint) {
         uint value = (currentPrice * shares) / 100;
         return value;
+    }
+
+    function registerUser(
+        string calldata name,
+        string calldata email,
+        bool isDao
+    ) public {
+        LibAppStorage.UserCredentials storage user = l.users[msg.sender];
+        require(user.addr == address(0), "USER_ALREADY_EXIST");
+        user.email = email;
+        user.addr = msg.sender;
+        user.isDao = isDao;
+        user.name = name;
+        user.isRegistered = true;
+    }
+
+    function getUserByAddress(
+        address _addr
+    ) public view returns (LibAppStorage.UserCredentials memory) {
+        return l.users[_addr];
+    }
+
+    function isUserRegistered(address _addr) public view returns (bool) {
+        return l.users[_addr].isRegistered;
     }
 }
