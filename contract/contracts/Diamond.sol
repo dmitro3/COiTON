@@ -36,14 +36,9 @@ contract Diamond {
         l.diamondAddress = address(this);
     }
 
-    function setToken(
-        address _tokenA,
-        address _tokenB,
-        address apiAddress
-    ) external {
+    function setToken(address _tokenA, address _tokenB) external {
         l.erc20Token = _tokenA;
         l.erc721Token = _tokenB;
-        l.apiAddress = apiAddress;
     }
 
     // Find facet for function that is called and execute the

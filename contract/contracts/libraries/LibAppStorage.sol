@@ -76,6 +76,14 @@ library LibAppStorage {
         Listing listing;
     }
 
+    struct UserCredentials {
+        string name;
+        string email;
+        address addr;
+        bool isRegistered;
+        bool isDao;
+    }
+
     struct Market {
         uint tokenId;
         uint currentPrice;
@@ -93,9 +101,9 @@ library LibAppStorage {
     struct Layout {
         address owner;
         address diamondAddress;
-        address apiAddress;
         address erc20Token;
         address erc721Token;
+        mapping(address => UserCredentials) users;
         mapping(uint => Market) market;
         mapping(address => mapping(uint => uint8)) userMarketShare;
         Listing[] listings;
@@ -116,5 +124,20 @@ library LibAppStorage {
         assembly {
             l.slot := 0
         }
+    }
+
+    function registerUser(
+        string memory name,
+        string memory email,
+        bool isDao
+    ) external {
+        Layout storage l = layoutStorage();
+        UserCredentials storage user = l.users[msg.sender];
+        require(user.addr == address(0), "USER_ALREADY_EXIST");
+        user.email = email;
+        user.addr = msg.sender;
+        user.isDao = isDao;
+        user.name = name;
+        user.isRegistered = true;
     }
 }
