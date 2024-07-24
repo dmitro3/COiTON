@@ -45,15 +45,29 @@ export const registerUser = async ({
 export const loginUser = async ({
   email,
   password,
+  updateCredentials,
 }: {
   email: string;
   password: string;
+  updateCredentials: (user: any) => void;
 }) => {
   try {
     const result = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
+    if (result.error) {
+      throw result.error;
+    }
+
+    const { data, error } = await supabase.auth.getUser();
+
+    if (error) {
+      throw error;
+    }
+
+    updateCredentials(data.user);
 
     return result;
   } catch (error: any) {
@@ -65,9 +79,10 @@ export const loginUser = async ({
   }
 };
 
-export const logoutUser = async () => {
+export const logoutUser = async (updateCredentials: (user: any) => void) => {
   try {
     const result = await supabase.auth.signOut();
+    updateCredentials(null);
     return result;
   } catch (error) {
     console.log(error);

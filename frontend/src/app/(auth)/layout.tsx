@@ -19,7 +19,13 @@ export default function AuthLayout({
 }) {
   const router = useRouter();
 
-  const { isFetchingUser } = useAuth();
+  const { credentials, isFetchingUser } = useAuth();
+
+  useEffect(() => {
+    if (!isFetchingUser && credentials) {
+      router.push("/dashboard");
+    }
+  }, [credentials, isFetchingUser, router]);
 
   if (isFetchingUser)
     return <LoadingComponent text="Authenticating, please wait..." />;

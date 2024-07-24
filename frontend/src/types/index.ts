@@ -29,6 +29,7 @@ interface AuthContextType {
   isError: string | null;
   setCredentials?: any;
   getUser: () => void;
+  updateCredentials: (user: any) => void;
 }
 
 interface ListingType {
