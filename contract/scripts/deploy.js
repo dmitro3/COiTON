@@ -6,12 +6,13 @@ async function deployDiamond() {
   // const accounts = await ethers.getSigners()
   // const contractOwner = accounts[0]
 
+  const ACCOUNT = new ethers.Wallet(process.env.PRIVATE_KEY).address;
+
   // deploy DiamondCutFacet
   const DiamondCutFacet = await ethers.getContractFactory("DiamondCutFacet");
   const diamondCutFacet = await DiamondCutFacet.deploy();
   await diamondCutFacet.deployed();
   console.log("DiamondCutFacet deployed:", diamondCutFacet.address);
-  const ACCOUNT = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
   // deploy Diamond
   const Diamond = await ethers.getContractFactory("Diamond");
   const diamond = await Diamond.deploy(
