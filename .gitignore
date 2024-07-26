@@ -37,3 +37,4 @@ code_context.txt
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+dev.sqlite

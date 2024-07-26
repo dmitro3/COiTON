@@ -5,6 +5,7 @@ const fs = require("fs-extra");
 require("dotenv").config();
 
 exports.SendListingTransaction = async (id, details) => {
+  // console.log(details, process.env.RPC_URL);
   try {
     const region = details.region;
     const description = details.description;
@@ -39,7 +40,7 @@ exports.SendListingTransaction = async (id, details) => {
     );
 
     const listing = {
-      owner: details.owner,
+      owner: details.owner.split(";")[0].trim(),
       agentId: details.agentId,
       region,
       postalCode: details.postalCode,
@@ -49,6 +50,9 @@ exports.SendListingTransaction = async (id, details) => {
       coverImage: details.coverImage,
       id: id,
     };
+
+    // console.log(hash);
+    // return;
 
     const tx = await contract.delegateListingForApproval(
       details.state,
