@@ -7,6 +7,7 @@ import { RiSearch2Line } from "react-icons/ri";
 import { Input } from "../ui/input";
 import Link from "next/link";
 import { LogOut, Settings } from "lucide-react";
+import { LogoutModal } from "./logout-modal";
 
 const side_links = [
   {
@@ -216,6 +217,7 @@ const side_links = [
         />
       </svg>
     ),
+    agent: true,
   },
   {
     name: "Help & Support",
@@ -387,12 +389,15 @@ export default function SidebarMini() {
                 </span>
                 Settings
               </Link>
-              <div className="flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-red-500/10 hover:text-red-400 text-sm font-medium group cursor-pointer">
-                <span className="grid mr-3 place-items-center">
-                  <LogOut size={22} />
-                </span>
-                Log Out
-              </div>
+
+              <LogoutModal>
+                <div className="flex items-center w-full p-3 leading-tight transition-all rounded-lg text-muted-foreground outline-none text-start hover:bg-red-500/10 hover:text-red-400 text-sm font-medium group cursor-pointer">
+                  <span className="grid mr-3 place-items-center">
+                    <LogOut size={22} />
+                  </span>
+                  Log Out
+                </div>
+              </LogoutModal>
             </>
           )}
         </div>

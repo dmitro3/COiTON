@@ -14,7 +14,7 @@ export const signUpSchema = z.object({
 
 export const listingSchema = z.object({
   name: z.string().min(2).max(80),
-  description: z.string().min(5).max(1000),
+  description: z.string().min(5).max(3000),
   location: z.string().min(2),
   // coverImage: z.string(),
   postalCode: z.string().optional(),

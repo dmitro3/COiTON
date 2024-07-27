@@ -4,7 +4,6 @@ import ListCard from "@/components/shared/list-card";
 import Wrapper from "@/components/shared/wrapper";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFetch } from "@/hooks/useFetch";
-import { dummyProperties } from "@/lib/constants";
 import { getAllListings } from "@/services/diamondService";
 import { useEffect } from "react";
 
@@ -31,7 +30,7 @@ export default function DashboardPage() {
             ? Array.from({ length: 12 }).map((_, _key) => (
                 <Skeleton
                   key={_key}
-                  className="aspect-[1] w-full backdrop-blur-2xl rounded-2xl"
+                  className="aspect-[1] lg:h-[388px] lg:aspect-auto w-full backdrop-blur-2xl rounded-2xl"
                 />
               ))
             : listings &&
