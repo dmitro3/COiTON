@@ -32,10 +32,14 @@ export default function AuthProvider({ children }: ILayout) {
 
   useEffect(() => {
     getCurrentUserFn();
+    if (pathname === "/" || pathname === "/about" || pathname === "/buy")
+      return;
     if (!session) open();
   }, []);
 
   useEffect(() => {
+    if (pathname === "/" || pathname === "/about" || pathname === "/buy")
+      return;
     if (!session) open();
   }, [session, pathname]);
 
