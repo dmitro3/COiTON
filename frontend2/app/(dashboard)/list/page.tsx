@@ -63,17 +63,6 @@ export default function CreatePage() {
 
   const form = useForm<z.infer<typeof listingSchema>>({
     resolver: zodResolver(listingSchema),
-    defaultValues: {
-      name: "Luxury Sunset Vista Villa",
-      location:
-        "1/3 Adebola Gbadebo Drv. (Adebola House) Off Abadek Avenue, off Akin Ogunlewe Rd, Igbogbo, Ikorodu, Lagos",
-      description: "This is a dummy description for some reason",
-      postalCode: "800143",
-      price: "500000",
-      country: countries[0].value,
-      amenities: "Fully Automated Smart Homes",
-      realEstateTypes: realEstateTypes[0],
-    },
   });
 
   const { fn: checkIfUserHasStakedFn }: IFetchHook = useFetch(
@@ -588,6 +577,10 @@ export default function CreatePage() {
                         />
                       </FormControl>
                       <FormMessage />
+
+                      <FormDescription className="text-xs font-normal text-muted-foreground">
+                        After inputting your amenity, press enter to add.
+                      </FormDescription>
                     </FormItem>
                   )}
                 />

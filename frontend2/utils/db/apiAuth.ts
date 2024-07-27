@@ -81,3 +81,13 @@ export async function signUp({
     throw Error(error);
   }
 }
+
+export async function signOut() {
+  try {
+    await supabase.auth.signOut();
+    await getCurrentUser();
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
