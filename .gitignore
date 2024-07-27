@@ -28,8 +28,6 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
-get_code_context.sh
-code_context.txt
 
 # vercel
 .vercel
@@ -37,4 +35,11 @@ code_context.txt
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
 dev.sqlite
+
+# others
+get_code_context.sh
+code_context.txt
+serviceAccountKey.json
+package-lock.json
