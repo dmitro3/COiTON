@@ -60,8 +60,9 @@ export default function HomePage() {
 
           <p className="text-xs sm:text-sm md:text-base md:max-w-2xl lg:text-right">
             Crafting Innovative Designs, Shaping Inspirations for Sustainable
-            Living <br className="hidden md:inline-flex" /> in Tomorrow's World
-            Timeless Designs, Shaping Inspirations for Tomorrow's World
+            Living <br className="hidden md:inline-flex" /> in Tomorrow&apos;s
+            World Timeless Designs, Shaping Inspirations for Tomorrow&apos;s
+            World
           </p>
         </div>
       </Wrapper>
@@ -203,8 +204,8 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-6 md:mt-10">
           {dummyProperties.slice(0, 4).map((property, _key) => (
             <div key={_key} className="flex flex-col group">
-              <Link
-                href={`/listing/${property?.id}`}
+              <div
+                // href={`/listing/${property?.id}`}
                 className="relative bg-background/60 backdrop-blur-3xl rounded-2xl w-full aspect-square md:h-[308px] border">
                 <div className="bg-background/80 backdrop-blur-xl rounded-[inherit] w-full h-full group-hover:h-[30%] absolute bottom-0 left-0 z-10 border-t transition-all duration-500 overflow-hidden">
                   <Image
@@ -241,7 +242,7 @@ export default function HomePage() {
                     </p>
                   </div>
                 </div>
-              </Link>
+              </div>
 
               <div className="px-4 py-1">
                 <p className="text-sm sm:text-base line-clamp-2 flex-1 font-medium mb-2 flex items-center">
