@@ -11,11 +11,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { credentials, isFetchingUser } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isFetchingUser && !credentials) {
-      router.push("/sign-in");
-    }
-  }, [credentials, isFetchingUser, router]);
+  // useEffect(() => {
+  //   if (!isFetchingUser && !credentials) {
+  //     router.push("/sign-in");
+  //   }
+  // }, [credentials, isFetchingUser, router]);
 
   if (isFetchingUser) {
     return <LoadingComponent text="Fetching credentials..." />;

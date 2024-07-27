@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Mulish as FontSans } from "next/font/google";
 
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
@@ -7,9 +7,9 @@ import { site } from "@/constants";
 import AuthContextProvider from "@/context/authContext";
 import { Toaster } from "@/components/ui/sonner";
 
-const fontSans = Inter({
+const fontSans = FontSans({
   subsets: ["latin"],
-  // variable: "--font-sans",
+  variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
@@ -34,7 +34,7 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased flex flex-col",
-          fontSans.className
+          fontSans.variable
         )}>
         <AuthContextProvider>
           <Toaster richColors />
