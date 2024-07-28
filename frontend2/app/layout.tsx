@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 
 import { cookieToInitialState } from "wagmi";
+import { Analytics } from "@vercel/analytics/react";
 
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<ILayout>) {
   const initialState = cookieToInitialState(config, headers().get("cookie"));
+
   return (
     <html lang="en" suppressContentEditableWarning suppressHydrationWarning>
       <head>
@@ -41,6 +43,7 @@ export default function RootLayout({ children }: Readonly<ILayout>) {
           <div className="fixed bottom-auto left-auto right-0 top-0 h-[500px] w-[500px] -translate-x-[80%] translate-y-[70%] rounded-full bg-initial/10 md:bg-initial/20 opacity-50 blur-[80px]"></div>
           <div className="fixed top-auto right-auto left-0 bottom-0 h-[500px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-initial/10 md:bg-initial/20 opacity-50 blur-[80px]"></div>
         </div>
+        <Analytics />
         <Web3Provider initialState={initialState}>{children}</Web3Provider>
       </body>
     </html>
