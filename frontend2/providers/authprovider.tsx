@@ -5,9 +5,6 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useSession } from "next-auth/react";
-import { SIWESession } from "@web3modal/siwe";
-import { useFetch } from "@/hooks/useFetch";
 import { getCurrentUser } from "@/utils/db/apiAuth";
 import { Loader } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -16,17 +13,28 @@ const AuthContext = createContext<any | null>(null);
 
 export default function AuthProvider({ children }: ILayout) {
   const pathname = usePathname();
+
+  const [credentials, setCredentials] = useState<any>(null);
+  const [isFetchingUser, setIsFetchingUser] = useState(false);
+
   const { open } = useWeb3Modal();
-  const { isConnecting, isConnected } = useAccount();
+  const { isConnecting, address, isConnected } = useAccount();
 
-  const {
-    data: credentials,
-    fn: getCurrentUserFn,
-    isLoading: isFetchingUser,
-  }: IFetchHook = useFetch(getCurrentUser);
-
-  const { data, status } = useSession();
-  const session = data as unknown as SIWESession;
+  const getCurrentUserFn = async () => {
+    setIsFetchingUser(true);
+    try {
+      const user = await getCurrentUser();
+      if (user) {
+        setCredentials(user);
+      } else {
+        setCredentials(null);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetchingUser(false);
+    }
+  };
 
   const isAuthenticated: boolean = credentials?.role === "authenticated";
 
@@ -34,14 +42,14 @@ export default function AuthProvider({ children }: ILayout) {
     getCurrentUserFn();
     if (pathname === "/" || pathname === "/about" || pathname === "/buy")
       return;
-    if (!session) open();
+    if (!isConnected) open();
   }, []);
 
   useEffect(() => {
     if (pathname === "/" || pathname === "/about" || pathname === "/buy")
       return;
-    if (!session) open();
-  }, [session, pathname]);
+    if (!isConnected) open();
+  }, [isConnected, address, pathname]);
 
   const authProps = {
     credentials,
@@ -49,9 +57,7 @@ export default function AuthProvider({ children }: ILayout) {
     getCurrentUserFn,
     isAuthenticated,
     openWallet: open,
-    accountStatus: status,
-    address: session?.address,
-    chainId: session?.chainId,
+    address: address,
     isConnected,
     isConnecting,
   };
