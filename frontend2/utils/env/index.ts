@@ -15,7 +15,9 @@ export const variables = {
   // ? OTHERS
   mapKey: process.env.NEXT_PUBLIC_MAP_API_KEY!,
   w3mProjectId: process.env.NEXT_PUBLIC_W3M_PROJECT_ID!,
-  rpcUrl: process.env.NEXT_PUBLIC_RPC_URL!,
   renderEndpoint: process.env.NEXT_PUBLIC_RENDER_ENDPOINT!,
   ipfsGateway: process.env.NEXT_PUBLIC_IPFS_GATEWAY!,
+  // ? CORE RPC
+  rpcUrl: process.env.NEXT_PUBLIC_RPC_URL!,
+  wssUrl: process.env.NEXT_PUBLIC_WSS_URL!,
 };
