@@ -2,7 +2,9 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { variables } from "../env";
 
-export const createClient = (cookieStore: ReturnType<typeof cookies>) => {
+export const createClient = () => {
+  const cookieStore = cookies();
+
   return createServerClient(variables?.supabaseUrl, variables?.supabaseKey, {
     cookies: {
       get(name: string) {

@@ -19,8 +19,9 @@ export const getAllListings = async () => {
         listing[2].split(";");
 
       return {
-        owner: listing[0][0],
-        agent: listing[0][1],
+        propertyId: listing[0],
+        owner: listing[1],
+        agent: listing[1],
         title: title.split("=")[1],
         amenities: amenities.split("=")[1].split("~"),
         country: country.split("=")[1],
@@ -28,14 +29,14 @@ export const getAllListings = async () => {
         city: city.split("=")[1],
         address: location.split("=")[1],
         propertyType: propertyType.split("=")[1],
-        postalCode: Number(listing[0][3]),
-        description: listing[0][4],
-        price: Number(listing[0][5]),
-        images: listing[0][6]
+        postalCode: Number(listing[3]),
+        description: listing[4],
+        price: Number(listing[5]),
+        images: listing[6]
           .split(";")
           .map((image: string) => `${variables.ipfsGateway}/${image}`),
-        coverImage: `${variables.ipfsGateway}/${listing[0][7]}`,
-        propertyId: listing[0][8],
+        id: Number(listing[7]),
+        coverImage: `${variables.ipfsGateway}/${listing[8]}`,
         timestamp: Number(listing[9]),
       };
     });
@@ -97,8 +98,9 @@ export const getAllAgreements = async () => {
         listing[2].split(";");
 
       return {
-        owner: listing[0][0],
-        agent: listing[0][1],
+        propertyId: listing[0],
+        owner: listing[1],
+        agent: listing[1],
         title: title.split("=")[1],
         amenities: amenities.split("=")[1].split("~"),
         country: country.split("=")[1],
@@ -106,14 +108,14 @@ export const getAllAgreements = async () => {
         city: city.split("=")[1],
         address: location.split("=")[1],
         propertyType: propertyType.split("=")[1],
-        postalCode: Number(listing[0][3]),
-        description: listing[0][4],
-        price: Number(listing[0][5]),
-        images: listing[0][6]
+        postalCode: Number(listing[3]),
+        description: listing[4],
+        price: Number(listing[5]),
+        images: listing[6]
           .split(";")
           .map((image: string) => `${variables.ipfsGateway}/${image}`),
-        coverImage: `${variables.ipfsGateway}/${listing[0][7]}`,
-        propertyId: listing[0][8],
+        id: Number(listing[7]),
+        coverImage: `${variables.ipfsGateway}/${listing[8]}`,
         timestamp: Number(listing[9]),
       };
     };
