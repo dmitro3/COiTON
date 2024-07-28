@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/constants";
 import { createAvatar } from "@dicebear/core";
 import { pixelArt } from "@dicebear/collection";
+import { redirect } from "next/navigation";
 
 export async function getCurrentUser() {
   try {
@@ -40,6 +41,7 @@ export async function signIn({
     });
     if (error) throw new Error(error.message);
 
+    await getCurrentUser();
     return data;
   } catch (error: any) {
     throw Error(error);
@@ -76,6 +78,7 @@ export async function signUp({
 
     if (signUpError) throw new Error(signUpError.message);
 
+    await getCurrentUser();
     return data;
   } catch (error: any) {
     throw Error(error);
@@ -85,7 +88,7 @@ export async function signUp({
 export async function signOut() {
   try {
     await supabase.auth.signOut();
-    await getCurrentUser();
+    redirect("/sign-in");
   } catch (error) {
     console.log(error);
     return error;
