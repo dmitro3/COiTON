@@ -13,7 +13,7 @@ const coreDao = {
   },
   rpcUrls: {
     default: {
-      http: ["https://rpc.test.btcs.network", "https://rpc.coredao.org"],
+      http: [variables?.rpcUrl || variables?.wssUrl],
     },
   },
   blockExplorers: {
