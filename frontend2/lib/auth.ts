@@ -13,6 +13,12 @@ declare module "next-auth" {
     address: string;
     chainId: number;
   }
+
+  interface User {
+    id: string;
+    address: string;
+    chainId: number;
+  }
 }
 
 const nextAuthSecret = variables?.authSecret;
@@ -44,12 +50,12 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          if (!credentials?.message) {
-            throw new Error("SiweMessage is undefined");
+          if (!credentials?.message || !credentials?.signature) {
+            throw new Error("Missing credentials");
           }
           const { message, signature } = credentials;
           const address = getAddressFromMessage(message);
-          const chainId = getChainIdFromMessage(message);
+          const chainId: any = parseInt(getChainIdFromMessage(message), 10);
 
           const isValid = await verifySignature({
             address,
@@ -62,6 +68,8 @@ export const authOptions: NextAuthOptions = {
           if (isValid) {
             return {
               id: `${chainId}:${address}`,
+              address,
+              chainId,
             };
           }
 
@@ -74,20 +82,37 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
     session({ session, token }) {
-      if (!token.sub) {
-        return session;
-      }
-
-      const [, chainId, address] = token.sub.split(":");
-      if (chainId && address) {
+      if (token?.sub) {
+        const [chainId, address] = token.sub.split(":");
         session.address = address;
         session.chainId = parseInt(chainId, 10);
       }
 
       return session;
+    },
+    jwt({ token, user }) {
+      if (user) {
+        token.sub = `${user.chainId}:${user.address}`;
+        token.address = user.address;
+        token.chainId = user.chainId;
+      }
+
+      return token;
+    },
+  },
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
     },
   },
 };

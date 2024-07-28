@@ -1,11 +1,3 @@
-import { getCsrfToken, signIn, signOut, getSession } from "next-auth/react";
-import type {
-  SIWEVerifyMessageArgs,
-  SIWECreateMessageArgs,
-  SIWESession,
-} from "@web3modal/siwe";
-import { createSIWEConfig, formatMessage } from "@web3modal/siwe";
-import { avalancheFuji, coreDao as defaultChain } from "viem/chains";
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 
 import { cookieStorage, createStorage } from "wagmi";
@@ -68,56 +60,52 @@ export const config = defaultWagmiConfig({
   },
 });
 
-export const siweConfig = createSIWEConfig({
-  getMessageParams: async () => ({
-    domain: typeof window !== "undefined" ? window.location.host : "",
-    uri: typeof window !== "undefined" ? window.location.origin : "",
-    chains: [coreDao.id],
-    statement: `To effectively utilize ${siteConfig.title}, you must sign with your account to verify ownership.`,
-  }),
-  createMessage: ({ address, ...args }: SIWECreateMessageArgs) =>
-    formatMessage(args, address),
-  getNonce: async () => {
-    const nonce = await getCsrfToken();
-    if (!nonce) {
-      throw new Error("Failed to get nonce!");
-    }
+// export const siweConfig = createSIWEConfig({
+//   getMessageParams: async () => ({
+//     domain: typeof window !== "undefined" ? window.location.host : "",
+//     uri: typeof window !== "undefined" ? window.location.origin : "",
+//     chains: [coreDao.id],
+//     statement: `To effectively utilize ${siteConfig.title}, you must sign with your account to verify ownership.`,
+//   }),
+//   createMessage: ({ address, ...args }: SIWECreateMessageArgs) =>
+//     formatMessage(args, address),
+//   getNonce: async () => {
+//     const nonce = await getCsrfToken();
+//     if (!nonce) {
+//       throw new Error("Failed to get nonce!");
+//     }
+//     return nonce;
+//   },
+//   getSession: async () => {
+//     const session = await getSession();
+//     if (!session) {
+//       throw new Error("Failed to get session!");
+//     }
 
-    return nonce;
-  },
-  getSession: async () => {
-    const session = await getSession();
-    if (!session) {
-      throw new Error("Failed to get session!");
-    }
+//     const { address, chainId } = session as unknown as SIWESession;
 
-    const { address, chainId } = session as unknown as SIWESession;
+//     return { address, chainId };
+//   },
+//   verifyMessage: async ({ message, signature }: SIWEVerifyMessageArgs) => {
+//     try {
+//       const success = await signIn("credentials", {
+//         message,
+//         redirect: false,
+//         signature,
+//         callbackUrl: "/protected",
+//       });
 
-    return { address, chainId };
-  },
-  verifyMessage: async ({ message, signature }: SIWEVerifyMessageArgs) => {
-    try {
-      const success = await signIn("credentials", {
-        message,
-        redirect: false,
-        signature,
-        callbackUrl: "/protected",
-      });
-
-      return Boolean(success?.ok);
-    } catch (error) {
-      return false;
-    }
-  },
-  signOut: async () => {
-    try {
-      await signOut({
-        redirect: false,
-      });
-
-      return true;
-    } catch (error) {
-      return false;
-    }
-  },
-});
+//       return Boolean(success?.ok);
+//     } catch (error) {
+//       return false;
+//     }
+//   },
+//   signOut: async () => {
+//     try {
+//       await signOut({ redirect: false });
+//       return true;
+//     } catch (error) {
+//       return false;
+//     }
+//   },
+// });

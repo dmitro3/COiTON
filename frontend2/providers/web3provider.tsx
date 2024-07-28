@@ -1,14 +1,13 @@
 "use client";
 
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode } from "react";
 
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { State, WagmiProvider } from "wagmi";
-import { config, projectId, siweConfig } from "@/config";
-import { SessionProvider, getSession } from "next-auth/react";
+import { config, projectId } from "@/config";
 import AuthProvider from "./authprovider";
 
 // Setup queryClient
@@ -22,7 +21,6 @@ createWeb3Modal({
   projectId,
   enableAnalytics: true,
   enableOnramp: true,
-  siweConfig,
   themeVariables: {
     "--w3m-font-family": '"Space Grotesk", sans-serif',
     "--w3m-accent": "#019d90",
@@ -37,19 +35,10 @@ export default function Web3Provider({
   children: ReactNode;
   initialState?: State;
 }) {
-  const [session, setSession] = useState<any>();
-
-  useEffect(() => {
-    const ss = getSession();
-    setSession(ss);
-  }, []);
-
   return (
     <WagmiProvider config={config} initialState={initialState}>
       <QueryClientProvider client={queryClient}>
-        <SessionProvider session={session} refetchInterval={0}>
-          <AuthProvider>{children}</AuthProvider>
-        </SessionProvider>
+        <AuthProvider>{children}</AuthProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
